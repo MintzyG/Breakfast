@@ -1,7 +1,7 @@
 # Expectations
 
 The tools this project will be developed with are:
-- Typescript
+- Javascript
 - NextJS
 - React
 - Shadcn/ui
