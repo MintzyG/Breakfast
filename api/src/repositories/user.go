@@ -42,3 +42,15 @@ func GetUserByEmail(email string) (*models.User, error) {
 	}
 	return &user, nil
 }
+
+func IsUserValid(id uuid.UUID) bool {
+	query := `SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)`
+
+	var exists bool
+	err := Instance.QueryRow(query, id).Scan(&exists)
+	if err != nil {
+		return false
+	}
+
+	return exists
+}

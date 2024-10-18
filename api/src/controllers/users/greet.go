@@ -1,35 +1,38 @@
 package users
 
 import (
+	"breakfast/models"
 	DB "breakfast/repositories"
+	RSP "breakfast/response"
 	"fmt"
 	"github.com/google/uuid"
 	"net/http"
 )
 
 func greetUserByID(w http.ResponseWriter, r *http.Request) {
-	// Extract the id from the path
 	idStr := r.PathValue("id")
-
-	// Convert the string id to a UUID
-	id, err := uuid.Parse(idStr)
-	if err != nil {
-		http.Error(w, "Invalid UUID", http.StatusBadRequest)
+	claims, ok := r.Context().Value("claims").(*models.UserClaims)
+	if !ok {
+		RSP.SendErrorResponse(w, http.StatusUnauthorized, "Claims missing", "CLAIMS_ERROR")
 		return
 	}
 
-	// Get user from database
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		RSP.SendErrorResponse(w, http.StatusBadRequest, "Invalid UUID", "INVALID_USER")
+		return
+	}
+
 	user, err := DB.GetUserByID(id)
 	if err != nil {
 		if err.Error() == "user not found" {
-			http.Error(w, "User not found", http.StatusNotFound)
+			RSP.SendErrorResponse(w, http.StatusNotFound, "Invalid user", "USER_NOT_FOUND")
 		} else {
-			http.Error(w, "Server error", http.StatusInternalServerError)
+			RSP.SendErrorResponse(w, http.StatusInternalServerError, "Server Error", "SERVER_ERROR")
 		}
 		return
 	}
 
-	// Greet the user
-	greeting := fmt.Sprintf("Hello %v!", user)
-	fmt.Fprint(w, greeting)
+	greeting := fmt.Sprintf("Hello %v! I'm %v %v", user, claims.FirstName, claims.LastName)
+	RSP.SendSuccessResponse(w, http.StatusOK, greeting)
 }

@@ -1,6 +1,7 @@
 package users
 
 import (
+	MW "breakfast/middleware"
 	"breakfast/models"
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
@@ -9,18 +10,10 @@ import (
 	"time"
 )
 
-type user_claims struct {
-	UserID    string `json:"user_id"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Email     string `json:"email"`
-	jwt.RegisteredClaims
-}
-
 func generateJWTToken(user models.User) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
 
-	claims := &user_claims{
+	claims := &models.UserClaims{
 		UserID:    user.ID.String(),
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
@@ -37,7 +30,7 @@ func generateJWTToken(user models.User) (string, error) {
 
 func Run(mux *http.ServeMux) {
 	fmt.Println("Connecting UserController")
-	mux.HandleFunc("GET /greet/{id}", greetUserByID)
+	mux.Handle("GET /greet/{id}", MW.AuthMiddleware(http.HandlerFunc(greetUserByID)))
 	mux.HandleFunc("POST /register", registerUser)
 	mux.HandleFunc("POST /login", loginUser)
 }

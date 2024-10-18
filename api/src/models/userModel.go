@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -12,6 +13,14 @@ type User struct {
 	LastName  string
 	Email     string
 	Password  string
+}
+
+type UserClaims struct {
+	UserID    string `json:"user_id"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Email     string `json:"email"`
+	jwt.RegisteredClaims
 }
 
 func (u User) String() string {
