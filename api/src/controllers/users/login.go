@@ -1,57 +1,59 @@
 package users
 
 import (
-	"os"
-	"fmt"
-	"time"
-	"net/http"
-	"encoding/json"
 	"breakfast/models"
 	DB "breakfast/repositories"
-	"github.com/golang-jwt/jwt/v5"
+	RSP "breakfast/response"
+	"database/sql"
+	"encoding/json"
+	"fmt"
+	"golang.org/x/crypto/bcrypt"
+	"net/http"
 )
 
 func loginUser(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		http.Error(w, "Error parsing JSON", http.StatusBadRequest)
+		RSP.SendErrorResponse(w, http.StatusBadRequest, "Error parsing JSON", "JSON_ERROR")
 		return
 	}
 
 	if user.Email == "" {
-		http.Error(w, "Missing required email field", http.StatusBadRequest)
+		RSP.SendErrorResponse(w, http.StatusUnprocessableEntity, "Email field empty", "MISSING_EMAIL")
 		return
 	}
 
 	if user.Password == "" {
-		http.Error(w, "Missing required password field", http.StatusBadRequest)
+		RSP.SendErrorResponse(w, http.StatusUnprocessableEntity, "Password field empty", "MISSING_PASSWORD")
 		return
 	}
 
-	DB.CheckUserPassword(user)
-
-	expirationTime := time.Now().Add(24 * time.Hour)
-	claims := &user_claims {
-		UserID:    user.ID.String(),
-		FirstName: user.FirstName,
-		LastName:  user.LastName,
-		Email:     user.Email,
-		RegisteredClaims: jwt.RegisteredClaims {
-			ExpiresAt: jwt.NewNumericDate(expirationTime),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_KEY")))
+	db_user, err := DB.GetUserByEmail(user.Email)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Error creating auth token: %v", err.Error()), http.StatusInternalServerError)
+		if err == sql.ErrNoRows {
+			RSP.SendErrorResponse(w, http.StatusNotFound, "User not found", "USER_NOT_FOUND")
+			return
+		}
+		RSP.SendErrorResponse(w, http.StatusInternalServerError, fmt.Sprintf("Database error: %v", err.Error()), "DATABASE_ERROR")
+		return
 	}
 
+	err = models.CheckUserPassword(db_user.Password, user.Password)
+	if err != nil {
+		if err == bcrypt.ErrMismatchedHashAndPassword {
+			RSP.SendErrorResponse(w, http.StatusUnauthorized, "Wrong password", "PASSWORD_ERROR")
+			return
+		}
+		RSP.SendErrorResponse(w, http.StatusInternalServerError, fmt.Sprintf("Database error: %v", err.Error()), "DATABASE_ERROR")
+		return
+	}
 
-    w.Header().Set("Content-Type", "application/json")
-    w.WriteHeader(http.StatusOK)
-    if err := json.NewEncoder(w).Encode(tokenString); err != nil {
-        http.Error(w, "Error encoding response", http.StatusInternalServerError)
-    }
+	jwtToken, err := generateJWTToken(*db_user)
+	if err != nil {
+		RSP.SendErrorResponse(w, http.StatusInternalServerError, fmt.Sprintf("Error creating auth token: %v", err.Error()), "AUTH_ERROR")
+		return
+	}
+
+	RSP.SendSuccessResponse(w, http.StatusOK, jwtToken)
 }
