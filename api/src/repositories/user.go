@@ -12,9 +12,7 @@ import (
 func CreateUser(user *models.User) error {
     query := `INSERT INTO users (id, first_name, last_name, email, password) VALUES ($1, $2, $3, $4, $5)`
     _, err := Instance.Exec(query, user.ID, user.FirstName, user.LastName, user.Email, user.Password)
-    if err != nil {
-        return fmt.Errorf("error creating user: %v", err)
-    }
+    if err != nil { return err }
     return nil
 }
 
