@@ -8,11 +8,11 @@ import (
 )
 
 type User struct {
-	ID        uuid.UUID
-	FirstName string
-	LastName  string
-	Email     string
-	Password  string
+	UserID    uuid.UUID `json:"user_id"`
+	FirstName string    `json:"first_name"`
+	LastName  string    `json:"last_name"`
+	Email     string    `json:"email"`
+	Password  string    `json:"password"`
 }
 
 type UserClaims struct {
@@ -27,8 +27,8 @@ func (u User) String() string {
 	return fmt.Sprintf("%v %v", u.FirstName, u.LastName)
 }
 
-func CheckUserPassword(password_a string, password_b string) error {
-	err := bcrypt.CompareHashAndPassword([]byte(password_a), []byte(password_b))
+func CheckUserPassword(hashedPassword string, plainPassword string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(plainPassword))
 	if err != nil {
 		return err
 	}

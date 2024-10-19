@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	CategoryController "breakfast/controllers/categories"
 	UserController "breakfast/controllers/users"
 	DB "breakfast/repositories"
 )
@@ -19,6 +20,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	UserController.Run(mux)
+	CategoryController.Run(mux)
 
 	log.Println("Server starting on :8080")
 	if err := http.ListenAndServe(":8080", mux); err != nil {

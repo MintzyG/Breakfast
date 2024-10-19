@@ -47,3 +47,14 @@ func SendSuccessResponse(w http.ResponseWriter, status int, message string) {
 		http.Error(w, "An unexpected error occurred", http.StatusInternalServerError)
 	}
 }
+
+func SendObjectResponse[T any](w http.ResponseWriter, statusCode int, obj T) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+
+	err := json.NewEncoder(w).Encode(obj)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}

@@ -14,7 +14,7 @@ func generateJWTToken(user models.User) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
 
 	claims := &models.UserClaims{
-		UserID:    user.ID.String(),
+		UserID:    user.UserID.String(),
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
 		Email:     user.Email,
@@ -31,6 +31,6 @@ func generateJWTToken(user models.User) (string, error) {
 func Run(mux *http.ServeMux) {
 	fmt.Println("Connecting UserController")
 	mux.Handle("GET /greet/{id}", MW.AuthMiddleware(http.HandlerFunc(greetUserByID)))
-	mux.HandleFunc("POST /register", registerUser)
-	mux.HandleFunc("POST /login", loginUser)
+	mux.HandleFunc("POST /auth/register", registerUser)
+	mux.HandleFunc("POST /auth/login", loginUser)
 }

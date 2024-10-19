@@ -10,7 +10,7 @@ import (
 
 func CreateUser(user *models.User) error {
 	query := `INSERT INTO users (id, first_name, last_name, email, password) VALUES ($1, $2, $3, $4, $5)`
-	_, err := Instance.Exec(query, user.ID, user.FirstName, user.LastName, user.Email, user.Password)
+	_, err := Instance.Exec(query, user.UserID, user.FirstName, user.LastName, user.Email, user.Password)
 	if err != nil {
 		return err
 	}
@@ -20,7 +20,7 @@ func CreateUser(user *models.User) error {
 func GetUserByID(id uuid.UUID) (*models.User, error) {
 	query := `SELECT id, first_name, last_name, email FROM users WHERE id = $1`
 	var user models.User
-	err := Instance.QueryRow(query, id).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email)
+	err := Instance.QueryRow(query, id).Scan(&user.UserID, &user.FirstName, &user.LastName, &user.Email)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("user not found")
@@ -33,7 +33,7 @@ func GetUserByID(id uuid.UUID) (*models.User, error) {
 func GetUserByEmail(email string) (*models.User, error) {
 	query := `SELECT id, first_name, last_name, email, password FROM users WHERE email = $1`
 	var user models.User
-	err := Instance.QueryRow(query, email).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.Password)
+	err := Instance.QueryRow(query, email).Scan(&user.UserID, &user.FirstName, &user.LastName, &user.Email, &user.Password)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, err

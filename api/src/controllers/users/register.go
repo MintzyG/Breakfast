@@ -20,8 +20,13 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if user.FirstName == "" || user.LastName == "" {
-		RSP.SendErrorResponse(w, http.StatusUnprocessableEntity, "Name fields empty", "MISSING_NAMES")
+	if user.FirstName == "" {
+		RSP.SendErrorResponse(w, http.StatusUnprocessableEntity, fmt.Sprintf("First name fields empty: %v", user.FirstName), "MISSING_NAMES")
+		return
+	}
+
+	if user.LastName == "" {
+		RSP.SendErrorResponse(w, http.StatusUnprocessableEntity, fmt.Sprintf("Last name fields empty: %v", user.LastName), "MISSING_NAMES")
 		return
 	}
 
@@ -42,7 +47,7 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 	}
 	user.Password = string(bytes)
 
-	user.ID = uuid.New()
+	user.UserID = uuid.New()
 	err = DB.CreateUser(&user)
 	if err != nil {
 		if pqErr, ok := err.(*pq.Error); ok && pqErr.Code == "23505" {
