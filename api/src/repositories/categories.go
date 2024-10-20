@@ -1,6 +1,7 @@
 package repositories
 
 import (
+  BFE "breakfast/errors"
 	"breakfast/models"
 	"database/sql"
 	"fmt"
@@ -13,7 +14,7 @@ func CreateCategory(c *models.Category) error {
 
 	err := Instance.QueryRow(query, c.UserId, c.Title, c.Description, c.Emoji, c.Color, c.TextColor).Scan(&c.ID)
 	if err != nil {
-		return err
+		return BFE.NewBFError(BFE.DATABASE_ERROR_CODE, err.Error())
 	}
 	return nil
 }
@@ -26,9 +27,9 @@ func GetCategoryByID(id int, user_id uuid.UUID) (*models.Category, error) {
 	err := Instance.QueryRow(query, id, user_id).Scan(&c.Title, &c.Description, &c.Emoji, &c.Color, &c.TextColor)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, fmt.Errorf("category not found")
+      return nil, BFE.NewBFError(BFE.USER_NOT_FOUND_CODE, fmt.Sprintf("Could not find category with ID: %v", id))
 		}
-		return nil, fmt.Errorf("error fetching category: %v", err)
+		return nil, BFE.NewBFError(BFE.DATABASE_ERROR_CODE, err.Error())
 	}
 	return &c, nil
 }
@@ -38,7 +39,7 @@ func GetAllCategories(user_id uuid.UUID) ([]models.Category, error) {
 
 	rows, err := Instance.Query(query, user_id)
 	if err != nil {
-		return nil, err
+		return nil, BFE.NewBFError(BFE.DATABASE_ERROR_CODE, err.Error())
 	}
 	defer rows.Close()
 
@@ -46,13 +47,13 @@ func GetAllCategories(user_id uuid.UUID) ([]models.Category, error) {
 	for rows.Next() {
 		var category models.Category
 		if err := rows.Scan(&category.ID, &category.UserId, &category.Title, &category.Description, &category.Emoji, &category.Color, &category.TextColor); err != nil {
-			return nil, err
+			return nil, BFE.NewBFError(BFE.DATABASE_ERROR_CODE, err.Error())
 		}
 		categories = append(categories, category)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return nil, BFE.NewBFError(BFE.DATABASE_ERROR_CODE, err.Error())
 	}
 
 	return categories, nil

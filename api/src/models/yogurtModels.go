@@ -3,7 +3,7 @@ package models
 import "github.com/google/uuid"
 
 type YogurtTask struct {
-	TaskID      string    `json:"task_id"`
+	TaskID      int       `json:"task_id"`
 	UserID      uuid.UUID `json:"user_id"`
 	Emoji       string    `json:"emoji"`
 	Title       string    `json:"title"`

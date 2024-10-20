@@ -1,10 +1,10 @@
 package categories
 
 import (
+  BFE "breakfast/errors"
 	"breakfast/models"
 	DB "breakfast/repositories"
 	RSP "breakfast/response"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -12,25 +12,16 @@ import (
 )
 
 func getCategoryByID(w http.ResponseWriter, r *http.Request) {
-	claims, ok := r.Context().Value("claims").(*models.UserClaims)
-	if !ok {
-		RSP.SendErrorResponse(w, http.StatusUnauthorized, "Claims missing", "CLAIMS_ERROR")
-		return
-	}
+	claims, err := models.GetUserClaims(r)
+  if BFE.HandleError(w, err) { return }
 
 	category_idStr := r.PathValue("id")
 	category_id, err := strconv.Atoi(category_idStr)
-	if err != nil {
-		RSP.SendErrorResponse(w, http.StatusUnprocessableEntity, "Possibly malformed ID", "ID_ERROR")
-		return
-	}
+  if BFE.HandleError(w, err) { return }
 
 	user_id, _ := uuid.Parse(claims.UserID)
 	category, err := DB.GetCategoryByID(category_id, user_id)
-	if err != nil {
-		RSP.SendErrorResponse(w, http.StatusInternalServerError, fmt.Sprintf("ERROR: %v", err.Error()), "DATABASE_ERROR")
-		return
-	}
+  if BFE.HandleError(w, err) { return }
 
 	RSP.SendObjectResponse(w, http.StatusOK, category)
 }

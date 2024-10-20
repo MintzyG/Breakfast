@@ -12,11 +12,8 @@ import (
 
 func greetUserByID(w http.ResponseWriter, r *http.Request) {
 	idStr := r.PathValue("id")
-	claims, ok := r.Context().Value("claims").(*models.UserClaims)
-	if !ok {
-		RSP.SendErrorResponse(w, http.StatusUnauthorized, "Claims missing", "CLAIMS_ERROR")
-		return
-	}
+  claims, err := models.GetUserClaims(r)
+  if BFE.HandleError(w, err) { return }
 
 	id, _ := uuid.Parse(idStr)
 	user, err := DB.GetUserByID(id)

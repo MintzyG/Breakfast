@@ -3,6 +3,7 @@ package models
 import (
   BFE "breakfast/errors"
 	"fmt"
+  "net/http"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -34,4 +35,12 @@ func CheckUserPassword(hashedPassword string, plainPassword string) error {
 		return BFE.NewBFError(BFE.PASSWORD_ERROR_CODE, err.Error())
 	}
 	return nil
+}
+
+func GetUserClaims(r *http.Request) (*UserClaims, error) {
+    claims, ok := r.Context().Value("claims").(*UserClaims)
+    if !ok {
+        return nil, BFE.NewBFError(BFE.CLAIMS_ERROR_CODE, "Missing/malformed claims")
+    }
+    return claims, nil
 }

@@ -1,6 +1,7 @@
 package repositories
 
 import (
+  BFE "breakfast/errors"
 	"breakfast/models"
 	_ "github.com/lib/pq"
 )
@@ -25,7 +26,7 @@ func CreateYogurtTask(task *models.YogurtTask) error {
 		task.CategoryID,
 	).Scan(&task.TaskID)
 	if err != nil {
-		return err
+		return BFE.NewBFError(BFE.DATABASE_ERROR_CODE, err.Error())
 	}
 	return nil
 }
