@@ -12,6 +12,8 @@ import (
 	"net/http"
 )
 
+var excludeFieldsRegister = map[string]bool{"UserID": true}
+
 func registerUser(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	err := json.NewDecoder(r.Body).Decode(&user)
@@ -20,12 +22,11 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-  excludeFields := map[string]bool{ "UserID": true, }
-  err = models.IsModelValid(user, excludeFields)
-  if err != nil {
-    RSP.SendErrorResponse(w, http.StatusUnprocessableEntity, err.Error(), "MISSING_FIELDS")
-    return
-  }
+	err = models.IsModelValid(user, excludeFieldsRegister)
+	if err != nil {
+		RSP.SendErrorResponse(w, http.StatusUnprocessableEntity, err.Error(), "MISSING_FIELDS")
+		return
+	}
 
 	bytes, err := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
 	if err != nil {

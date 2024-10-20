@@ -10,7 +10,7 @@ func IsModelValid[T any](s T, excludeFields map[string]bool) error {
 	t := reflect.TypeOf(s)
 
 	if v.Kind() != reflect.Struct {
-    return fmt.Errorf("Expected type to be struct")
+		return fmt.Errorf("Expected type to be struct")
 	}
 
 	for i := 0; i < v.NumField(); i++ {

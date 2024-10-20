@@ -18,12 +18,6 @@ func getCategoryByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user_id, err := uuid.Parse(claims.UserID)
-	if err != nil {
-		RSP.SendErrorResponse(w, http.StatusUnauthorized, "Invalid User ID", "USER_ERROR")
-		return
-	}
-
 	category_idStr := r.PathValue("id")
 	category_id, err := strconv.Atoi(category_idStr)
 	if err != nil {
@@ -31,6 +25,7 @@ func getCategoryByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	user_id, _ := uuid.Parse(claims.UserID)
 	category, err := DB.GetCategoryByID(category_id, user_id)
 	if err != nil {
 		RSP.SendErrorResponse(w, http.StatusInternalServerError, fmt.Sprintf("ERROR: %v", err.Error()), "DATABASE_ERROR")

@@ -17,12 +17,7 @@ func getAllCategories(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user_id, err := uuid.Parse(claims.UserID)
-	if err != nil {
-		RSP.SendErrorResponse(w, http.StatusUnauthorized, "Invalid User ID", "USER_ERROR")
-		return
-	}
-
+	user_id, _ := uuid.Parse(claims.UserID)
 	categories, err := DB.GetAllCategories(user_id)
 	if err != nil {
 		RSP.SendErrorResponse(w, http.StatusInternalServerError, fmt.Sprintf("ERROR: %v", err.Error()), "DATABASE_ERROR")

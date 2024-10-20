@@ -17,12 +17,7 @@ func greetUserByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := uuid.Parse(idStr)
-	if err != nil {
-		RSP.SendErrorResponse(w, http.StatusBadRequest, "Invalid UUID", "INVALID_USER")
-		return
-	}
-
+	id, _ := uuid.Parse(idStr)
 	user, err := DB.GetUserByID(id)
 	if err != nil {
 		if err.Error() == "user not found" {
