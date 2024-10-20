@@ -1,7 +1,7 @@
 package categories
 
 import (
-  BFE "breakfast/errors"
+	BFE "breakfast/errors"
 	"breakfast/models"
 	DB "breakfast/repositories"
 	RSP "breakfast/response"
@@ -13,15 +13,21 @@ import (
 
 func getCategoryByID(w http.ResponseWriter, r *http.Request) {
 	claims, err := models.GetUserClaims(r)
-  if BFE.HandleError(w, err) { return }
+	if BFE.HandleError(w, err) {
+		return
+	}
 
 	category_idStr := r.PathValue("id")
 	category_id, err := strconv.Atoi(category_idStr)
-  if BFE.HandleError(w, err) { return }
+	if BFE.HandleError(w, err) {
+		return
+	}
 
 	user_id, _ := uuid.Parse(claims.UserID)
 	category, err := DB.GetCategoryByID(category_id, user_id)
-  if BFE.HandleError(w, err) { return }
+	if BFE.HandleError(w, err) {
+		return
+	}
 
 	RSP.SendObjectResponse(w, http.StatusOK, category)
 }

@@ -52,7 +52,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		ok = DB.IsUserValid(id)
+		ok, _ = DB.IsUserValid(id)
 		if !ok {
 			RSP.SendErrorResponse(w, http.StatusUnauthorized, "Invalid user", "UNAUTHORIZED_ACCESS")
 			return

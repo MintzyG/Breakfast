@@ -14,7 +14,7 @@ CREATE TABLE users (
 CREATE TABLE categories (
   id SERIAL PRIMARY KEY NOT NULL,
   user_id UUID NOT NULL,
-  title VARCHAR(31) NOT NULL,
+  title VARCHAR(31) NOT NULL UNIQUE,
   description VARCHAR(255),
   emoji VARCHAR(15) NOT NULL,
   color CHAR(7) NOT NULL,
