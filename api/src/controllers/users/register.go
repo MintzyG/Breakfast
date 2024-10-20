@@ -37,7 +37,7 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 
 	user.UserID = uuid.New()
 	err = DB.CreateUser(&user)
-	if err != nil {
+	if err == nil {
 		if pqErr, ok := err.(*pq.Error); ok && pqErr.Code == "23505" {
 			RSP.SendErrorResponse(w, http.StatusConflict, "User with this email already exists", "USER_EXISTS")
 			return

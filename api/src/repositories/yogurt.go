@@ -8,7 +8,7 @@ import (
 func CreateYogurtTask(task *models.YogurtTask) error {
 	query := `
     INSERT INTO yogurt_task
-      (user_id, emoji, title, description, task_size, difficulty, priority, category_id)
+      (user_id, emoji, title, description, size, difficulty, priority, category_id)
     VALUES
       ($1, $2, $3, $4, $5, $6, $7, $8)
     RETURNING id
