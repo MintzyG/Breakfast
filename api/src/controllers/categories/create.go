@@ -18,20 +18,12 @@ func createCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if c.Title == "" || c.Description == "" {
-		RSP.SendErrorResponse(w, http.StatusUnprocessableEntity, "Info fields empty", "MISSING_DATA")
-		return
-	}
-
-	if c.Color == "" || c.TextColor == "" {
-		RSP.SendErrorResponse(w, http.StatusUnprocessableEntity, "Color fields empty", "MISSING_DATA")
-		return
-	}
-
-	if c.Emoji == "" {
-		RSP.SendErrorResponse(w, http.StatusUnprocessableEntity, "Emoji fields empty", "MISSING_DATA")
-		return
-	}
+  excludeFields := map[string]bool{ "UserID": true, "ID": true, "Description": true }
+  err = models.IsModelValid(c, excludeFields)
+  if err != nil {
+    RSP.SendErrorResponse(w, http.StatusUnprocessableEntity, err.Error(), "MISSING_FIELDS")
+    return
+  }
 
 	claims, ok := r.Context().Value("claims").(*models.UserClaims)
 	if !ok {
@@ -39,12 +31,11 @@ func createCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := uuid.Parse(claims.UserID)
+	c.UserId, err = uuid.Parse(claims.UserID)
 	if err != nil {
 		RSP.SendErrorResponse(w, http.StatusUnauthorized, "Invalid User ID", "USER_ERROR")
 		return
 	}
-	c.UserId = id
 
 	err = DB.CreateCategory(&c)
 	if err != nil {
@@ -52,5 +43,6 @@ func createCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	RSP.SendSuccessResponse(w, http.StatusCreated, c.String())
+  RSP.SendObjectResponse(w, http.StatusCreated, c)
 }
+

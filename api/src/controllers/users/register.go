@@ -20,25 +20,12 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if user.FirstName == "" {
-		RSP.SendErrorResponse(w, http.StatusUnprocessableEntity, fmt.Sprintf("First name fields empty: %v", user.FirstName), "MISSING_NAMES")
-		return
-	}
-
-	if user.LastName == "" {
-		RSP.SendErrorResponse(w, http.StatusUnprocessableEntity, fmt.Sprintf("Last name fields empty: %v", user.LastName), "MISSING_NAMES")
-		return
-	}
-
-	if user.Email == "" {
-		RSP.SendErrorResponse(w, http.StatusUnprocessableEntity, "Email field empty", "MISSING_EMAIL")
-		return
-	}
-
-	if user.Password == "" {
-		RSP.SendErrorResponse(w, http.StatusUnprocessableEntity, "Password field empty", "MISSING_PASSWORD")
-		return
-	}
+  excludeFields := map[string]bool{ "UserID": true, }
+  err = models.IsModelValid(user, excludeFields)
+  if err != nil {
+    RSP.SendErrorResponse(w, http.StatusUnprocessableEntity, err.Error(), "MISSING_FIELDS")
+    return
+  }
 
 	bytes, err := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
 	if err != nil {
