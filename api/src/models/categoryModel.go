@@ -6,13 +6,13 @@ import (
 )
 
 type Category struct {
-	ID          int       `json:"category_id"`
-	UserId      uuid.UUID `json:"user_id"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	Emoji       string    `json:"emoji"`
-	Color       string    `json:"color"`
-	TextColor   string    `json:"text_color"`
+	ID          int       `json:"CategoryId"`
+	UserId      uuid.UUID `json:"UserId"`
+	Title       string    `json:"Title"`
+	Description string    `json:"Description"`
+	Emoji       string    `json:"Emoji"`
+	Color       string    `json:"Color"`
+	TextColor   string    `json:"TextColor"`
 }
 
 func (c Category) String() string {
