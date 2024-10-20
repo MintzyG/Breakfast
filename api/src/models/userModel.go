@@ -1,6 +1,7 @@
 package models
 
 import (
+  BFE "breakfast/errors"
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
@@ -30,7 +31,7 @@ func (u User) String() string {
 func CheckUserPassword(hashedPassword string, plainPassword string) error {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(plainPassword))
 	if err != nil {
-		return err
+		return BFE.NewBFError(BFE.PASSWORD_ERROR_CODE, err.Error())
 	}
 	return nil
 }

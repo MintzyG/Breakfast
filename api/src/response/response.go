@@ -7,24 +7,21 @@ import (
 )
 
 type ErrorResponse struct {
-	Status  int    `json:"status"`
-	Message string `json:"message"`
 	Code    string `json:"code,omitempty"`
+	Message string `json:"message"`
 }
 
 type SuccessResponse struct {
-	Status  int    `json:"status"`
 	Message string `json:"message"`
 }
 
-func SendErrorResponse(w http.ResponseWriter, status int, message string, code string) {
+func SendErrorResponse(w http.ResponseWriter, status int, code string, context string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 
 	err := json.NewEncoder(w).Encode(ErrorResponse{
-		Status:  status,
-		Message: message,
 		Code:    code,
+		Message: context,
 	})
 
 	if err != nil {
@@ -38,7 +35,6 @@ func SendSuccessResponse(w http.ResponseWriter, status int, message string) {
 	w.WriteHeader(status)
 
 	err := json.NewEncoder(w).Encode(SuccessResponse{
-		Status:  status,
 		Message: message,
 	})
 
