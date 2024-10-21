@@ -26,7 +26,7 @@ func CreateYogurtTask(task *models.YogurtTask) error {
 		task.CategoryID,
 	).Scan(&task.TaskID)
 	if err != nil {
-		return BFE.NewBFError(BFE.DATABASE_ERROR_CODE, err.Error())
+		return BFE.NewBFError(BFE.ErrDatabase, err)
 	}
 	return nil
 }

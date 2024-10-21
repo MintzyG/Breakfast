@@ -2,6 +2,7 @@ package models
 
 import (
 	BFE "breakfast/errors"
+  "errors"
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
@@ -32,7 +33,7 @@ func (u User) String() string {
 func CheckUserPassword(hashedPassword string, plainPassword string) error {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(plainPassword))
 	if err != nil {
-		return BFE.NewBFError(BFE.PASSWORD_ERROR_CODE, err.Error())
+		return BFE.NewBFError(BFE.ErrPassword, err)
 	}
 	return nil
 }
@@ -40,7 +41,7 @@ func CheckUserPassword(hashedPassword string, plainPassword string) error {
 func GetUserClaims(r *http.Request) (*UserClaims, error) {
 	claims, ok := r.Context().Value("claims").(*UserClaims)
 	if !ok {
-		return nil, BFE.NewBFError(BFE.CLAIMS_ERROR_CODE, "Missing/malformed claims")
+		return nil, BFE.NewBFError(BFE.ErrClaims, errors.New("Missing/malformed claims"))
 	}
 	return claims, nil
 }
