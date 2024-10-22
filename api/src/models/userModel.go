@@ -33,7 +33,7 @@ func (u User) String() string {
 func CheckUserPassword(hashedPassword string, plainPassword string) error {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(plainPassword))
 	if err != nil {
-		return BFE.NewBFError(BFE.ErrPassword, err)
+		return BFE.New(BFE.ErrPassword, err)
 	}
 	return nil
 }
@@ -41,7 +41,7 @@ func CheckUserPassword(hashedPassword string, plainPassword string) error {
 func GetUserClaims(r *http.Request) (*UserClaims, error) {
 	claims, ok := r.Context().Value("claims").(*UserClaims)
 	if !ok {
-		return nil, BFE.NewBFError(BFE.ErrClaims, errors.New("Missing/malformed claims"))
+		return nil, BFE.New(BFE.ErrClaims, errors.New("Missing/malformed claims"))
 	}
 	return claims, nil
 }

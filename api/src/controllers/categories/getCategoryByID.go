@@ -12,13 +12,13 @@ import (
 )
 
 func getCategoryByID(w http.ResponseWriter, r *http.Request) {
-	claims, err := models.GetUserClaims(r)
-	if BFE.HandleError(w, err) {
-		return
-	}
-
 	category_idStr := r.PathValue("id")
 	category_id, err := strconv.Atoi(category_idStr)
+	if BFE.HandleError(w, err) {
+		return
+  }
+
+	claims, err := models.GetUserClaims(r)
 	if BFE.HandleError(w, err) {
 		return
 	}

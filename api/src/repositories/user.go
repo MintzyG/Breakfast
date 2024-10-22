@@ -16,10 +16,10 @@ func CreateUser(user *models.User) error {
 	if err != nil {
 		if pqErr, ok := err.(*pq.Error); ok {
 			if pqErr.Code == "23505" {
-				return BFE.NewBFError(BFE.ErrConflict, errors.New("Email already exists"))
+				return BFE.New(BFE.ErrConflict, errors.New("Email already exists"))
 			}
 		}
-		return BFE.NewBFError(BFE.ErrDatabase, err)
+		return BFE.New(BFE.ErrDatabase, err)
 	}
 	return nil
 }
@@ -30,9 +30,9 @@ func GetUserByID(id uuid.UUID) (*models.User, error) {
 	err := Instance.QueryRow(query, id).Scan(&user.UserID, &user.FirstName, &user.LastName, &user.Email)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, BFE.NewBFError(BFE.ErrUserNotFound, errors.New("User not found."))
+			return nil, BFE.New(BFE.ErrUserNotFound, errors.New("User not found."))
 		}
-		return nil, BFE.NewBFError(BFE.ErrDatabase, err)
+		return nil, BFE.New(BFE.ErrDatabase, err)
 	}
 	return &user, nil
 }
@@ -43,9 +43,9 @@ func GetUserByEmail(email string) (*models.User, error) {
 	err := Instance.QueryRow(query, email).Scan(&user.UserID, &user.FirstName, &user.LastName, &user.Email, &user.Password)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, BFE.NewBFError(BFE.ErrUserNotFound, errors.New("User not found."))
+			return nil, BFE.New(BFE.ErrUserNotFound, errors.New("User not found."))
 		}
-		return nil, BFE.NewBFError(BFE.ErrDatabase, err)
+		return nil, BFE.New(BFE.ErrDatabase, err)
 	}
 	return &user, nil
 }
@@ -55,7 +55,7 @@ func IsUserValid(id uuid.UUID) (bool, error) {
 	var exists bool
 	err := Instance.QueryRow(query, id).Scan(&exists)
 	if err != nil {
-		return false, BFE.NewBFError(BFE.ErrDatabase, err)
+		return false, BFE.New(BFE.ErrDatabase, err)
 	}
 	return exists, nil
 }

@@ -18,10 +18,10 @@ func CreateCategory(c *models.Category) error {
 	if err != nil {
 		if pqErr, ok := err.(*pq.Error); ok {
 			if pqErr.Code == "23505" {
-				return BFE.NewBFError(BFE.ErrConflict, errors.New("Category with this title already exists"))
+				return BFE.New(BFE.ErrConflict, errors.New("Category with this title already exists"))
 			}
 		}
-		return BFE.NewBFError(BFE.ErrDatabase, err)
+		return BFE.New(BFE.ErrDatabase, err)
 	}
 	return nil
 }
@@ -34,9 +34,9 @@ func GetCategoryByID(id int, user_id uuid.UUID) (*models.Category, error) {
 	err := Instance.QueryRow(query, id, user_id).Scan(&c.Title, &c.Description, &c.Emoji, &c.Color, &c.TextColor)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, BFE.NewBFError(BFE.ErrResourceNotFound, fmt.Errorf("Could not find category with ID: %v", id))
+			return nil, BFE.New(BFE.ErrResourceNotFound, fmt.Errorf("Could not find category with ID: %v", id))
 		}
-		return nil, BFE.NewBFError(BFE.ErrDatabase, err)
+		return nil, BFE.New(BFE.ErrDatabase, err)
 	}
 	return &c, nil
 }
@@ -46,7 +46,7 @@ func GetAllCategories(user_id uuid.UUID) ([]models.Category, error) {
 
 	rows, err := Instance.Query(query, user_id)
 	if err != nil {
-		return nil, BFE.NewBFError(BFE.ErrDatabase, err)
+		return nil, BFE.New(BFE.ErrDatabase, err)
 	}
 	defer rows.Close()
 
@@ -54,13 +54,13 @@ func GetAllCategories(user_id uuid.UUID) ([]models.Category, error) {
 	for rows.Next() {
 		var category models.Category
 		if err := rows.Scan(&category.ID, &category.UserId, &category.Title, &category.Description, &category.Emoji, &category.Color, &category.TextColor); err != nil {
-			return nil, BFE.NewBFError(BFE.ErrDatabase, err)
+			return nil, BFE.New(BFE.ErrDatabase, err)
 		}
 		categories = append(categories, category)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, BFE.NewBFError(BFE.ErrDatabase, err)
+		return nil, BFE.New(BFE.ErrDatabase, err)
 	}
 
 	return categories, nil

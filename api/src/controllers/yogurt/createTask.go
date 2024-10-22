@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var excludeFields = map[string]bool{"UserID": true, "TaskID": true, "Description": true}
+var excludeFields = map[string]bool{"UserID": true, "TaskID": true, "Description": true, "Completed": true}
 
 func createTask(w http.ResponseWriter, r *http.Request) {
 	var task models.YogurtTask

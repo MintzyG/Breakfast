@@ -12,7 +12,7 @@ func IsModelValid[T any](s T, excludeFields map[string]bool) error {
 	t := reflect.TypeOf(s)
 
 	if v.Kind() != reflect.Struct {
-		return BFE.NewBFError(BFE.ErrServer, errors.New("Expected type to be struct"))
+		return BFE.New(BFE.ErrServer, errors.New("Expected type to be struct"))
 	}
 
 	for i := 0; i < v.NumField(); i++ {
@@ -25,11 +25,11 @@ func IsModelValid[T any](s T, excludeFields map[string]bool) error {
 		switch field.Kind() {
 		case reflect.String:
 			if field.String() == "" {
-				return BFE.NewBFError(BFE.ErrMissingFields, fmt.Errorf("%v is empty", fieldName))
+				return BFE.New(BFE.ErrMissingFields, fmt.Errorf("%v is empty", fieldName))
 			}
 		case reflect.Int:
 			if field.Int() == 0 {
-				return BFE.NewBFError(BFE.ErrMissingFields, fmt.Errorf("%v is empty", fieldName))
+				return BFE.New(BFE.ErrMissingFields, fmt.Errorf("%v is empty", fieldName))
 			}
 		}
 	}

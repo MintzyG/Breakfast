@@ -50,7 +50,7 @@ var (
     ErrValidation        = ErrorType{http.StatusBadRequest, "ERR_VALIDATION"}
 )
 
-func NewBFError(errorType ErrorType, err error) BFError {
+func New(errorType ErrorType, err error) BFError {
     return BFError{
         HttpCode:     errorType.HttpCode,
         ErrorCode:    errorType.ErrorCode,
