@@ -4,7 +4,7 @@ import (
 	BFE "breakfast/errors"
 	"breakfast/models"
 	"database/sql"
-  "errors"
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -64,4 +64,50 @@ func GetAllCategories(user_id uuid.UUID) ([]models.Category, error) {
 	}
 
 	return categories, nil
+}
+
+func PatchCategory(id int, user_id uuid.UUID, updates map[string]interface{}) error {
+	validFields := map[string]bool{
+		"title":       true,
+		"description": true,
+		"emoji":       true,
+		"color":       true,
+		"text_color":  true,
+	}
+
+	whereClause := "id = $1 AND user_id = $2"
+	query, args, err := BuildUpdateQuery("categories", updates, validFields, whereClause, id, user_id)
+	if err != nil {
+		return err
+	}
+
+	_, execErr := Instance.Exec(query, args...)
+	if execErr != nil {
+		if execErr == sql.ErrNoRows {
+			return BFE.New(BFE.ErrResourceNotFound, fmt.Errorf("Could not find category with ID: %v", id))
+		}
+		return BFE.New(BFE.ErrDatabase, execErr)
+	}
+
+	return nil
+}
+
+func DeleteCategory(id int, user_id uuid.UUID) error {
+	query := `DELETE FROM categories WHERE id = $1 AND user_id = $2`
+
+	result, err := Instance.Exec(query, id, user_id)
+	if err != nil {
+		return BFE.New(BFE.ErrDatabase, err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return BFE.New(BFE.ErrDatabase, err)
+	}
+
+	if rowsAffected == 0 {
+		return BFE.New(BFE.ErrResourceNotFound, fmt.Errorf("Could not find category with ID: %v", id))
+	}
+
+	return nil
 }

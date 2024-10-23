@@ -2,7 +2,7 @@ package models
 
 import (
 	BFE "breakfast/errors"
-  "errors"
+	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"

@@ -8,7 +8,7 @@ type YogurtTask struct {
 	Emoji       string    `json:"emoji"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
-  Completed   bool      `json:"completed"`
+	Completed   bool      `json:"completed"`
 	TaskSize    int       `json:"task_size"`
 	Difficulty  int       `json:"difficulty"`
 	Priority    int       `json:"priority"`

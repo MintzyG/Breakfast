@@ -5,29 +5,36 @@ import (
 	"breakfast/models"
 	DB "breakfast/repositories"
 	RSP "breakfast/response"
+	"encoding/json"
 	"net/http"
 	"strconv"
 
 	"github.com/google/uuid"
 )
 
-func getCategoryByID(w http.ResponseWriter, r *http.Request) {
+func patchCategory(w http.ResponseWriter, r *http.Request) {
 	category_idStr := r.PathValue("id")
 	category_id, err := strconv.Atoi(category_idStr)
 	if BFE.HandleError(w, err) {
 		return
-  }
+	}
 
 	claims, err := models.GetUserClaims(r)
 	if BFE.HandleError(w, err) {
 		return
 	}
 
+	var updates map[string]interface{}
+	err = json.NewDecoder(r.Body).Decode(&updates)
+	if BFE.HandleError(w, BFE.New(BFE.ErrJSON, err)) {
+		return
+	}
+
 	user_id, _ := uuid.Parse(claims.UserID)
-	category, err := DB.GetCategoryByID(category_id, user_id)
+	err = DB.PatchCategory(category_id, user_id, updates)
 	if BFE.HandleError(w, err) {
 		return
 	}
 
-	RSP.SendObjectResponse(w, http.StatusOK, category)
+	RSP.SendSuccessResponse(w, http.StatusOK, "Successfully patched category!")
 }

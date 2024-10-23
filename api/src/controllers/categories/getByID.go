@@ -1,4 +1,4 @@
-package yogurt
+package categories
 
 import (
 	BFE "breakfast/errors"
@@ -11,9 +11,9 @@ import (
 	"github.com/google/uuid"
 )
 
-func getTaskByID(w http.ResponseWriter, r *http.Request) {
-	task_idStr := r.PathValue("id")
-	task_id, err := strconv.Atoi(task_idStr)
+func getCategoryByID(w http.ResponseWriter, r *http.Request) {
+	category_idStr := r.PathValue("id")
+	category_id, err := strconv.Atoi(category_idStr)
 	if BFE.HandleError(w, err) {
 		return
 	}
@@ -24,10 +24,10 @@ func getTaskByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user_id, _ := uuid.Parse(claims.UserID)
-	tasks, err := DB.GetTaskByID(task_id, user_id)
+	category, err := DB.GetCategoryByID(category_id, user_id)
 	if BFE.HandleError(w, err) {
 		return
 	}
 
-	RSP.SendObjectResponse(w, http.StatusOK, tasks)
+	RSP.SendObjectResponse(w, http.StatusOK, category)
 }

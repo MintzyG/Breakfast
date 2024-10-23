@@ -3,8 +3,8 @@ package repositories
 import (
 	BFE "breakfast/errors"
 	"breakfast/models"
-  "database/sql"
-  "fmt"
+	"database/sql"
+	"fmt"
 
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
@@ -24,7 +24,7 @@ func CreateYogurtTask(task *models.YogurtTask) error {
 		task.Emoji,
 		task.Title,
 		task.Description,
-    task.Completed,
+		task.Completed,
 		task.Difficulty,
 		task.TaskSize,
 		task.Priority,
@@ -49,17 +49,17 @@ func GetAllTasks(user_id uuid.UUID) ([]models.YogurtTask, error) {
 	for rows.Next() {
 		var task models.YogurtTask
 		if err := rows.Scan(
-      &task.TaskID,
-      &task.UserID,
-      &task.Emoji,
-      &task.Title,
-      &task.Description,
-      &task.Completed,
-      &task.Difficulty,
-      &task.TaskSize,
-      &task.Priority,
-      &task.CategoryID,
-    ); err != nil {
+			&task.TaskID,
+			&task.UserID,
+			&task.Emoji,
+			&task.Title,
+			&task.Description,
+			&task.Completed,
+			&task.Difficulty,
+			&task.TaskSize,
+			&task.Priority,
+			&task.CategoryID,
+		); err != nil {
 			return nil, BFE.New(BFE.ErrDatabase, err)
 		}
 		tasks = append(tasks, task)
@@ -78,17 +78,17 @@ func GetTaskByID(id int, user_id uuid.UUID) (*models.YogurtTask, error) {
 	task.UserID = user_id
 	task.TaskID = id
 	err := Instance.QueryRow(query, id, user_id).Scan(
-      &task.TaskID,
-      &task.UserID,
-      &task.Emoji,
-      &task.Title,
-      &task.Description,
-      &task.Completed,
-      &task.Difficulty,
-      &task.TaskSize,
-      &task.Priority,
-      &task.CategoryID,
-    )
+		&task.TaskID,
+		&task.UserID,
+		&task.Emoji,
+		&task.Title,
+		&task.Description,
+		&task.Completed,
+		&task.Difficulty,
+		&task.TaskSize,
+		&task.Priority,
+		&task.CategoryID,
+	)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, BFE.New(BFE.ErrResourceNotFound, fmt.Errorf("Could not find category with ID: %v", id))
@@ -99,16 +99,16 @@ func GetTaskByID(id int, user_id uuid.UUID) (*models.YogurtTask, error) {
 }
 
 func AlterTaskCompletedStatus(id int, user_id uuid.UUID, status bool) error {
-  query := `
+	query := `
   UPDATE yogurt
   SET completed = $1
   WHERE id = $2 AND user_id = $3;
   `
 
-  _, err := Instance.Exec(query, status, id, user_id)
-  if err != nil {
-    return BFE.New(BFE.ErrDatabase, err)
-  }
+	_, err := Instance.Exec(query, status, id, user_id)
+	if err != nil {
+		return BFE.New(BFE.ErrDatabase, err)
+	}
 
 	return nil
 }

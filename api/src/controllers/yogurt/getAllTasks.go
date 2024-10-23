@@ -11,16 +11,16 @@ import (
 )
 
 func getAllTasks(w http.ResponseWriter, r *http.Request) {
-  claims, err := models.GetUserClaims(r)
-  if BFE.HandleError(w, err) {
-    return
-  }
+	claims, err := models.GetUserClaims(r)
+	if BFE.HandleError(w, err) {
+		return
+	}
 
-  user_id, _ := uuid.Parse(claims.UserID)
-  tasks, err := DB.GetAllTasks(user_id)
-  if BFE.HandleError(w, err) {
-    return
-  }
+	user_id, _ := uuid.Parse(claims.UserID)
+	tasks, err := DB.GetAllTasks(user_id)
+	if BFE.HandleError(w, err) {
+		return
+	}
 
-  RSP.SendObjectResponse(w, http.StatusOK, tasks)
+	RSP.SendObjectResponse(w, http.StatusOK, tasks)
 }

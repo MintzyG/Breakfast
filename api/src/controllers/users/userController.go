@@ -1,7 +1,7 @@
 package users
 
 import (
-  BFE "breakfast/errors"
+	BFE "breakfast/errors"
 	MW "breakfast/middleware"
 	"breakfast/models"
 	"fmt"
