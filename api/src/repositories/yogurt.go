@@ -121,7 +121,7 @@ func PatchTask(id int, user_id uuid.UUID, updates map[string]interface{}) error 
 		"task_size":   true,
 		"difficulty":  true,
 		"priority":    true,
-    "completed":   true,
+		"completed":   true,
 		"category_id": true,
 	}
 
@@ -137,6 +137,26 @@ func PatchTask(id int, user_id uuid.UUID, updates map[string]interface{}) error 
 			return BFE.New(BFE.ErrResourceNotFound, fmt.Errorf("Could not find task with ID: %v", id))
 		}
 		return BFE.New(BFE.ErrDatabase, execErr)
+	}
+
+	return nil
+}
+
+func DeleteTask(id int, user_id uuid.UUID) error {
+	query := `DELETE FROM yogurt WHERE id = $1 AND user_id = $2`
+
+	result, err := Instance.Exec(query, id, user_id)
+	if err != nil {
+		return BFE.New(BFE.ErrDatabase, err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return BFE.New(BFE.ErrDatabase, err)
+	}
+
+	if rowsAffected == 0 {
+		return BFE.New(BFE.ErrResourceNotFound, fmt.Errorf("Could not find task with ID: %v", id))
 	}
 
 	return nil

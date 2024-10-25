@@ -2,7 +2,7 @@ package users
 
 import (
 	BFE "breakfast/errors"
-	MW "breakfast/middleware"
+	// MW "breakfast/middleware"
 	"breakfast/models"
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
@@ -31,7 +31,6 @@ func generateJWTToken(user models.User) (string, error) {
 
 func Run(mux *http.ServeMux) {
 	fmt.Println("Connecting UserController")
-	mux.Handle("GET /greet/{id}", MW.AuthMiddleware(http.HandlerFunc(greetUserByID)))
 	mux.HandleFunc("POST /auth/register", registerUser)
 	mux.HandleFunc("POST /auth/login", loginUser)
 }
