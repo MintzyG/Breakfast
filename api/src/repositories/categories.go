@@ -93,20 +93,15 @@ func PatchCategory(id int, user_id uuid.UUID, updates map[string]interface{}) er
 }
 
 func DeleteCategory(id int, user_id uuid.UUID) error {
-	query := `DELETE FROM categories WHERE id = $1 AND user_id = $2`
-
-	result, err := Instance.Exec(query, id, user_id)
+	query := `SELECT delete_category($1, $2);`
+	var success bool
+	err := Instance.QueryRow(query, user_id, id).Scan(&success)
 	if err != nil {
 		return BFE.New(BFE.ErrDatabase, err)
 	}
 
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return BFE.New(BFE.ErrDatabase, err)
-	}
-
-	if rowsAffected == 0 {
-		return BFE.New(BFE.ErrResourceNotFound, fmt.Errorf("Could not find category with ID: %v", id))
+	if !success {
+		return BFE.New(BFE.ErrResourceNotFound, fmt.Errorf("could not find category with ID: %v", id))
 	}
 
 	return nil

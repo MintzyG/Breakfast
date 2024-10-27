@@ -12,5 +12,5 @@ type YogurtTask struct {
 	TaskSize    int       `json:"task_size"`
 	Difficulty  int       `json:"difficulty"`
 	Priority    int       `json:"priority"`
-	CategoryID  int       `json:"category_id"`
+	CategoryID  *int      `json:"category_id"`
 }
