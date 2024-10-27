@@ -3,7 +3,7 @@ package categories
 import (
 	BFE "breakfast/errors"
 	"breakfast/models"
-	DB "breakfast/repositories"
+	DB "breakfast/repositories/category"
 	RSP "breakfast/response"
 	"encoding/json"
 	"net/http"

@@ -3,7 +3,7 @@ package yogurt
 import (
 	BFE "breakfast/errors"
 	"breakfast/models"
-	DB "breakfast/repositories"
+	DB "breakfast/repositories/yogurt"
 	RSP "breakfast/response"
 	"net/http"
 	"strconv"
@@ -29,5 +29,5 @@ func deleteTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	RSP.SendSuccessResponse(w, http.StatusOK, "Category delete successfully!")
+	RSP.SendSuccessResponse(w, http.StatusOK, "Task delete successfully!")
 }

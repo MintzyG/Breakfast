@@ -3,7 +3,7 @@ package users
 import (
 	BFE "breakfast/errors"
 	"breakfast/models"
-	DB "breakfast/repositories"
+	DB "breakfast/repositories/user"
 	RSP "breakfast/response"
 	"encoding/json"
 	"github.com/google/uuid"
