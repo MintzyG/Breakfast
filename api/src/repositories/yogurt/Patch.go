@@ -11,6 +11,12 @@ import (
 )
 
 func PatchTask(id int, user_id uuid.UUID, updates map[string]interface{}) error {
+  tx, err := R.BeginTransaction()
+  if err != nil {
+    return BFE.New(BFE.ErrDatabase, err)
+  }
+  defer tx.Rollback()
+
 	validFields := map[string]bool{
 		"emoji":       true,
 		"title":       true,
@@ -28,13 +34,18 @@ func PatchTask(id int, user_id uuid.UUID, updates map[string]interface{}) error 
 		return err
 	}
 
-	_, execErr := R.Instance.Exec(query, args...)
+	_, execErr := tx.Exec(query, args...)
 	if execErr != nil {
 		if execErr == sql.ErrNoRows {
 			return BFE.New(BFE.ErrResourceNotFound, fmt.Errorf("Could not find task with ID: %v", id))
 		}
 		return BFE.New(BFE.ErrDatabase, execErr)
 	}
+
+  err = tx.Commit()
+  if err != nil {
+    return BFE.New(BFE.ErrDatabase, err)
+  }
 
 	return nil
 }

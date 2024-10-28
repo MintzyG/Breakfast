@@ -10,9 +10,15 @@ import (
 )
 
 func DeleteTask(id int, user_id uuid.UUID) error {
+  tx, err := R.BeginTransaction()
+  if err != nil {
+    return BFE.New(BFE.ErrDatabase, err)
+  }
+  defer tx.Rollback()
+
 	query := `DELETE FROM yogurt WHERE id = $1 AND user_id = $2`
 
-	result, err := R.Instance.Exec(query, id, user_id)
+  result, err := tx.Exec(query, id, user_id)
 	if err != nil {
 		return BFE.New(BFE.ErrDatabase, err)
 	}
@@ -25,6 +31,11 @@ func DeleteTask(id int, user_id uuid.UUID) error {
 	if rowsAffected == 0 {
 		return BFE.New(BFE.ErrResourceNotFound, fmt.Errorf("Could not find task with ID: %v", id))
 	}
+
+  err = tx.Commit()
+  if err != nil {
+    return BFE.New(BFE.ErrDatabase, err)
+  }
 
 	return nil
 }

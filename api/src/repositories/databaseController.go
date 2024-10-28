@@ -37,3 +37,7 @@ func CloseDatabase() error {
 	}
 	return Instance.Close()
 }
+
+func BeginTransaction() (*sql.Tx, error) {
+  return Instance.Begin()
+}

@@ -9,6 +9,12 @@ import (
 )
 
 func CreateYogurtTask(task *models.YogurtTask) error {
+  tx, err := R.BeginTransaction()
+  if err != nil {
+    return BFE.New(BFE.ErrDatabase, err)
+  }
+  defer tx.Rollback()
+
 	query := `
     INSERT INTO yogurt
       (user_id, emoji, title, description, completed, task_size, difficulty, priority, category_id)
@@ -16,7 +22,7 @@ func CreateYogurtTask(task *models.YogurtTask) error {
       ($1, $2, $3, $4, $5, $6, $7, $8, $9)
     RETURNING id
   `
-	err := R.Instance.QueryRow(
+	err = tx.QueryRow(
 		query,
 		task.UserID,
 		task.Emoji,
@@ -31,5 +37,11 @@ func CreateYogurtTask(task *models.YogurtTask) error {
 	if err != nil {
 		return BFE.New(BFE.ErrDatabase, err)
 	}
+
+  err = tx.Commit()
+  if err != nil {
+    return BFE.New(BFE.ErrDatabase, err)
+  }
+
 	return nil
 }
