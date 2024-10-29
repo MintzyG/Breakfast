@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"breakfast/models"
-	DB "breakfast/repositories"
+	DB "breakfast/repositories/user"
 	RSP "breakfast/response"
 
 	"github.com/golang-jwt/jwt/v5"
