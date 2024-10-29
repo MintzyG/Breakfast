@@ -2,14 +2,15 @@ package middleware
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
 	"strings"
 
+	BFE "breakfast/errors"
 	"breakfast/models"
 	DB "breakfast/repositories/user"
-	RSP "breakfast/response"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
@@ -19,13 +20,13 @@ func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
-			RSP.SendErrorResponse(w, http.StatusUnauthorized, "Missing header", "HEADER_MISSING")
+      BFE.HandleError(w, BFE.New(BFE.ErrHeaderMissing, errors.New("Missing Authorization header")))
 			return
 		}
 
 		parts := strings.Split(authHeader, " ")
 		if len(parts) != 2 || parts[0] != "Bearer" {
-			RSP.SendErrorResponse(w, http.StatusUnauthorized, "Invalid header", "HEADER_MALFORMED")
+      BFE.HandleError(w, BFE.New(BFE.ErrHeaderMalformed, errors.New("Invalid/Malformed Authorization header, expected format: Bearer {token}")))
 			return
 		}
 
@@ -36,25 +37,25 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		})
 
 		if err != nil || !token.Valid {
-			RSP.SendErrorResponse(w, http.StatusUnauthorized, "Invalid token", "UNAUTHORIZED_ACCESS")
+      BFE.HandleError(w, BFE.New(BFE.ErrUnauthorized, err))
 			return
 		}
 
 		claims, ok := token.Claims.(*models.UserClaims)
 		if !ok {
-			RSP.SendErrorResponse(w, http.StatusUnauthorized, "Invalid token claims", "UNAUTHORIZED_ACCESS")
+      BFE.HandleError(w, BFE.New(BFE.ErrClaims, errors.New("Invalid token claims")))
 			return
 		}
 
 		id, err := uuid.Parse(claims.UserID)
 		if err != nil {
-			RSP.SendErrorResponse(w, http.StatusUnauthorized, fmt.Sprintf("Invalid uuid: %v", err.Error()), "UNAUTHORIZED_ACCESS")
+      BFE.HandleError(w, BFE.New(BFE.ErrUnauthorized, fmt.Errorf("Invalid uuid: %v", err.Error())))
 			return
 		}
 
 		ok, _ = DB.IsUserValid(id)
 		if !ok {
-			RSP.SendErrorResponse(w, http.StatusUnauthorized, "Invalid user", "UNAUTHORIZED_ACCESS")
+      BFE.HandleError(w, BFE.New(BFE.ErrUnprocessable, errors.New("Invalid User")))
 			return
 		}
 
