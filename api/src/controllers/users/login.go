@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-var excludeFieldsLogin = map[string]bool{"UserID": true, "FirstName": true, "LastName": true}
+var uncheckedFields = map[string]bool{"UserId":  true, "FirstName": true, "LastName": true}
 
 func loginUser(w http.ResponseWriter, r *http.Request) {
 	var user models.User
@@ -18,7 +18,7 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = models.IsModelValid(user, excludeFieldsLogin)
+	err = models.IsModelValid(user, uncheckedFields)
 	if BFE.HandleError(w, err) {
 		return
 	}

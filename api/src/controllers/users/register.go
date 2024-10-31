@@ -11,7 +11,7 @@ import (
 	"net/http"
 )
 
-var excludeFieldsRegister = map[string]bool{"UserID": true}
+var uncheckedFieldsRegister = map[string]bool{"UserID": true}
 
 func registerUser(w http.ResponseWriter, r *http.Request) {
 	var user models.User
@@ -20,7 +20,7 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = models.IsModelValid(user, excludeFieldsRegister)
+	err = models.IsModelValid(user, uncheckedFieldsRegister)
 	if BFE.HandleError(w, err) {
 		return
 	}

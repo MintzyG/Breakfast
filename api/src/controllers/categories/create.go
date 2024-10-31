@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-var excludeFields = map[string]bool{"UserID": true, "ID": true, "Description": true}
+var uncheckedFields = map[string]bool{"UserID": true, "ID": true, "Description": true}
 
 func createCategory(w http.ResponseWriter, r *http.Request) {
 	var c models.Category
@@ -19,7 +19,7 @@ func createCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = models.IsModelValid(c, excludeFields)
+	err = models.IsModelValid(c, uncheckedFields)
 	if BFE.HandleError(w, err) {
 		return
 	}

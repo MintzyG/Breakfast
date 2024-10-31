@@ -7,7 +7,8 @@ import (
 	"reflect"
 )
 
-func IsModelValid[T any](s T, excludeFields map[string]bool) error {
+//Rework this system so I can make fields forbidden
+func IsModelValid[T any](s T, uncheckedFields map[string]bool) error {
 	v := reflect.ValueOf(s)
 	t := reflect.TypeOf(s)
 
@@ -17,7 +18,7 @@ func IsModelValid[T any](s T, excludeFields map[string]bool) error {
 
 	for i := 0; i < v.NumField(); i++ {
 		fieldName := t.Field(i).Name
-		if excludeFields[fieldName] {
+		if uncheckedFields[fieldName] {
 			continue
 		}
 

@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var excludeFields = map[string]bool{"UserID": true, "TaskID": true, "Description": true, "Completed": true}
+var uncheckedFields = map[string]bool{"UserID": true, "TaskID": true, "Description": true, "Completed": true}
 
 func createTask(w http.ResponseWriter, r *http.Request) {
 	var task models.YogurtTask
@@ -20,7 +20,7 @@ func createTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = models.IsModelValid(task, excludeFields)
+	err = models.IsModelValid(task, uncheckedFields)
 	if BFE.HandleError(w, err) {
 		return
 	}
