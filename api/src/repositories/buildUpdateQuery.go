@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	BFE "breakfast/errors"
+	BFE "breakfast/_internal/errors"
 	"errors"
 	"fmt"
 	_ "github.com/lib/pq"

@@ -1,4 +1,4 @@
-package response
+package bf_response
 
 import (
 	"encoding/json"

@@ -1,10 +1,10 @@
 package yogurt
 
 import (
-	BFE "breakfast/errors"
+	BFE "breakfast/_internal/errors"
 	"breakfast/models"
 	DB "breakfast/repositories/yogurt"
-	RSP "breakfast/response"
+	RSP "breakfast/_internal/response"
 	"net/http"
 	"strconv"
 

@@ -1,10 +1,10 @@
 package users
 
 import (
-	BFE "breakfast/errors"
+	BFE "breakfast/_internal/errors"
 	"breakfast/models"
 	DB "breakfast/repositories/user"
-	RSP "breakfast/response"
+	RSP "breakfast/_internal/response"
 	"encoding/json"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"

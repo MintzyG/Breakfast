@@ -1,7 +1,7 @@
 package models
 
 import (
-	BFE "breakfast/errors"
+	BFE "breakfast/_internal/errors"
 	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"

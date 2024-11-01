@@ -1,10 +1,10 @@
 package categories
 
 import (
-	BFE "breakfast/errors"
+	BFE "breakfast/_internal/errors"
 	"breakfast/models"
 	DB "breakfast/repositories/category"
-	RSP "breakfast/response"
+	RSP "breakfast/_internal/response"
 	"net/http"
 	"strconv"
 

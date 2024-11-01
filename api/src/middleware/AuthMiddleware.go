@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	BFE "breakfast/errors"
+	BFE "breakfast/_internal/errors"
 	"breakfast/models"
 	DB "breakfast/repositories/user"
 

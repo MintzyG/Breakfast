@@ -1,7 +1,7 @@
 package user_repo
 
 import (
-	BFE "breakfast/errors"
+	BFE "breakfast/_internal/errors"
 	R "breakfast/repositories"
 
 	"github.com/google/uuid"

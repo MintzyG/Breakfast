@@ -1,25 +1,36 @@
 package toast
 
 import (
-	BFE "breakfast/errors"
+  JSON "breakfast/_internal/json"
+	BFE "breakfast/_internal/errors"
 	"breakfast/models"
 	DB "breakfast/repositories/toast"
-	RSP "breakfast/response"
-	"encoding/json"
+	RSP "breakfast/_internal/response"
 	"github.com/google/uuid"
 	"net/http"
 )
 
-var uncheckedFieldsStart = map[string]bool{"UserID": true, "SessionID": true, "Duration": true, "EndTime": true, "Description": true}
+var config = models.ValidationConfig{
+  IgnoreFields: map[string]bool{
+    "Description": true,  // Optional field
+  },
+  ForbiddenFields: map[string]bool{
+    "user_id": true,     // Set by server
+    "session_id": true,  // Set by server
+    "duration": true,    // Calculated field
+    "end_time": true,    // Set by stopSession
+  },
+}
 
 func startSession(w http.ResponseWriter, r *http.Request) {
 	var t models.Toast
-	err := json.NewDecoder(r.Body).Decode(&t)
-	if BFE.HandleError(w, err) {
-		return
-	}
 
-	err = models.IsModelValid(t, uncheckedFieldsStart)
+  fields, err := JSON.NewBFDecoder(r.Body).Model(&t)
+  if BFE.HandleError(w, err) {
+    return
+  }
+
+	err = models.ValidateModel(t, fields, config)
 	if BFE.HandleError(w, err) {
 		return
 	}

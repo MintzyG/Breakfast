@@ -1,7 +1,7 @@
-package errors
+package bf_errors
 
 import (
-	RSP "breakfast/response"
+	RSP "breakfast/_internal/response"
 	"fmt"
 	"net/http"
 )

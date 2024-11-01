@@ -1,7 +1,7 @@
 package yogurt_repo
 
 import (
-	BFE "breakfast/errors"
+	BFE "breakfast/_internal/errors"
 	R "breakfast/repositories"
 	"database/sql"
 	"fmt"

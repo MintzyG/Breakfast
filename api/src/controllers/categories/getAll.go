@@ -1,10 +1,10 @@
 package categories
 
 import (
-	BFE "breakfast/errors"
+	BFE "breakfast/_internal/errors"
+	RSP "breakfast/_internal/response"
 	"breakfast/models"
 	DB "breakfast/repositories/category"
-	RSP "breakfast/response"
 	"net/http"
 
 	"github.com/google/uuid"

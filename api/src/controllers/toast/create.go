@@ -1,10 +1,10 @@
 package toast
 
 import (
-	BFE "breakfast/errors"
+	BFE "breakfast/_internal/errors"
 	"breakfast/models"
 	DB "breakfast/repositories/toast"
-	RSP "breakfast/response"
+	RSP "breakfast/_internal/response"
 	"encoding/json"
 	"github.com/google/uuid"
 	"net/http"
