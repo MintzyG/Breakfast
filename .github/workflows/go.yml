@@ -45,7 +45,7 @@ jobs:
 
       - name: Run staticcheck
         run: |
-          cd src
+          cd api/src
           staticcheck
 
       - name: Commit formatting changes
