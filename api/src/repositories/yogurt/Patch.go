@@ -11,11 +11,11 @@ import (
 )
 
 func PatchTask(id int, user_id uuid.UUID, updates map[string]interface{}) error {
-  tx, err := R.BeginTransaction()
-  if err != nil {
-    return BFE.New(BFE.ErrDatabase, err)
-  }
-  defer tx.Rollback()
+	tx, err := R.BeginTransaction()
+	if err != nil {
+		return BFE.New(BFE.ErrDatabase, err)
+	}
+	defer tx.Rollback()
 
 	validFields := map[string]bool{
 		"emoji":       true,
@@ -42,10 +42,10 @@ func PatchTask(id int, user_id uuid.UUID, updates map[string]interface{}) error 
 		return BFE.New(BFE.ErrDatabase, execErr)
 	}
 
-  err = tx.Commit()
-  if err != nil {
-    return BFE.New(BFE.ErrDatabase, err)
-  }
+	err = tx.Commit()
+	if err != nil {
+		return BFE.New(BFE.ErrDatabase, err)
+	}
 
 	return nil
 }

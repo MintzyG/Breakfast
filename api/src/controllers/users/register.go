@@ -2,13 +2,14 @@ package users
 
 import (
 	BFE "breakfast/_internal/errors"
+	RSP "breakfast/_internal/response"
 	"breakfast/models"
 	DB "breakfast/repositories/user"
-	RSP "breakfast/_internal/response"
 	"encoding/json"
+	"net/http"
+
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
-	"net/http"
 )
 
 var uncheckedFieldsRegister = map[string]bool{"UserID": true}

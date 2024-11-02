@@ -5,10 +5,11 @@ import (
 	// MW "breakfast/middleware"
 	"breakfast/models"
 	"fmt"
-	"github.com/golang-jwt/jwt/v5"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func generateJWTToken(user models.User) (string, error) {

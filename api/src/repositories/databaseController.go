@@ -3,8 +3,9 @@ package repositories
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/lib/pq"
 	"os"
+
+	_ "github.com/lib/pq"
 )
 
 var Instance *sql.DB
@@ -39,5 +40,5 @@ func CloseDatabase() error {
 }
 
 func BeginTransaction() (*sql.Tx, error) {
-  return Instance.Begin()
+	return Instance.Begin()
 }

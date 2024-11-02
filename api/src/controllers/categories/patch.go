@@ -2,9 +2,9 @@ package categories
 
 import (
 	BFE "breakfast/_internal/errors"
+	RSP "breakfast/_internal/response"
 	"breakfast/models"
 	DB "breakfast/repositories/category"
-	RSP "breakfast/_internal/response"
 	"encoding/json"
 	"net/http"
 	"strconv"

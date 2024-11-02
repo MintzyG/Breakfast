@@ -17,7 +17,7 @@ func GetSessionByID(id int, user_id uuid.UUID) (*models.Toast, error) {
 	var s models.Toast
 	s.UserID = user_id
 	s.SessionID = id
-  var endTime sql.NullTime
+	var endTime sql.NullTime
 	err := R.Instance.QueryRow(query, id, user_id).Scan(&s.SessionName, &s.Description, &s.StartTime, &endTime, &s.Duration, &s.CategoryID)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -26,11 +26,11 @@ func GetSessionByID(id int, user_id uuid.UUID) (*models.Toast, error) {
 		return nil, BFE.New(BFE.ErrDatabase, err)
 	}
 
-  if !endTime.Valid {
-    return nil, BFE.New(BFE.ErrDatabase, errors.New("Could not get endtime"))
-  }
+	if !endTime.Valid {
+		return nil, BFE.New(BFE.ErrDatabase, errors.New("Could not get endtime"))
+	}
 
-  s.EndTime = endTime.Time
+	s.EndTime = endTime.Time
 
 	return &s, nil
 }
@@ -40,7 +40,7 @@ func GetSessionByIDIncomplete(id int, user_id uuid.UUID) (*models.Toast, error) 
 	var s models.Toast
 	s.UserID = user_id
 	s.SessionID = id
-  var endTime sql.NullTime
+	var endTime sql.NullTime
 	err := R.Instance.QueryRow(query, id, user_id).Scan(&s.SessionName, &s.Description, &s.StartTime, &endTime, &s.Duration, &s.CategoryID)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -49,6 +49,6 @@ func GetSessionByIDIncomplete(id int, user_id uuid.UUID) (*models.Toast, error) 
 		return nil, BFE.New(BFE.ErrDatabase, err)
 	}
 
-  s.EndTime = time.Time{}
+	s.EndTime = time.Time{}
 	return &s, nil
 }

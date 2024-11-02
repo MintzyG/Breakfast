@@ -9,11 +9,11 @@ import (
 )
 
 func DeleteCategory(id int, user_id uuid.UUID) error {
-  tx, err := R.BeginTransaction()
-  if err != nil {
-    return BFE.New(BFE.ErrDatabase, err)
-  }
-  defer tx.Rollback()
+	tx, err := R.BeginTransaction()
+	if err != nil {
+		return BFE.New(BFE.ErrDatabase, err)
+	}
+	defer tx.Rollback()
 
 	query := `SELECT delete_category($1, $2);`
 	var success bool
@@ -26,10 +26,10 @@ func DeleteCategory(id int, user_id uuid.UUID) error {
 		return BFE.New(BFE.ErrResourceNotFound, fmt.Errorf("could not find category with ID: %v", id))
 	}
 
-  err = tx.Commit()
-  if err != nil {
-    BFE.New(BFE.ErrDatabase, err)
-  }
+	err = tx.Commit()
+	if err != nil {
+		BFE.New(BFE.ErrDatabase, err)
+	}
 
 	return nil
 }

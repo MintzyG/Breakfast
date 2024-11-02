@@ -9,11 +9,11 @@ import (
 )
 
 func CreateYogurtTask(task *models.YogurtTask) error {
-  tx, err := R.BeginTransaction()
-  if err != nil {
-    return BFE.New(BFE.ErrDatabase, err)
-  }
-  defer tx.Rollback()
+	tx, err := R.BeginTransaction()
+	if err != nil {
+		return BFE.New(BFE.ErrDatabase, err)
+	}
+	defer tx.Rollback()
 
 	query := `
     INSERT INTO yogurt
@@ -38,10 +38,10 @@ func CreateYogurtTask(task *models.YogurtTask) error {
 		return BFE.New(BFE.ErrDatabase, err)
 	}
 
-  err = tx.Commit()
-  if err != nil {
-    return BFE.New(BFE.ErrDatabase, err)
-  }
+	err = tx.Commit()
+	if err != nil {
+		return BFE.New(BFE.ErrDatabase, err)
+	}
 
 	return nil
 }

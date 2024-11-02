@@ -2,12 +2,13 @@ package categories
 
 import (
 	BFE "breakfast/_internal/errors"
+	RSP "breakfast/_internal/response"
 	"breakfast/models"
 	DB "breakfast/repositories/category"
-	RSP "breakfast/_internal/response"
 	"encoding/json"
-	"github.com/google/uuid"
 	"net/http"
+
+	"github.com/google/uuid"
 )
 
 var uncheckedFields = map[string]bool{"UserID": true, "ID": true, "Description": true}

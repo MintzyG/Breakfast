@@ -16,19 +16,19 @@ func StopToastSession(t *models.Toast) error {
 	}
 	defer tx.Rollback()
 
-  session, err := GetSessionByIDIncomplete(t.SessionID, t.UserID)
-  if err != nil {
-    return err
-  }
+	session, err := GetSessionByIDIncomplete(t.SessionID, t.UserID)
+	if err != nil {
+		return err
+	}
 
-  fmt.Println(session.StartTime)
-  fmt.Println(t.EndTime)
+	fmt.Println(session.StartTime)
+	fmt.Println(t.EndTime)
 
-  if t.EndTime.Before(session.StartTime) {
-    return BFE.New(BFE.ErrUnprocessable, errors.New("EndTime can't be before StartTime"))
-  }
+	if t.EndTime.Before(session.StartTime) {
+		return BFE.New(BFE.ErrUnprocessable, errors.New("EndTime can't be before StartTime"))
+	}
 
-  t.Duration = int64(t.EndTime.Sub(session.StartTime).Seconds())
+	t.Duration = int64(t.EndTime.Sub(session.StartTime).Seconds())
 
 	query := `
 		UPDATE toast

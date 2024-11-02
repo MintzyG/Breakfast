@@ -4,8 +4,9 @@ import (
 	BFE "breakfast/_internal/errors"
 	"errors"
 	"fmt"
-	_ "github.com/lib/pq"
 	"strings"
+
+	_ "github.com/lib/pq"
 )
 
 func BuildUpdateQuery(table string, updates map[string]interface{}, validFields map[string]bool, whereClause string, whereArgs ...interface{}) (string, []interface{}, error) {

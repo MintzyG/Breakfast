@@ -2,14 +2,14 @@ package users
 
 import (
 	BFE "breakfast/_internal/errors"
+	RSP "breakfast/_internal/response"
 	"breakfast/models"
 	DB "breakfast/repositories/user"
-	RSP "breakfast/_internal/response"
 	"encoding/json"
 	"net/http"
 )
 
-var uncheckedFields = map[string]bool{"UserId":  true, "FirstName": true, "LastName": true}
+var uncheckedFields = map[string]bool{"UserId": true, "FirstName": true, "LastName": true}
 
 func loginUser(w http.ResponseWriter, r *http.Request) {
 	var user models.User

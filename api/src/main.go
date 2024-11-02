@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
-	_ "github.com/lib/pq"
 	"log"
 	"net/http"
 
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
+
 	CategoryController "breakfast/controllers/categories"
+	ToastController "breakfast/controllers/toast"
 	UserController "breakfast/controllers/users"
 	YogurtController "breakfast/controllers/yogurt"
-	ToastController "breakfast/controllers/toast"
 	DB "breakfast/repositories"
 )
 
@@ -24,7 +25,7 @@ func main() {
 	UserController.Run(mux)
 	CategoryController.Run(mux)
 	YogurtController.Run(mux)
-  ToastController.Run(mux)
+	ToastController.Run(mux)
 
 	log.Println("Server starting on :8080")
 	if err := http.ListenAndServe(":8080", mux); err != nil {

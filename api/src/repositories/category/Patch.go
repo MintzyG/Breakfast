@@ -10,11 +10,11 @@ import (
 )
 
 func PatchCategory(id int, user_id uuid.UUID, updates map[string]interface{}) error {
-  tx, err := R.BeginTransaction()
-  if err != nil {
-    return BFE.New(BFE.ErrDatabase, err)
-  }
-  defer tx.Rollback()
+	tx, err := R.BeginTransaction()
+	if err != nil {
+		return BFE.New(BFE.ErrDatabase, err)
+	}
+	defer tx.Rollback()
 
 	validFields := map[string]bool{
 		"title":       true,
@@ -38,10 +38,10 @@ func PatchCategory(id int, user_id uuid.UUID, updates map[string]interface{}) er
 		return BFE.New(BFE.ErrDatabase, execErr)
 	}
 
-  err = tx.Commit()
-  if err != nil {
-    return BFE.New(BFE.ErrDatabase, err)
-  }
+	err = tx.Commit()
+	if err != nil {
+		return BFE.New(BFE.ErrDatabase, err)
+	}
 
 	return nil
 }

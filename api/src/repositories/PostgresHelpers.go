@@ -1,7 +1,7 @@
 package repositories
 
 import (
-  "github.com/lib/pq"
+	"github.com/lib/pq"
 )
 
 func IsForeignKeyViolation(err error) bool {

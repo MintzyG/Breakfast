@@ -10,29 +10,29 @@ import (
 )
 
 var configCreate = models.ValidationConfig{
-  IgnoreFields: map[string]bool{
-    "Description": true,  // Optional field
-  },
-  ForbiddenFields: map[string]bool{
-    "user_id": true,     // Set by server
-    "session_id": true,  // Set by server
-    "duration": true,    // Set by server
-  },
+	IgnoreFields: map[string]bool{
+		"Description": true, // Optional field
+	},
+	ForbiddenFields: map[string]bool{
+		"user_id":    true, // Set by server
+		"session_id": true, // Set by server
+		"duration":   true, // Set by server
+	},
 }
 
 func createSession(w http.ResponseWriter, r *http.Request) {
 	var session models.Toast
-  _, err := models.FillModelFromJSON(r, &session, configCreate)
-  if BFE.HandleError(w, err) {
-    return
-  }
+	_, err := models.FillModelFromJSON(r, &session, configCreate)
+	if BFE.HandleError(w, err) {
+		return
+	}
 
-  if session.EndTime.Before(session.StartTime) {
-    BFE.HandleError(w, BFE.New(BFE.ErrUnprocessable, errors.New("EndTime can't be before StartTime")))
-    return
-  }
+	if session.EndTime.Before(session.StartTime) {
+		BFE.HandleError(w, BFE.New(BFE.ErrUnprocessable, errors.New("EndTime can't be before StartTime")))
+		return
+	}
 
-  session.Duration = int64(session.EndTime.Sub(session.StartTime).Seconds())
+	session.Duration = int64(session.EndTime.Sub(session.StartTime).Seconds())
 
 	err = DB.CreateToastSession(&session)
 	if BFE.HandleError(w, err) {

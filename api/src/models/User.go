@@ -4,10 +4,11 @@ import (
 	BFE "breakfast/_internal/errors"
 	"errors"
 	"fmt"
+	"net/http"
+
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
-	"net/http"
 )
 
 type User struct {
@@ -48,13 +49,13 @@ func GetUserClaims(r *http.Request) (*UserClaims, error) {
 
 func GetUserID(r *http.Request) (uuid.UUID, error) {
 	claims, err := GetUserClaims(r)
-  if err != nil {
+	if err != nil {
 		return uuid.Nil, err
-  }
+	}
 
-  id, err := uuid.Parse(claims.UserID)
-  if err != nil {
-    return uuid.Nil, err
-  }
-  return id, nil
+	id, err := uuid.Parse(claims.UserID)
+	if err != nil {
+		return uuid.Nil, err
+	}
+	return id, nil
 }
