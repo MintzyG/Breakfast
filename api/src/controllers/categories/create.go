@@ -9,21 +9,21 @@ import (
 )
 
 var configCreate = models.ValidationConfig{
-  IgnoreFields: map[string]bool{
-    "description": true, // Optional
-  },
-  ForbiddenFields: map[string]bool{
-    "user_id": true, // Set by server
-    "category_id": true,     // Set by server
-  },
+	IgnoreFields: map[string]bool{
+		"description": true, // Optional
+	},
+	ForbiddenFields: map[string]bool{
+		"user_id":     true, // Set by server
+		"category_id": true, // Set by server
+	},
 }
 
 func createCategory(w http.ResponseWriter, r *http.Request) {
 	var c models.Category
-  _, err := models.FillModelFromJSON(r, &c, configCreate)
-  if BFE.HandleError(w, err) {
-    return
-  }
+	_, err := models.FillModelFromJSON(r, &c, configCreate)
+	if BFE.HandleError(w, err) {
+		return
+	}
 
 	err = DB.CreateCategory(&c)
 	if BFE.HandleError(w, err) {

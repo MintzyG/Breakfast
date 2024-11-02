@@ -14,16 +14,16 @@ var configCreate = models.ValidationConfig{
 	},
 	ForbiddenFields: map[string]bool{
 		"task_id": true, // Set by server
-		"user_id":    true, // Set by server
+		"user_id": true, // Set by server
 	},
 }
 
 func createTask(w http.ResponseWriter, r *http.Request) {
 	var task models.YogurtTask
-  _, err := models.FillModelFromJSON(r, &task, configCreate)
-  if BFE.HandleError(w, err) {
-    return
-  }
+	_, err := models.FillModelFromJSON(r, &task, configCreate)
+	if BFE.HandleError(w, err) {
+		return
+	}
 
 	err = DB.CreateYogurtTask(&task)
 	if BFE.HandleError(w, err) {

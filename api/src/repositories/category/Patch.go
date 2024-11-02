@@ -15,12 +15,12 @@ func PatchCategory(c models.Category, updates map[string]bool) error {
 	}
 	defer tx.Rollback()
 
-  fmt.Println(c.ID)
-  fmt.Println(c.UserID)
+	fmt.Println(c.ID)
+	fmt.Println(c.UserID)
 
 	whereClause := "id = $1 AND user_id = $2"
 	query, args, err := R.BuildUpdateQuery("categories", c, updates, whereClause, c.ID, c.UserID)
-  fmt.Println(query)
+	fmt.Println(query)
 	if err != nil {
 		return err
 	}

@@ -9,10 +9,10 @@ import (
 )
 
 func getAllTasks(w http.ResponseWriter, r *http.Request) {
-  user_id, err := models.GetUserID(r)
-  if BFE.HandleError(w, err) {
-    return
-  }
+	user_id, err := models.GetUserID(r)
+	if BFE.HandleError(w, err) {
+		return
+	}
 
 	tasks, err := DB.GetAllTasks(user_id)
 	if BFE.HandleError(w, err) {

@@ -9,10 +9,10 @@ import (
 )
 
 func getAllCategories(w http.ResponseWriter, r *http.Request) {
-  user_id, err := models.GetUserID(r)
-  if BFE.HandleError(w, err) {
-    return
-  }
+	user_id, err := models.GetUserID(r)
+	if BFE.HandleError(w, err) {
+		return
+	}
 
 	categories, err := DB.GetAllCategories(user_id)
 	if BFE.HandleError(w, err) {

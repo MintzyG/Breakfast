@@ -16,10 +16,10 @@ func deleteTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-  user_id, err := models.GetUserID(r)
-  if BFE.HandleError(w, err) {
-    return
-  }
+	user_id, err := models.GetUserID(r)
+	if BFE.HandleError(w, err) {
+		return
+	}
 
 	err = DB.DeleteTask(category_id, user_id)
 	if BFE.HandleError(w, err) {

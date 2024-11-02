@@ -11,18 +11,18 @@ import (
 
 var configPatch = models.ValidationConfig{
 	IgnoreFields: map[string]bool{
-    "emoji": true, // Optional field
-    "title": true, // Optional field
+		"emoji":       true, // Optional field
+		"title":       true, // Optional field
 		"description": true, // Optional field
-    "completed": true, // Optional field
-    "task_size": true, // Optional field
-    "difficulty": true, // Optional field
-    "priority": true, // Optional field
-    "category_id": true, // Optional field
+		"completed":   true, // Optional field
+		"task_size":   true, // Optional field
+		"difficulty":  true, // Optional field
+		"priority":    true, // Optional field
+		"category_id": true, // Optional field
 	},
 	ForbiddenFields: map[string]bool{
 		"task_id": true, // Set by server
-		"user_id":    true, // Set by server
+		"user_id": true, // Set by server
 	},
 }
 
@@ -33,13 +33,13 @@ func patchTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-  var task models.YogurtTask
-  fields, err := models.FillModelFromJSON(r, &task, configPatch)
-  if BFE.HandleError(w, err) {
-    return
-  }
+	var task models.YogurtTask
+	fields, err := models.FillModelFromJSON(r, &task, configPatch)
+	if BFE.HandleError(w, err) {
+		return
+	}
 
-  task.TaskID = task_id
+	task.TaskID = task_id
 	err = DB.PatchTask(task, fields)
 	if BFE.HandleError(w, err) {
 		return

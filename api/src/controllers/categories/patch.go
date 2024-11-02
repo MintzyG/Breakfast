@@ -10,17 +10,17 @@ import (
 )
 
 var configPatch = models.ValidationConfig{
-  IgnoreFields: map[string]bool{
-    "title": true,      // Optional
-    "description": true, // Optional
-    "emoji": true, // Optional
-    "color": true, // Optional
-    "text_color": true, // Optional
-  },
-  ForbiddenFields: map[string]bool{
-    "user_id": true, // Set by server
-    "category_id": true,     // Set by server
-  },
+	IgnoreFields: map[string]bool{
+		"title":       true, // Optional
+		"description": true, // Optional
+		"emoji":       true, // Optional
+		"color":       true, // Optional
+		"text_color":  true, // Optional
+	},
+	ForbiddenFields: map[string]bool{
+		"user_id":     true, // Set by server
+		"category_id": true, // Set by server
+	},
 }
 
 func patchCategory(w http.ResponseWriter, r *http.Request) {
@@ -30,13 +30,13 @@ func patchCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-  var category models.Category
-  fields, err := models.FillModelFromJSON(r, &category, configPatch)
-  if BFE.HandleError(w, err) {
-    return
-  }
+	var category models.Category
+	fields, err := models.FillModelFromJSON(r, &category, configPatch)
+	if BFE.HandleError(w, err) {
+		return
+	}
 
-  category.ID = category_id
+	category.ID = category_id
 	err = DB.PatchCategory(category, fields)
 	if BFE.HandleError(w, err) {
 		return
