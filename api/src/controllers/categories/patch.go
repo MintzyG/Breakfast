@@ -5,12 +5,23 @@ import (
 	RSP "breakfast/_internal/response"
 	"breakfast/models"
 	DB "breakfast/repositories/category"
-	"encoding/json"
 	"net/http"
 	"strconv"
-
-	"github.com/google/uuid"
 )
+
+var configPatch = models.ValidationConfig{
+  IgnoreFields: map[string]bool{
+    "title": true,      // Optional
+    "description": true, // Optional
+    "emoji": true, // Optional
+    "color": true, // Optional
+    "text_color": true, // Optional
+  },
+  ForbiddenFields: map[string]bool{
+    "user_id": true, // Set by server
+    "category_id": true,     // Set by server
+  },
+}
 
 func patchCategory(w http.ResponseWriter, r *http.Request) {
 	category_idStr := r.PathValue("id")
@@ -19,19 +30,14 @@ func patchCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	claims, err := models.GetUserClaims(r)
-	if BFE.HandleError(w, err) {
-		return
-	}
+  var category models.Category
+  fields, err := models.FillModelFromJSON(r, &category, configPatch)
+  if BFE.HandleError(w, err) {
+    return
+  }
 
-	var updates map[string]interface{}
-	err = json.NewDecoder(r.Body).Decode(&updates)
-	if BFE.HandleError(w, BFE.New(BFE.ErrJSON, err)) {
-		return
-	}
-
-	user_id, _ := uuid.Parse(claims.UserID)
-	err = DB.PatchCategory(category_id, user_id, updates)
+  category.ID = category_id
+	err = DB.PatchCategory(category, fields)
 	if BFE.HandleError(w, err) {
 		return
 	}

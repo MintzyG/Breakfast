@@ -18,7 +18,7 @@ func CreateCategory(c *models.Category) error {
 
 	query := `INSERT INTO categories (user_id, title, description, emoji, color, text_color) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`
 
-	err = tx.QueryRow(query, c.UserId, c.Title, c.Description, c.Emoji, c.Color, c.TextColor).Scan(&c.ID)
+	err = tx.QueryRow(query, c.UserID, c.Title, c.Description, c.Emoji, c.Color, c.TextColor).Scan(&c.ID)
 	if err != nil {
 		if pqErr, ok := err.(*pq.Error); ok {
 			if pqErr.Code == "23505" {

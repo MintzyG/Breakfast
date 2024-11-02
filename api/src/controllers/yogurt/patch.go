@@ -5,12 +5,26 @@ import (
 	RSP "breakfast/_internal/response"
 	"breakfast/models"
 	DB "breakfast/repositories/yogurt"
-	"encoding/json"
 	"net/http"
 	"strconv"
-
-	"github.com/google/uuid"
 )
+
+var configPatch = models.ValidationConfig{
+	IgnoreFields: map[string]bool{
+    "emoji": true, // Optional field
+    "title": true, // Optional field
+		"description": true, // Optional field
+    "completed": true, // Optional field
+    "task_size": true, // Optional field
+    "difficulty": true, // Optional field
+    "priority": true, // Optional field
+    "category_id": true, // Optional field
+	},
+	ForbiddenFields: map[string]bool{
+		"task_id": true, // Set by server
+		"user_id":    true, // Set by server
+	},
+}
 
 func patchTask(w http.ResponseWriter, r *http.Request) {
 	task_idStr := r.PathValue("id")
@@ -19,19 +33,14 @@ func patchTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	claims, err := models.GetUserClaims(r)
-	if BFE.HandleError(w, err) {
-		return
-	}
+  var task models.YogurtTask
+  fields, err := models.FillModelFromJSON(r, &task, configPatch)
+  if BFE.HandleError(w, err) {
+    return
+  }
 
-	var updates map[string]interface{}
-	err = json.NewDecoder(r.Body).Decode(&updates)
-	if BFE.HandleError(w, BFE.New(BFE.ErrJSON, err)) {
-		return
-	}
-
-	user_id, _ := uuid.Parse(claims.UserID)
-	err = DB.PatchTask(task_id, user_id, updates)
+  task.TaskID = task_id
+	err = DB.PatchTask(task, fields)
 	if BFE.HandleError(w, err) {
 		return
 	}
