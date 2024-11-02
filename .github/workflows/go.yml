@@ -1,7 +1,9 @@
-name: Go Lint, Format, and Test
+name: Go Format
+
 on:
   push:
   pull_request:
+
 jobs:
   lint-format-and-test:
     name: Lint, Format
@@ -9,6 +11,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
@@ -49,4 +52,4 @@ jobs:
           git config --local user.name "GitHub Action"
           git add .
           git commit -m "Auto-format Go code" || echo "No changes to commit"
-          git push || echo "No changes to push"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/MintzyG/Breakfast.git HEAD:${{ github.ref }}
