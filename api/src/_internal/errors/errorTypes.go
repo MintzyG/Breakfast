@@ -71,9 +71,6 @@ func HandleError(w http.ResponseWriter, err error) bool {
 		errorMessage = bfErr.ErrorMessage.Error()
 		RSP.SendErrorResponse(w, bfErr.HttpCode, bfErr.ErrorCode, errorMessage)
 	} else {
-		if bfErr.ErrorMessage == nil {
-			return false
-		}
 		RSP.SendErrorResponse(w, http.StatusInternalServerError, "UNKNOWN_ERROR", err.Error())
 	}
 	return true
