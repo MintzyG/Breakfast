@@ -47,7 +47,7 @@ CREATE TABLE toast (
   description VARCHAR(255),
   start_time TIMESTAMP NOT NULL,
   end_time TIMESTAMP,
-  duration INTERVAL,
+  duration BIGINT NOT NULL DEFAULT 0,
   category_id INTEGER,
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (category_id) REFERENCES categories(id)

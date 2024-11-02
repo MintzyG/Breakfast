@@ -5,29 +5,32 @@ import (
 	RSP "breakfast/_internal/response"
 	"breakfast/models"
 	DB "breakfast/repositories/toast"
+	"fmt"
 	"net/http"
 )
 
-var configStart = models.ValidationConfig{
+var configStop = models.ValidationConfig{
   IgnoreFields: map[string]bool{
-    "Description": true,  // Optional field
+    "Description": true, // Optional field
   },
   ForbiddenFields: map[string]bool{
-    "user_id": true,     // Set by server
-    "session_id": true,  // Set by server
+    "user_id": true,     // Already set
     "duration": true,    // Calculated on stopSession
-    "end_time": true,    // Set by stopSession
+    "start_time": true,  // Already set
+    "title": true,       // Already set
+    "category_id": true, // Already set
   },
 }
 
-func startSession(w http.ResponseWriter, r *http.Request) {
+func stopSession(w http.ResponseWriter, r *http.Request) {
 	var session models.Toast
-  _, err := models.FillModelFromJSON(r, &session, configStart)
+  _, err := models.FillModelFromJSON(r, &session, configStop)
   if BFE.HandleError(w, err) {
     return
   }
 
-  err = DB.StartToastSession(&session)
+  fmt.Println(session.SessionID)
+  err = DB.StopToastSession(&session)
 	if BFE.HandleError(w, err) {
 		return
 	}

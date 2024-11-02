@@ -1,15 +1,16 @@
 package toast_repo
 
 import (
+  "fmt"
 	BFE "breakfast/_internal/errors"
 	"breakfast/models"
 	R "breakfast/repositories"
 )
 
-func StartToastSession(t *models.Toast) (*models.Toast, error) {
+func StartToastSession(t *models.Toast) error {
   tx, err := R.BeginTransaction()
   if err != nil {
-    return nil, BFE.New(BFE.ErrDatabase, err)
+    return BFE.New(BFE.ErrDatabase, err)
   }
   defer tx.Rollback()
   
@@ -17,13 +18,16 @@ func StartToastSession(t *models.Toast) (*models.Toast, error) {
 
 	err = tx.QueryRow(query, t.UserID, t.SessionName, t.Description, t.StartTime, t.CategoryID).Scan(&t.SessionID)
 	if err != nil {
-    return nil, BFE.New(BFE.ErrDatabase, err)
+    if R.IsForeignKeyViolation(err) {
+			return BFE.New(BFE.ErrDatabase, fmt.Errorf("foreign key violation: user_id %v may not exist", t.UserID))
+		}
+		return BFE.New(BFE.ErrDatabase, fmt.Errorf("failed to insert toast session: %w", err))
 	}
 
   err = tx.Commit()
   if err != nil {
-    return nil, BFE.New(BFE.ErrDatabase, err)
+    return BFE.New(BFE.ErrDatabase, err)
   }
  
-	return t, nil
+	return nil
 }

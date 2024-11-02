@@ -16,6 +16,7 @@
       devShell = pkgs.mkShell {
         buildInputs = with pkgs; [
           postman
+          k6
           go
         ];
       };

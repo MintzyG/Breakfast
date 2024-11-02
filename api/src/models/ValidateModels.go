@@ -2,6 +2,8 @@ package models
 
 import (
 	BFE "breakfast/_internal/errors"
+	JSON "breakfast/_internal/json"
+  "net/http"
 	"errors"
 	"fmt"
 	"reflect"
@@ -54,6 +56,34 @@ func IsModelValid[T any](s T, uncheckedFields map[string]bool) error {
 type ValidationConfig struct {
     IgnoreFields    map[string]bool
     ForbiddenFields map[string]bool
+}
+
+func FillModelFromJSON[T any](r *http.Request, s *T, config ValidationConfig) (fields map[string]bool, err error) {
+  fields, err = JSON.NewBFDecoder(r.Body).Model(s)
+  if err != nil {
+    return nil, BFE.New(BFE.ErrServer, err)
+  }
+
+	err = ValidateModel(*s, fields, config)
+	if err != nil {
+    return nil, BFE.New(BFE.ErrServer, err)
+	}
+
+	userID, err := GetUserID(r)
+	if err != nil {
+		return nil, err
+	}
+
+	val := reflect.ValueOf(s).Elem()
+	userIDField := val.FieldByName("UserID")
+
+	if userIDField.IsValid() && userIDField.CanSet() {
+		userIDField.Set(reflect.ValueOf(userID))
+	} else {
+		return nil, fmt.Errorf("UserID field not found or cannot be set")
+	}
+
+	return fields, nil
 }
 
 // ValidateModel validates the fields of a struct based on a set of allowed and forbidden fields.

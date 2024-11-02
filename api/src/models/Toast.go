@@ -12,7 +12,7 @@ type Toast struct {
 	SessionName string        `json:"session_name"`
 	Description string        `json:"description"`
 	StartTime   time.Time     `json:"start_time"`
-	EndTime     time.Time     `json:"end_time"`
-	Duration    time.Duration `json:"duration"`
+	EndTime     time.Time     `json:"end_time,omitempty"`
+	Duration    int64         `json:"duration"`
 	CategoryID  *int          `json:"category_id"`
 }

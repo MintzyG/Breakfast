@@ -17,6 +17,7 @@ func CreateUser(user *models.User) error {
   defer tx.Rollback()
 
 	query := `INSERT INTO users (id, first_name, last_name, email, password) VALUES ($1, $2, $3, $4, $5)`
+  
 	_, err = tx.Exec(query, user.UserID, user.FirstName, user.LastName, user.Email, user.Password)
 	if err != nil {
 		if pqErr, ok := err.(*pq.Error); ok {

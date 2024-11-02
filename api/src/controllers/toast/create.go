@@ -2,38 +2,42 @@ package toast
 
 import (
 	BFE "breakfast/_internal/errors"
+	RSP "breakfast/_internal/response"
 	"breakfast/models"
 	DB "breakfast/repositories/toast"
-	RSP "breakfast/_internal/response"
-	"encoding/json"
-	"github.com/google/uuid"
+	"errors"
 	"net/http"
 )
 
-var uncheckedFields = map[string]bool{"UserID": true, "SessionID": true, "Description": true, "Duration": true}
+var configCreate = models.ValidationConfig{
+  IgnoreFields: map[string]bool{
+    "Description": true,  // Optional field
+  },
+  ForbiddenFields: map[string]bool{
+    "user_id": true,     // Set by server
+    "session_id": true,  // Set by server
+    "duration": true,    // Set by server
+  },
+}
 
 func createSession(w http.ResponseWriter, r *http.Request) {
-	var t models.Toast
-	err := json.NewDecoder(r.Body).Decode(&t)
+	var session models.Toast
+  _, err := models.FillModelFromJSON(r, &session, configCreate)
+  if BFE.HandleError(w, err) {
+    return
+  }
+
+  if session.EndTime.Before(session.StartTime) {
+    BFE.HandleError(w, BFE.New(BFE.ErrUnprocessable, errors.New("EndTime can't be before StartTime")))
+    return
+  }
+
+  session.Duration = int64(session.EndTime.Sub(session.StartTime).Seconds())
+
+	err = DB.CreateToastSession(&session)
 	if BFE.HandleError(w, err) {
 		return
 	}
 
-	err = models.IsModelValid(t, uncheckedFields)
-	if BFE.HandleError(w, err) {
-		return
-	}
-
-	claims, err := models.GetUserClaims(r)
-	if BFE.HandleError(w, err) {
-		return
-	}
-
-	t.UserID, _ = uuid.Parse(claims.UserID)
-	err = DB.CreateToastSession(&t)
-	if BFE.HandleError(w, err) {
-		return
-	}
-
-	RSP.SendObjectResponse(w, http.StatusCreated, t)
+	RSP.SendObjectResponse(w, http.StatusCreated, session)
 }
