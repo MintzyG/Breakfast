@@ -32,12 +32,12 @@ func StopToastSession(t *models.Toast) error {
 
 	query := `
 		UPDATE toast
-		SET end_time = $1, duration = $2
-		WHERE id = $3 AND user_id = $4
+		SET end_time = $1, duration = $2, description = $3
+		WHERE id = $4 AND user_id = $5
 		RETURNING id, user_id, session_name, description, start_time, end_time, duration, category_id
 	`
 
-	err = tx.QueryRow(query, t.EndTime, t.Duration, t.SessionID, t.UserID).Scan(
+	err = tx.QueryRow(query, t.EndTime, t.Duration, t.Description, t.SessionID, t.UserID).Scan(
 		&t.SessionID,
 		&t.UserID,
 		&t.SessionName,

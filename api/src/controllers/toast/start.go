@@ -10,7 +10,7 @@ import (
 
 var configStart = models.ValidationConfig{
 	IgnoreFields: map[string]bool{
-		"Description": true, // Optional field
+		"description": true, // Optional field
 	},
 	ForbiddenFields: map[string]bool{
 		"user_id":    true, // Set by server

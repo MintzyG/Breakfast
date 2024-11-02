@@ -11,11 +11,11 @@ import (
 
 var configStop = models.ValidationConfig{
 	IgnoreFields: map[string]bool{
-		"Description": true, // Optional field
+		"description": true, // Optional field
 	},
 	ForbiddenFields: map[string]bool{
 		"user_id":     true, // Already set
-		"duration":    true, // Calculated on stopSession
+		"duration":    true, // Calculated by server
 		"start_time":  true, // Already set
 		"title":       true, // Already set
 		"category_id": true, // Already set

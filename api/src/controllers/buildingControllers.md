@@ -2,7 +2,7 @@
 
 ## Controller V1
 
-Legacy way
+Legacy way, minimal abstraction
 
 ```go
 var uncheckedFields = map[string]bool{"UserID": true, "ID": true, "Description": true}
@@ -38,6 +38,8 @@ func createCategory(w http.ResponseWriter, r *http.Request) {
 
 Using models.GetUserID instead of getting the claims and then parsing the ID
 
+Preferred usage of endpoints that don't have a request body
+
 ```go
 var uncheckedFields = map[string]bool{"UserID": true, "SessionID": true, "Description": true, "Duration": true}
 
@@ -70,6 +72,8 @@ func createSession(w http.ResponseWriter, r *http.Request) {
 ## Controller V3
 
 Using FillModelFromJSON instead of parsing the model then validating it. This way you also can get the request fields for patch requests, and configure ForbiddenFields
+
+Can't be used for controllers that don't fill up a model from a request like GET endpoints
 
 ```go
 var config = models.ValidationConfig{

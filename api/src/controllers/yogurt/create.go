@@ -5,32 +5,26 @@ import (
 	RSP "breakfast/_internal/response"
 	"breakfast/models"
 	DB "breakfast/repositories/yogurt"
-	"encoding/json"
 	"net/http"
-
-	"github.com/google/uuid"
 )
 
-var uncheckedFields = map[string]bool{"UserID": true, "TaskID": true, "Description": true, "Completed": true}
+var configCreate = models.ValidationConfig{
+	IgnoreFields: map[string]bool{
+		"description": true, // Optional field
+	},
+	ForbiddenFields: map[string]bool{
+		"task_id": true, // Set by server
+		"user_id":    true, // Set by server
+	},
+}
 
 func createTask(w http.ResponseWriter, r *http.Request) {
 	var task models.YogurtTask
-	err := json.NewDecoder(r.Body).Decode(&task)
-	if BFE.HandleError(w, err) {
-		return
-	}
+  _, err := models.FillModelFromJSON(r, &task, configCreate)
+  if BFE.HandleError(w, err) {
+    return
+  }
 
-	err = models.IsModelValid(task, uncheckedFields)
-	if BFE.HandleError(w, err) {
-		return
-	}
-
-	claims, err := models.GetUserClaims(r)
-	if BFE.HandleError(w, err) {
-		return
-	}
-
-	task.UserID, _ = uuid.Parse(claims.UserID)
 	err = DB.CreateYogurtTask(&task)
 	if BFE.HandleError(w, err) {
 		return

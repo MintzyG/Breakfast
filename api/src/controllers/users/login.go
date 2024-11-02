@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-var uncheckedFields = map[string]bool{"UserId": true, "FirstName": true, "LastName": true}
+var uncheckedFields = map[string]bool{"UserID": true, "FirstName": true, "LastName": true}
 
 func loginUser(w http.ResponseWriter, r *http.Request) {
 	var user models.User

@@ -7,8 +7,6 @@ import (
 	DB "breakfast/repositories/yogurt"
 	"net/http"
 	"strconv"
-
-	"github.com/google/uuid"
 )
 
 func deleteTask(w http.ResponseWriter, r *http.Request) {
@@ -18,12 +16,11 @@ func deleteTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	claims, err := models.GetUserClaims(r)
-	if BFE.HandleError(w, err) {
-		return
-	}
+  user_id, err := models.GetUserID(r)
+  if BFE.HandleError(w, err) {
+    return
+  }
 
-	user_id, _ := uuid.Parse(claims.UserID)
 	err = DB.DeleteTask(category_id, user_id)
 	if BFE.HandleError(w, err) {
 		return

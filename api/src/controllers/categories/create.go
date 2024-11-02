@@ -5,32 +5,26 @@ import (
 	RSP "breakfast/_internal/response"
 	"breakfast/models"
 	DB "breakfast/repositories/category"
-	"encoding/json"
 	"net/http"
-
-	"github.com/google/uuid"
 )
 
-var uncheckedFields = map[string]bool{"UserID": true, "ID": true, "Description": true}
+var configCreate = models.ValidationConfig{
+  IgnoreFields: map[string]bool{
+    "description": true, // Optional
+  },
+  ForbiddenFields: map[string]bool{
+    "user_id": true, // Set by server
+    "category_id": true,     // Set by server
+  },
+}
 
 func createCategory(w http.ResponseWriter, r *http.Request) {
 	var c models.Category
-	err := json.NewDecoder(r.Body).Decode(&c)
-	if BFE.HandleError(w, err) {
-		return
-	}
+  _, err := models.FillModelFromJSON(r, &c, configCreate)
+  if BFE.HandleError(w, err) {
+    return
+  }
 
-	err = models.IsModelValid(c, uncheckedFields)
-	if BFE.HandleError(w, err) {
-		return
-	}
-
-	claims, err := models.GetUserClaims(r)
-	if BFE.HandleError(w, err) {
-		return
-	}
-
-	c.UserId, _ = uuid.Parse(claims.UserID)
 	err = DB.CreateCategory(&c)
 	if BFE.HandleError(w, err) {
 		return
