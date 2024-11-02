@@ -45,3 +45,16 @@ func GetUserClaims(r *http.Request) (*UserClaims, error) {
 	}
 	return claims, nil
 }
+
+func GetUserID(r *http.Request) (uuid.UUID, error) {
+	claims, err := GetUserClaims(r)
+  if err != nil {
+		return uuid.Nil, err
+  }
+
+  id, err := uuid.Parse(claims.UserID)
+  if err != nil {
+    return uuid.Nil, err
+  }
+  return id, nil
+}
