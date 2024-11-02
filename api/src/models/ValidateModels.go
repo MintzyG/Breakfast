@@ -53,11 +53,33 @@ func IsModelValid[T any](s T, uncheckedFields map[string]bool) error {
 	return nil
 }
 
+// ValidationConfig holds the configuration for model validation.
+// It defines which fields to ignore during validation and which fields are forbidden from being modified.
+//
+// Fields:
+//   - IgnoreFields: A map of field names to be ignored during validation.
+//     If a field name is present in this map, it will not be checked for required conditions.
+//   - ForbiddenFields: A map of field names that cannot be modified in a given request.
+//     If a field name is present in this map, any attempt to modify that field will result in an error.
 type ValidationConfig struct {
 	IgnoreFields    map[string]bool
 	ForbiddenFields map[string]bool
 }
 
+// FillModelFromJSON populates a struct from JSON data in an HTTP request.
+// It decodes the JSON request body into the struct provided and validates the model based on the configuration.
+//
+// Type Parameters:
+//   - T: The type of the struct being filled.
+//
+// Parameters:
+//   - r: The HTTP request containing the JSON data.
+//   - s: A pointer to the struct instance that will be populated.
+//   - config: ValidationConfig containing fields to ignore or forbid during validation.
+//
+// Returns:
+//   - fields: A map of field names indicating which fields were populated from the request.
+//   - error: Returns an error if the JSON decoding fails, if the model validation fails, or if the UserID field cannot be set.
 func FillModelFromJSON[T any](r *http.Request, s *T, config ValidationConfig) (fields map[string]bool, err error) {
 	fields, err = JSON.NewBFDecoder(r.Body).Model(s)
 	if err != nil {
