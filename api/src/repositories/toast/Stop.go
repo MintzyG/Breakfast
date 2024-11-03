@@ -21,9 +21,6 @@ func StopToastSession(t *models.Toast) error {
 		return err
 	}
 
-	fmt.Println(session.StartTime)
-	fmt.Println(t.EndTime)
-
 	if t.EndTime.Before(session.StartTime) {
 		return BFE.New(BFE.ErrUnprocessable, errors.New("EndTime can't be before StartTime"))
 	}

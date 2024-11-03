@@ -8,7 +8,7 @@ import (
 
 func Run(mux *http.ServeMux) {
 	fmt.Println("Connecting ToastController")
-	// mux.Handle("DELETE /api/v1/toast/{id}", MW.AuthMiddleware(http.HandlerFunc(deleteSession)))
+	mux.Handle("DELETE /api/v1/toast/{id}", MW.AuthMiddleware(http.HandlerFunc(deleteSession)))
 	// mux.Handle("PATCH /api/v1/toast/{id}", MW.AuthMiddleware(http.HandlerFunc(patchSession)))
 	mux.Handle("POST /api/v1/toast", MW.AuthMiddleware(http.HandlerFunc(createSession)))
 	mux.Handle("POST /api/v1/toast/start", MW.AuthMiddleware(http.HandlerFunc(startSession)))

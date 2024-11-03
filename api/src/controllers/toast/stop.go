@@ -5,7 +5,6 @@ import (
 	RSP "breakfast/_internal/response"
 	"breakfast/models"
 	DB "breakfast/repositories/toast"
-	"fmt"
 	"net/http"
 )
 
@@ -29,7 +28,6 @@ func stopSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(session.SessionID)
 	err = DB.StopToastSession(&session)
 	if BFE.HandleError(w, err) {
 		return
