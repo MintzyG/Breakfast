@@ -5,7 +5,7 @@ import (
 	RSP "breakfast/_internal/response"
 	"breakfast/models"
 	DB "breakfast/repositories/toast"
-  "errors"
+	"errors"
 	"net/http"
 	"strconv"
 )
@@ -13,15 +13,15 @@ import (
 var configPatch = models.ValidationConfig{
 	IgnoreFields: map[string]bool{
 		"session_name": true, // Optional
-		"description": true, // Optional
-		"start_time":       true, // Optional
-		"end_time":       true, // Optional
-    "category_id": true, // Optional
+		"description":  true, // Optional
+		"start_time":   true, // Optional
+		"end_time":     true, // Optional
+		"category_id":  true, // Optional
 	},
 	ForbiddenFields: map[string]bool{
-		"user_id":     true, // Set by server
+		"user_id":    true, // Set by server
 		"session_id": true, // Set by server
-    "duration": true, // Set by server
+		"duration":   true, // Set by server
 	},
 }
 
@@ -39,15 +39,15 @@ func patchSession(w http.ResponseWriter, r *http.Request) {
 	}
 
 	session.SessionID = session_id
-  if fields["start_time"] || fields["end_time"] {
-    if session.EndTime.Before(session.StartTime) {
-      BFE.HandleError(w, BFE.New(BFE.ErrUnprocessable, errors.New("EndTime can't be before StartTime")))
-      return
-    }
+	if fields["start_time"] || fields["end_time"] {
+		if session.EndTime.Before(session.StartTime) {
+			BFE.HandleError(w, BFE.New(BFE.ErrUnprocessable, errors.New("EndTime can't be before StartTime")))
+			return
+		}
 
-    session.Duration = int64(session.EndTime.Sub(session.StartTime).Seconds())
-    fields["duration"] = true;
-  }
+		session.Duration = int64(session.EndTime.Sub(session.StartTime).Seconds())
+		fields["duration"] = true
+	}
 
 	err = DB.PatchSession(session, fields)
 	if BFE.HandleError(w, err) {
