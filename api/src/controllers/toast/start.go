@@ -5,6 +5,7 @@ import (
 	RSP "breakfast/_internal/response"
 	"breakfast/models"
 	DB "breakfast/repositories/toast"
+	"errors"
 	"net/http"
 )
 
@@ -17,6 +18,7 @@ var configStart = models.ValidationConfig{
 		"session_id": true, // Set by server
 		"duration":   true, // Calculated on stopSession
 		"end_time":   true, // Set by stopSession
+    "active":     true, // Server Handled
 	},
 }
 
@@ -27,6 +29,19 @@ func startSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+  sessions, err := DB.GetAllSessions(session.UserID)
+  if BFE.HandleError(w, err) {
+    return
+  }
+
+  for _, se := range sessions {
+    if se.Active {
+      BFE.HandleError(w, BFE.New(BFE.ErrUnprocessable, errors.New("Already has an active session")))
+      return
+    }
+  }
+
+  session.Active = true
 	err = DB.StartToastSession(&session)
 	if BFE.HandleError(w, err) {
 		return

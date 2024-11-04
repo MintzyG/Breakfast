@@ -22,6 +22,7 @@ var configPatch = models.ValidationConfig{
 		"user_id":    true, // Set by server
 		"session_id": true, // Set by server
 		"duration":   true, // Set by server
+    "active":     true, // Server Handled
 	},
 }
 

@@ -14,5 +14,6 @@ type Toast struct {
 	StartTime   time.Time `json:"start_time"`
 	EndTime     time.Time `json:"end_time,omitempty"`
 	Duration    int64     `json:"duration"`
+	Active      bool      `json:"active"`
 	CategoryID  *int      `json:"category_id"`
 }

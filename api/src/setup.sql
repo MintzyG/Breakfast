@@ -46,8 +46,9 @@ CREATE TABLE toast (
   session_name VARCHAR(127) NOT NULL,
   description VARCHAR(255),
   start_time TIMESTAMP NOT NULL,
-  end_time TIMESTAMP,
+  end_time TIMESTAMP NOT NULL DEFAULT '0001-01-01 00:00:00',
   duration BIGINT NOT NULL DEFAULT 0,
+  active BOOLEAN NOT NULL DEFAULT FALSE,
   category_id INTEGER,
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (category_id) REFERENCES categories(id)

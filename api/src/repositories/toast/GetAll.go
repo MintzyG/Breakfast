@@ -21,7 +21,7 @@ func GetAllSessions(user_id uuid.UUID) ([]models.Toast, error) {
 	var sessions []models.Toast
 	for rows.Next() {
 		var session models.Toast
-		if err := rows.Scan(&session.SessionID, &session.UserID, &session.SessionName, &session.Description, &session.StartTime, &session.EndTime, &session.Duration, &session.CategoryID); err != nil {
+		if err := rows.Scan(&session.SessionID, &session.UserID, &session.SessionName, &session.Description, &session.StartTime, &session.EndTime, &session.Duration, &session.Active, &session.CategoryID); err != nil {
 			return nil, BFE.New(BFE.ErrDatabase, err)
 		}
 		sessions = append(sessions, session)

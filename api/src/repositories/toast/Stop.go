@@ -16,7 +16,7 @@ func StopToastSession(t *models.Toast) error {
 	}
 	defer tx.Rollback()
 
-	session, err := GetSessionByIDIncomplete(t.SessionID, t.UserID)
+	session, err := GetSessionByID(t.SessionID, t.UserID)
 	if err != nil {
 		return err
 	}
@@ -29,12 +29,12 @@ func StopToastSession(t *models.Toast) error {
 
 	query := `
 		UPDATE toast
-		SET end_time = $1, duration = $2, description = $3
-		WHERE id = $4 AND user_id = $5
-		RETURNING id, user_id, session_name, description, start_time, end_time, duration, category_id
+		SET end_time = $1, duration = $2, description = $3, active = $4
+		WHERE id = $5 AND user_id = $6
+		RETURNING id, user_id, session_name, description, start_time, end_time, duration, active, category_id
 	`
 
-	err = tx.QueryRow(query, t.EndTime, t.Duration, t.Description, t.SessionID, t.UserID).Scan(
+	err = tx.QueryRow(query, t.EndTime, t.Duration, t.Description, t.Active, t.SessionID, t.UserID).Scan(
 		&t.SessionID,
 		&t.UserID,
 		&t.SessionName,
@@ -42,6 +42,7 @@ func StopToastSession(t *models.Toast) error {
 		&t.StartTime,
 		&t.EndTime,
 		&t.Duration,
+    &t.Active,
 		&t.CategoryID,
 	)
 	if err != nil {
