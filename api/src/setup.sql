@@ -55,6 +55,7 @@ CREATE TABLE toast (
 );
 
 -- Pancake - Notes/Journaling
+-- TODO Create tags as a application wide feature
 CREATE TABLE pancake (
   id SERIAL PRIMARY KEY NOT NULL,
   user_id UUID NOT NULL,
@@ -63,7 +64,7 @@ CREATE TABLE pancake (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   category_id INTEGER,
-  tags TEXT[],
+  -- tags TEXT[],
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (category_id) REFERENCES categories(id)
 );
