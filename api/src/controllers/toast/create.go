@@ -17,7 +17,7 @@ var configCreate = models.ValidationConfig{
 		"user_id":    true, // Set by server
 		"session_id": true, // Set by server
 		"duration":   true, // Set by server
-    "active":     true, // Server Handled
+		"active":     true, // Server Handled
 	},
 }
 

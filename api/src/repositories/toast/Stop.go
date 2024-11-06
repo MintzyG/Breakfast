@@ -42,7 +42,7 @@ func StopToastSession(t *models.Toast) error {
 		&t.StartTime,
 		&t.EndTime,
 		&t.Duration,
-    &t.Active,
+		&t.Active,
 		&t.CategoryID,
 	)
 	if err != nil {
