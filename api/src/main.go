@@ -9,10 +9,10 @@ import (
 	_ "github.com/lib/pq"
 
 	CategoryController "breakfast/controllers/categories"
+	PancakeController "breakfast/controllers/pancake"
 	ToastController "breakfast/controllers/toast"
 	UserController "breakfast/controllers/users"
 	YogurtController "breakfast/controllers/yogurt"
-  PancakeController "breakfast/controllers/pancake"
 	DB "breakfast/repositories"
 )
 
@@ -27,7 +27,7 @@ func main() {
 	CategoryController.Run(mux)
 	YogurtController.Run(mux)
 	ToastController.Run(mux)
-  PancakeController.Run(mux)
+	PancakeController.Run(mux)
 
 	log.Println("Server starting on :8080")
 	if err := http.ListenAndServe(":8080", mux); err != nil {

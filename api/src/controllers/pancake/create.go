@@ -13,8 +13,8 @@ var configCreate = models.ValidationConfig{
 		"content": true, // Optional
 	},
 	ForbiddenFields: map[string]bool{
-		"user_id":     true, // Set by server
-		"note_id": true, // Set by server
+		"user_id":    true, // Set by server
+		"note_id":    true, // Set by server
 		"created_at": true, // Set by server
 		"updated_at": true, // Set by server
 	},

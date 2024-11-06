@@ -13,14 +13,14 @@ import (
 var configPatch = models.ValidationConfig{
 	IgnoreFields: map[string]bool{
 		"title":       true, // Optional
-		"content": true, // Optional
+		"content":     true, // Optional
 		"category_id": true, // Optional
 	},
 	ForbiddenFields: map[string]bool{
-		"user_id": true, // Set by server
-    "note_id": true, // Set by server
-    "created_at": true, // Already set
-    "updated_at": true, // Set by server
+		"user_id":    true, // Set by server
+		"note_id":    true, // Set by server
+		"created_at": true, // Already set
+		"updated_at": true, // Set by server
 	},
 }
 
@@ -38,8 +38,8 @@ func patchNote(w http.ResponseWriter, r *http.Request) {
 	}
 
 	note.NoteID = note_id
-  fields["updated_at"] = true
-  note.UpdatedAt = time.Now()
+	fields["updated_at"] = true
+	note.UpdatedAt = time.Now()
 	err = DB.PatchNote(note, fields)
 	if BFE.HandleError(w, err) {
 		return
