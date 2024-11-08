@@ -5,8 +5,8 @@ import (
 	RSP "breakfast/_internal/response"
 	"breakfast/models"
 	DB "breakfast/repositories/toast"
-  "strconv"
 	"net/http"
+	"strconv"
 )
 
 func stopSession(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +21,7 @@ func stopSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-  session, err := DB.StopToastSession(session_id, user_id)
+	session, err := DB.StopToastSession(session_id, user_id)
 	if BFE.HandleError(w, err) {
 		return
 	}

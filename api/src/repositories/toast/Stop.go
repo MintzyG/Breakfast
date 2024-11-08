@@ -24,8 +24,8 @@ func StopToastSession(id int, user_id uuid.UUID) (*models.Toast, error) {
 		return nil, err
 	}
 
-  session.EndTime = time.Now()
-  session.Active = false
+	session.EndTime = time.Now()
+	session.Active = false
 
 	if session.EndTime.Before(session.StartTime) {
 		return nil, BFE.New(BFE.ErrUnprocessable, errors.New("EndTime can't be before StartTime"))

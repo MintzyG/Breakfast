@@ -19,7 +19,7 @@ func CreateCategory(c *models.Category) error {
 	err = tx.QueryRow(query, c.UserID, c.Title, c.Description, c.Emoji, c.Color, c.TextColor).Scan(&c.ID)
 	if err != nil {
 		if R.IsUniqueViolation(err) {
-      return BFE.New(BFE.ErrConflict, errors.New("Category with this title already exists"))
+			return BFE.New(BFE.ErrConflict, errors.New("Category with this title already exists"))
 		}
 		return BFE.New(BFE.ErrDatabase, err)
 	}

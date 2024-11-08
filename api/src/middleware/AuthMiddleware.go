@@ -33,7 +33,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		})
 
 		if err != nil || !token.Valid {
-      BFE.HandleError(w, BFE.New(BFE.ErrUnauthorized, errors.New("MW: " + err.Error())))
+			BFE.HandleError(w, BFE.New(BFE.ErrUnauthorized, errors.New("MW: "+err.Error())))
 			return
 		}
 
