@@ -5,43 +5,23 @@ import (
 	RSP "breakfast/_internal/response"
 	"breakfast/models"
 	DB "breakfast/repositories/toast"
-	"errors"
+  "strconv"
 	"net/http"
 )
 
-var configStop = models.ValidationConfig{
-	IgnoreFields: map[string]bool{
-		"description": true, // Optional field
-	},
-	ForbiddenFields: map[string]bool{
-		"user_id":     true, // Already set
-		"duration":    true, // Calculated by server
-		"start_time":  true, // Already set
-		"title":       true, // Already set
-		"category_id": true, // Already set
-		"active":      true, // Server Handled
-	},
-}
-
 func stopSession(w http.ResponseWriter, r *http.Request) {
-	var session models.Toast
-	_, err := models.FillModelFromJSON(r, &session, configStop)
+	session_idStr := r.PathValue("id")
+	session_id, err := strconv.Atoi(session_idStr)
 	if BFE.HandleError(w, err) {
 		return
 	}
 
-	s, err := DB.GetSessionByID(session.SessionID, session.UserID)
+	user_id, err := models.GetUserID(r)
 	if BFE.HandleError(w, err) {
 		return
 	}
 
-	if !s.Active {
-		BFE.HandleError(w, BFE.New(BFE.ErrUnprocessable, errors.New("Can't stop an inactive session")))
-		return
-	}
-
-	session.Active = false
-	err = DB.StopToastSession(&session)
+  session, err := DB.StopToastSession(session_id, user_id)
 	if BFE.HandleError(w, err) {
 		return
 	}

@@ -10,3 +10,10 @@ func IsForeignKeyViolation(err error) bool {
 	}
 	return false
 }
+
+func IsUniqueViolation(err error) bool {
+	if err, ok := err.(*pq.Error); ok {
+		return err.Code == "23505"
+	}
+	return false
+}

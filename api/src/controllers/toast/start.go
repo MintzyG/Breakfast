@@ -17,6 +17,7 @@ var configStart = models.ValidationConfig{
 		"user_id":    true, // Set by server
 		"session_id": true, // Set by server
 		"duration":   true, // Calculated on stopSession
+    "start_time": true, // Set by server
 		"end_time":   true, // Set by stopSession
 		"active":     true, // Server Handled
 	},
@@ -41,7 +42,6 @@ func startSession(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	session.Active = true
 	err = DB.StartToastSession(&session)
 	if BFE.HandleError(w, err) {
 		return

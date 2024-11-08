@@ -5,8 +5,6 @@ import (
 	"breakfast/models"
 	R "breakfast/repositories"
 	"errors"
-
-	"github.com/lib/pq"
 )
 
 func CreateCategory(c *models.Category) error {
@@ -20,10 +18,8 @@ func CreateCategory(c *models.Category) error {
 
 	err = tx.QueryRow(query, c.UserID, c.Title, c.Description, c.Emoji, c.Color, c.TextColor).Scan(&c.ID)
 	if err != nil {
-		if pqErr, ok := err.(*pq.Error); ok {
-			if pqErr.Code == "23505" {
-				return BFE.New(BFE.ErrConflict, errors.New("Category with this title already exists"))
-			}
+		if R.IsUniqueViolation(err) {
+      return BFE.New(BFE.ErrConflict, errors.New("Category with this title already exists"))
 		}
 		return BFE.New(BFE.ErrDatabase, err)
 	}

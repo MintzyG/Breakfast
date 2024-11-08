@@ -3,17 +3,14 @@ package middleware
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 	"os"
 	"strings"
 
 	BFE "breakfast/_internal/errors"
 	"breakfast/models"
-	DB "breakfast/repositories/user"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/google/uuid"
 )
 
 func AuthMiddleware(next http.Handler) http.Handler {
@@ -31,13 +28,12 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		}
 
 		tokenString := parts[1]
-
 		token, err := jwt.ParseWithClaims(tokenString, &models.UserClaims{}, func(t *jwt.Token) (interface{}, error) {
 			return []byte(os.Getenv("JWT_KEY")), nil
 		})
 
 		if err != nil || !token.Valid {
-			BFE.HandleError(w, BFE.New(BFE.ErrUnauthorized, err))
+      BFE.HandleError(w, BFE.New(BFE.ErrUnauthorized, errors.New("MW: " + err.Error())))
 			return
 		}
 
@@ -47,19 +43,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		id, err := uuid.Parse(claims.UserID)
-		if err != nil {
-			BFE.HandleError(w, BFE.New(BFE.ErrUnauthorized, fmt.Errorf("MW: Invalid uuid: %v", err.Error())))
-			return
-		}
-
-		ok, _ = DB.IsUserValid(id)
-		if !ok {
-			BFE.HandleError(w, BFE.New(BFE.ErrUnprocessable, fmt.Errorf("MW: Invalid User uuid: %v", id)))
-			return
-		}
-
-		ctx := context.WithValue(r.Context(), "claims", claims)
+		ctx := context.WithValue(r.Context(), models.ClaimsContext, claims)
 		r = r.WithContext(ctx)
 
 		next.ServeHTTP(w, r)

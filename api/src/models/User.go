@@ -40,7 +40,7 @@ func CheckUserPassword(hashedPassword string, plainPassword string) error {
 }
 
 func GetUserClaims(r *http.Request) (*UserClaims, error) {
-	claims, ok := r.Context().Value("claims").(*UserClaims)
+	claims, ok := r.Context().Value(ClaimsContext).(*UserClaims)
 	if !ok {
 		return nil, BFE.New(BFE.ErrClaims, errors.New("Missing/malformed claims"))
 	}

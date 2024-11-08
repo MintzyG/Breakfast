@@ -45,8 +45,8 @@ CREATE TABLE toast (
   user_id UUID NOT NULL,
   session_name VARCHAR(127) NOT NULL,
   description VARCHAR(255),
-  start_time TIMESTAMP NOT NULL,
-  end_time TIMESTAMP NOT NULL DEFAULT '0001-01-01 00:00:00',
+  start_time TIMESTAMPTZ NOT NULL,
+  end_time TIMESTAMPTZ NOT NULL DEFAULT '0001-01-01 00:00:00',
   duration BIGINT NOT NULL DEFAULT 0,
   active BOOLEAN NOT NULL DEFAULT FALSE,
   category_id INTEGER,
@@ -61,8 +61,8 @@ CREATE TABLE pancake (
   user_id UUID NOT NULL,
   title VARCHAR(127) NOT NULL,
   content TEXT NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   category_id INTEGER,
   -- tags TEXT[],
   FOREIGN KEY (user_id) REFERENCES users(id),
@@ -75,8 +75,8 @@ CREATE TABLE cereal (
   user_id UUID NOT NULL,
   title VARCHAR(127) NOT NULL,
   description VARCHAR(255),
-  start_time TIMESTAMP NOT NULL,
-  end_time TIMESTAMP NOT NULL,
+  start_time TIMESTAMPTZ NOT NULL,
+  end_time TIMESTAMPTZ NOT NULL,
   location VARCHAR(255),
   is_recurring BOOLEAN NOT NULL DEFAULT FALSE,
   recurrence_pattern VARCHAR(50),
@@ -94,8 +94,8 @@ CREATE TABLE espresso (
   break_duration INT NOT NULL, -- Duration in minutes
   completed_cycles INT NOT NULL DEFAULT 0,
   target_cycles INT NOT NULL,
-  started_at TIMESTAMP,
-  completed_at TIMESTAMP,
+  started_at TIMESTAMPTZ,
+  completed_at TIMESTAMPTZ,
   category_id INTEGER,
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (category_id) REFERENCES categories(id)
@@ -126,7 +126,7 @@ CREATE TABLE omelette_cards (
   title VARCHAR(127) NOT NULL,
   description VARCHAR(255),
   position INT NOT NULL,
-  due_date TIMESTAMP,
+  due_date TIMESTAMPTZ,
   FOREIGN KEY (column_id) REFERENCES omelette_columns(id)
 );
 
