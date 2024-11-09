@@ -3,6 +3,7 @@ package categories
 import (
 	BFE "breakfast/_internal/errors"
 	RSP "breakfast/_internal/response"
+  "breakfast/_internal/cors"
 	"breakfast/models"
 	DB "breakfast/repositories/category"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 )
 
 func getCategoryByID(w http.ResponseWriter, r *http.Request) {
+  cors.EnableCors(&w)
 	category_idStr := r.PathValue("id")
 	category_id, err := strconv.Atoi(category_idStr)
 	if BFE.HandleError(w, err) {

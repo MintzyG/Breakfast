@@ -3,6 +3,7 @@ package yogurt
 import (
 	BFE "breakfast/_internal/errors"
 	RSP "breakfast/_internal/response"
+  "breakfast/_internal/cors"
 	"breakfast/models"
 	DB "breakfast/repositories/yogurt"
 	"net/http"
@@ -19,6 +20,7 @@ var configCreate = models.ValidationConfig{
 }
 
 func createTask(w http.ResponseWriter, r *http.Request) {
+  cors.EnableCors(&w)
 	var task models.YogurtTask
 	_, err := models.FillModelFromJSON(r, &task, configCreate)
 	if BFE.HandleError(w, err) {

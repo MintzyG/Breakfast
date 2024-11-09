@@ -3,6 +3,7 @@ package yogurt
 import (
 	BFE "breakfast/_internal/errors"
 	RSP "breakfast/_internal/response"
+  "breakfast/_internal/cors"
 	"breakfast/models"
 	DB "breakfast/repositories/yogurt"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 )
 
 func getTaskByID(w http.ResponseWriter, r *http.Request) {
+  cors.EnableCors(&w)
 	task_idStr := r.PathValue("id")
 	task_id, err := strconv.Atoi(task_idStr)
 	if BFE.HandleError(w, err) {

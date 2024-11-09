@@ -3,6 +3,7 @@ package users
 import (
 	BFE "breakfast/_internal/errors"
 	RSP "breakfast/_internal/response"
+  "breakfast/_internal/cors"
 	"breakfast/models"
 	DB "breakfast/repositories/user"
 	"encoding/json"
@@ -15,6 +16,7 @@ import (
 var uncheckedFieldsRegister = map[string]bool{"UserID": true}
 
 func registerUser(w http.ResponseWriter, r *http.Request) {
+  cors.EnableCors(&w)
 	var user models.User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if BFE.HandleError(w, err) {

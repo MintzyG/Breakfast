@@ -3,6 +3,7 @@ package yogurt
 import (
 	BFE "breakfast/_internal/errors"
 	RSP "breakfast/_internal/response"
+  "breakfast/_internal/cors"
 	"breakfast/models"
 	DB "breakfast/repositories/yogurt"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 )
 
 func deleteTask(w http.ResponseWriter, r *http.Request) {
+  cors.EnableCors(&w)
 	category_idStr := r.PathValue("id")
 	category_id, err := strconv.Atoi(category_idStr)
 	if BFE.HandleError(w, err) {

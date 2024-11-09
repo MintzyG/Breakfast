@@ -3,6 +3,7 @@ package toast
 import (
 	BFE "breakfast/_internal/errors"
 	RSP "breakfast/_internal/response"
+  "breakfast/_internal/cors"
 	"breakfast/models"
 	DB "breakfast/repositories/toast"
 	"errors"
@@ -24,6 +25,7 @@ var configStart = models.ValidationConfig{
 }
 
 func startSession(w http.ResponseWriter, r *http.Request) {
+  cors.EnableCors(&w)
 	var session models.Toast
 	_, err := models.FillModelFromJSON(r, &session, configStart)
 	if BFE.HandleError(w, err) {
