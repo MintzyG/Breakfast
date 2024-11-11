@@ -130,13 +130,18 @@ CREATE TABLE omelette_cards (
   FOREIGN KEY (column_id) REFERENCES omelette_columns(id)
 );
 
--- Create indexes for better performance
-CREATE INDEX idx_yogurt_user_id ON yogurt(user_id);
-CREATE INDEX idx_toast_user_id ON toast(user_id);
-CREATE INDEX idx_omelette_boards_user_id ON omelette_boards(user_id);
-CREATE INDEX idx_pancake_user_id ON pancake(user_id);
-CREATE INDEX idx_cereal_user_id ON cereal(user_id);
-CREATE INDEX idx_espresso_user_id ON espresso(user_id);
+CREATE TABLE maple (
+  id SERIAL PRIMARY KEY NOT NULL,
+  user_id UUID NOT NULL,
+  title VARCHAR(127) NOT NULL,
+  smallest_unit VARCHAR(63) NOT NULL,
+  curr_streak INT NOT NULL,
+  highest_streak INT NOT NULL,
+  days_performed TIMESTAMPTZ[],
+  category_id INTEGER,
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (category_id) REFERENCES categories(id)
+);
 
 CREATE OR REPLACE FUNCTION delete_category(
   p_user_id UUID,
@@ -184,3 +189,12 @@ BEGIN
   RETURN TRUE;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Create indexes for better performance
+CREATE INDEX idx_yogurt_user_id ON yogurt(user_id);
+CREATE INDEX idx_toast_user_id ON toast(user_id);
+CREATE INDEX idx_omelette_boards_user_id ON omelette_boards(user_id);
+CREATE INDEX idx_pancake_user_id ON pancake(user_id);
+CREATE INDEX idx_cereal_user_id ON cereal(user_id);
+CREATE INDEX idx_espresso_user_id ON espresso(user_id);
+

@@ -14,4 +14,5 @@ type Maple struct {
 	CurrStreak    int         `json:"curr_streak"`
 	HighestStreak int         `json:"highest_streak"`
 	DaysPerformed []time.Time `json:"days_performed"`
+  CategoryID    int         `json:"category_id"`
 }
