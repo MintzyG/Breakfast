@@ -11,9 +11,9 @@ import (
 
 var configCreate = models.ValidationConfig{
 	ForbiddenFields: map[string]bool{
-		"habit_id":   true, // Set by server
-		"user_id":    true, // Set by server
-		"curr_streak": true, // Set by server
+		"habit_id":       true, // Set by server
+		"user_id":        true, // Set by server
+		"curr_streak":    true, // Set by server
 		"highest_streak": true, // Set by server
 		"days_performed": true, // Set by MarkDay
 	},

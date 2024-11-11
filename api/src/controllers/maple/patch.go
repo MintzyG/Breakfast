@@ -12,14 +12,14 @@ import (
 
 var configPatch = models.ValidationConfig{
 	IgnoreFields: map[string]bool{
-		"title":       true, // Optional
-		"smallest_unit":     true, // Optional
-		"category_id": true, // Optional
+		"title":         true, // Optional
+		"smallest_unit": true, // Optional
+		"category_id":   true, // Optional
 	},
 	ForbiddenFields: map[string]bool{
-		"user_id":    true, // Set by server
-		"habit_id":    true, // Set by server
-		"curr_streak": true, // Already set
+		"user_id":        true, // Set by server
+		"habit_id":       true, // Set by server
+		"curr_streak":    true, // Already set
 		"highest_streak": true, // Set by server
 		"days_performed": true, // Set by server
 	},
