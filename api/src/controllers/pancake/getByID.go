@@ -1,9 +1,9 @@
 package pancake
 
 import (
+	"breakfast/_internal/cors"
 	BFE "breakfast/_internal/errors"
 	RSP "breakfast/_internal/response"
-  "breakfast/_internal/cors"
 	"breakfast/models"
 	DB "breakfast/repositories/pancake"
 	"net/http"
@@ -11,7 +11,7 @@ import (
 )
 
 func getNoteByID(w http.ResponseWriter, r *http.Request) {
-  cors.EnableCors(&w)
+	cors.EnableCors(&w)
 	note_idStr := r.PathValue("id")
 	note_id, err := strconv.Atoi(note_idStr)
 	if BFE.HandleError(w, err) {
