@@ -21,15 +21,15 @@ func GetAllHabits(user_id uuid.UUID) ([]models.Maple, error) {
 	for rows.Next() {
 		var habit models.Maple
 		if err := rows.Scan(
-      &habit.HabitID,
-      &habit.UserID,
-      &habit.Title,
-      &habit.SmallestUnit,
-      &habit.CurrStreak,
-      &habit.HighestStreak,
-      &habit.DaysPerformed,
-      &habit.CategoryID,
-    ); err != nil {
+			&habit.HabitID,
+			&habit.UserID,
+			&habit.Title,
+			&habit.SmallestUnit,
+			&habit.CurrStreak,
+			&habit.HighestStreak,
+			&habit.DaysPerformed,
+			&habit.CategoryID,
+		); err != nil {
 			return nil, BFE.New(BFE.ErrDatabase, err)
 		}
 		habits = append(habits, habit)

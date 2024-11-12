@@ -21,13 +21,13 @@ func GetHabitByID(id int, user_id uuid.UUID) (*models.Maple, error) {
 	h.UserID = user_id
 	h.HabitID = id
 	err := R.Instance.QueryRow(query, id, user_id).Scan(
-    &h.Title,
-    &h.SmallestUnit,
-    &h.CurrStreak,
-    &h.HighestStreak,
-    &h.DaysPerformed,
-    &h.CategoryID,
-  )
+		&h.Title,
+		&h.SmallestUnit,
+		&h.CurrStreak,
+		&h.HighestStreak,
+		&h.DaysPerformed,
+		&h.CategoryID,
+	)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, BFE.New(BFE.ErrResourceNotFound, fmt.Errorf("Could not find habit with ID: %v", id))
