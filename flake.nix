@@ -15,6 +15,7 @@
     in {
       devShell = pkgs.mkShell {
         buildInputs = with pkgs; [
+          mysql
           postman
           k6
           go
