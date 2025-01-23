@@ -71,4 +71,3 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		}
 	})
 }
-

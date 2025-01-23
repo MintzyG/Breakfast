@@ -7,7 +7,7 @@ import (
 )
 
 type DataService struct {
-	UserRepo  *repositories.UserRepository
+	UserRepo *repositories.UserRepository
 }
 
 func NewDataService(repo *repositories.UserRepository) *DataService {
@@ -15,11 +15,9 @@ func NewDataService(repo *repositories.UserRepository) *DataService {
 }
 
 func (s *DataService) Me(id uuid.UUID) (string, error) {
-  user, err := s.UserRepo.FindByID(id)
-  if err != nil {
-    return "", err
-  }
-  return user.Name, nil
+	user, err := s.UserRepo.FindByID(id)
+	if err != nil {
+		return "", err
+	}
+	return user.Name, nil
 }
-
-

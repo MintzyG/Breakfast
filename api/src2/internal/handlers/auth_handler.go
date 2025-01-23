@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"encoding/json"
 	"breakfast/internal/services"
+	"encoding/json"
 	"net/http"
 )
 
@@ -18,7 +18,7 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	var data struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
-    Name     string `json:"name"`
+		Name     string `json:"name"`
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
@@ -53,4 +53,3 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(map[string]string{"token": token})
 }
-

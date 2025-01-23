@@ -20,11 +20,11 @@ func GetUserFromContext(ctx context.Context) *models.UserClaims {
 }
 
 type DataHandler struct {
-  DataService *services.DataService
+	DataService *services.DataService
 }
 
 func NewDataHandler(service *services.DataService) *DataHandler {
-  return &DataHandler{DataService: service}
+	return &DataHandler{DataService: service}
 }
 
 func (h *DataHandler) HelloMe(w http.ResponseWriter, r *http.Request) {
@@ -36,30 +36,29 @@ func (h *DataHandler) HelloMe(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-  log.Println(userClaims)
+	log.Println(userClaims)
 
-  id, err := uuid.Parse(userClaims.ID)
-  if err != nil {
-    w.WriteHeader(http.StatusUnauthorized)
+	id, err := uuid.Parse(userClaims.ID)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
 		json.NewEncoder(w).Encode(map[string]string{
 			"error": "UUID couldn't be parsed",
 		})
 		return
-  }
+	}
 
-  name, err := h.DataService.Me(id)
-  if err != nil {
+	name, err := h.DataService.Me(id)
+	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		json.NewEncoder(w).Encode(map[string]string{
 			"error": "User not found or malformed",
 		})
 		return
-  }
+	}
 
 	json.NewEncoder(w).Encode(map[string]string{
 		"message": "Access granted",
-    "greet": "Hello, " + name + "!",
+		"greet":   "Hello, " + name + "!",
 		"userID":  userClaims.ID,
 	})
 }
-

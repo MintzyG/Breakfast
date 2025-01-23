@@ -1,13 +1,13 @@
 package services
 
 import (
-	"errors"
 	"breakfast/internal/models"
 	"breakfast/internal/repositories"
+	"errors"
 	"time"
 
-  "github.com/google/uuid"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -29,7 +29,7 @@ func (s *AuthService) Register(email, password, name string) error {
 	user := &models.User{
 		ID:       uuid.New(),
 		Email:    email,
-    Name:     name,
+		Name:     name,
 		Password: string(hashedPassword),
 	}
 
@@ -50,10 +50,9 @@ func (s *AuthService) Login(email, password string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id": user.ID.String(),
-		"exp":    time.Now().Add(24 * time.Hour).Unix(),
+		"id":  user.ID.String(),
+		"exp": time.Now().Add(24 * time.Hour).Unix(),
 	})
 
 	return token.SignedString([]byte(s.JWTSecret))
 }
-
