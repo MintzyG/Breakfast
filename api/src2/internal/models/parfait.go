@@ -8,7 +8,7 @@ import (
 
 type ParfaitEvent struct {
 	EventID     int       `gorm:"primaryKey;autoIncrement" json:"event_id"`
-	UserID      uuid.UUID `gorm:"type:uuid;not null" json:"user_id"`
+	UserID      uuid.UUID `gorm:"type:char(36);not null" json:"user_id"`
 	Title       string    `gorm:"type:varchar(255);not null" json:"title"`
 	Description string    `gorm:"type:text" json:"description"`
 	StartTime   time.Time `gorm:"not null" json:"start_time"`
@@ -20,12 +20,11 @@ type ParfaitEvent struct {
 }
 
 type ParfaitReminder struct {
-	ReminderID int       `gorm:"primaryKey;autoIncrement" json:"reminder_id"`
-	EventID    int       `gorm:"not null" json:"event_id"`
-	UserID     uuid.UUID `gorm:"type:uuid;not null" json:"user_id"`
-	ReminderAt time.Time `gorm:"not null" json:"reminder_at"`
-	NotificationSent bool `gorm:"default:false" json:"notification_sent"`
-	CreatedAt  time.Time `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt  time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+	ReminderID       int       `gorm:"primaryKey;autoIncrement" json:"reminder_id"`
+	EventID          int       `gorm:"not null" json:"event_id"`
+	UserID           uuid.UUID `gorm:"type:char(36);not null" json:"user_id"`
+	ReminderAt       time.Time `gorm:"not null" json:"reminder_at"`
+	NotificationSent bool      `gorm:"default:false" json:"notification_sent"`
+	CreatedAt        time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt        time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
-

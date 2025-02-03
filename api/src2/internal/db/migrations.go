@@ -10,6 +10,19 @@ func Migrate() {
 
 	err := DB.AutoMigrate(
 		&models.User{},
+		&models.Maple{},
+		&models.Toast{},
+		&models.Yogurt{},
+		&models.Pancake{},
+		&models.CerealActivity{},
+		&models.CerealDay{},
+		&models.OmeletteCard{},
+		&models.OmeletteList{},
+		&models.OmeletteTable{},
+		&models.ParfaitEvent{},
+		&models.ParfaitReminder{},
+		&models.EspressoUserSettings{},
+		&models.EspressoSession{},
 	)
 	if err != nil {
 		log.Fatalf("Migration failed: %v", err)
