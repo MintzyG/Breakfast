@@ -6,15 +6,15 @@ import (
 )
 
 type Response struct {
-	Msg string      `json:"message"`
-	Data    interface{} `json:"data,omitempty"`
+	Msg  string      `json:"message"`
+	Data interface{} `json:"data,omitempty"`
 }
 
 type Payload struct {
-  W    http.ResponseWriter
-  Msg  string
-  Data interface{}
-  Code int
+	W    http.ResponseWriter
+	Msg  string
+	Data interface{}
+	Code int
 }
 
 func (r *Response) Send(w http.ResponseWriter, code int) {
@@ -24,8 +24,8 @@ func (r *Response) Send(w http.ResponseWriter, code int) {
 }
 
 func Send(w http.ResponseWriter, msg string, data interface{}, code int) {
-  var r Response
-  r.Msg = msg
-  r.Data = data
-  r.Send(w, code)
+	var r Response
+	r.Msg = msg
+	r.Data = data
+	r.Send(w, code)
 }
