@@ -1,8 +1,11 @@
 package repositories
 
 import (
+  "fmt"
+
 	"breakfast/internal/models"
 
+  "github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -16,7 +19,14 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 }
 
 func (r *UserRepository) Create(user *models.User) error {
-	return r.DB.Create(user).Error
+  err := r.DB.Create(user).Error
+  if err != nil {
+		if mySQLError, ok := err.(*mysql.MySQLError); ok && mySQLError.Number == 1062 {
+			return fmt.Errorf("This email is already registered")
+		}
+		return fmt.Errorf("error creating user: %v", err)
+	}
+	return nil
 }
 
 func (r *UserRepository) FindByEmail(email string) (*models.User, error) {

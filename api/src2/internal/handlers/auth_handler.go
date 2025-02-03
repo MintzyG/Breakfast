@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"breakfast/internal/services"
+	u "breakfast/internal/utilities"
 	"encoding/json"
 	"net/http"
 )
@@ -22,16 +23,16 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
-		http.Error(w, "Invalid input", http.StatusBadRequest)
+    u.Send(w, err.Error(), nil, http.StatusConflict)
 		return
 	}
 
 	if err := h.AuthService.Register(data.Email, data.Password, data.Name); err != nil {
-		http.Error(w, "Error registering user", http.StatusInternalServerError)
+    u.Send(w, err.Error(), nil, http.StatusConflict)
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
+  u.Send(w, "Created user successfully", nil, http.StatusCreated)
 }
 
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
@@ -41,15 +42,15 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
-		http.Error(w, "Invalid input", http.StatusBadRequest)
+    u.Send(w, "Invalid Input", err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	token, err := h.AuthService.Login(data.Email, data.Password)
 	if err != nil {
-		http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+    u.Send(w, "Invalid email or password", err.Error(), http.StatusUnauthorized)
 		return
 	}
 
-	json.NewEncoder(w).Encode(map[string]string{"token": token})
+  u.Send(w, "Login successful", map[string]string{"token": token}, http.StatusOK)
 }

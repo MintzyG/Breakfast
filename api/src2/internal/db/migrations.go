@@ -10,7 +10,9 @@ func Migrate() {
 
 	err := DB.AutoMigrate(
 		&models.User{},
+		&models.UserLink{},
 		&models.Maple{},
+		&models.MapleDay{},
 		&models.Toast{},
 		&models.Yogurt{},
 		&models.Pancake{},
