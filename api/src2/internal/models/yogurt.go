@@ -17,7 +17,6 @@ type Yogurt struct {
 	TaskSize    int       `gorm:"default:1" json:"task_size" validate:"min=1,max=3"`
 	Difficulty  int       `gorm:"default:1" json:"difficulty" validate:"min=1,max=3"`
 	Priority    int       `gorm:"default:1" json:"priority" validate:"min=1,max=3"`
-	CategoryID  *int      `json:"category_id,omitempty"`
 	CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt   time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }

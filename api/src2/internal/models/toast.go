@@ -16,7 +16,6 @@ type Toast struct {
 	EndTime     *time.Time `json:"end_time,omitempty"`
 	Duration    int64      `json:"duration"`
 	Active      bool       `gorm:"default:true" json:"active"`
-	CategoryID  *int       `json:"category_id,omitempty"`
 	CreatedAt   time.Time  `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt   time.Time  `gorm:"autoUpdateTime" json:"updated_at"`
 }

@@ -15,7 +15,6 @@ type Maple struct {
 	CurrStreak    int        `gorm:"default:0" json:"curr_streak"`
 	HighestStreak int        `gorm:"default:0" json:"highest_streak"`
 	MapleDays     []MapleDay `gorm:"foreignKey:HabitID" json:"maple_days"`
-	CategoryID    int        `json:"category_id,omitempty"`
 
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`

@@ -14,7 +14,6 @@ type ParfaitEvent struct {
 	StartTime   time.Time `gorm:"not null" json:"start_time"`
 	EndTime     time.Time `gorm:"not null" json:"end_time"`
 	Location    string    `gorm:"type:varchar(255)" json:"location"`
-	CategoryID  *int      `json:"category_id"`
 	CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt   time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
