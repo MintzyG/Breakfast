@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"breakfast/internal/models"
 	"breakfast/internal/services"
 	u "breakfast/internal/utilities"
 	"encoding/json"
@@ -16,16 +17,17 @@ func NewAuthHandler(service *services.AuthService) *AuthHandler {
 }
 
 func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
-	var data struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-		Name     string `json:"name"`
-	}
-
+  var data models.UserRegister
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		u.Send(w, err.Error(), nil, http.StatusConflict)
 		return
 	}
+
+  msg, err := models.ValidateModel(data)
+  if err != nil {
+    u.Send(w, "Invalid request", msg, http.StatusBadRequest)
+    return
+  }
 
 	if err := h.AuthService.Register(data.Email, data.Password, data.Name); err != nil {
 		u.Send(w, err.Error(), nil, http.StatusConflict)
@@ -36,15 +38,17 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
-	var data struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
-
+  var data models.UserLogin
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		u.Send(w, "Invalid Input", err.Error(), http.StatusBadRequest)
 		return
 	}
+
+  msg, err := models.ValidateModel(data)
+  if err != nil {
+    u.Send(w, "Invalid request", msg, http.StatusBadRequest)
+    return
+  }
 
 	token, err := h.AuthService.Login(data.Email, data.Password)
 	if err != nil {

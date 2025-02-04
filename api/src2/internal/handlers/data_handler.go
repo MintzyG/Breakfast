@@ -1,23 +1,10 @@
 package handlers
 
 import (
-	"breakfast/internal/models"
 	"breakfast/internal/services"
-	"context"
-	"encoding/json"
-	"log"
+	u "breakfast/internal/utilities"
 	"net/http"
-
-	"github.com/google/uuid"
 )
-
-func GetUserFromContext(ctx context.Context) *models.UserClaims {
-	claims, ok := ctx.Value("user").(*models.UserClaims)
-	if !ok {
-		return nil
-	}
-	return claims
-}
 
 type DataHandler struct {
 	DataService *services.DataService
@@ -28,37 +15,22 @@ func NewDataHandler(service *services.DataService) *DataHandler {
 }
 
 func (h *DataHandler) HelloMe(w http.ResponseWriter, r *http.Request) {
-	userClaims := GetUserFromContext(r.Context())
+	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(map[string]string{
-			"error": "Context came back empty",
-		})
+    u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
 		return
 	}
-	log.Println(userClaims)
 
-	id, err := uuid.Parse(userClaims.ID)
-	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(map[string]string{
-			"error": "UUID couldn't be parsed",
-		})
+  id, err := u.ParseUUID(w, userClaims.ID)
+  if err != nil {
 		return
 	}
 
 	name, err := h.DataService.Me(id)
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(map[string]string{
-			"error": "User not found or malformed",
-		})
+    u.Send( w, "User not found or malformed", nil, http.StatusUnauthorized)
 		return
 	}
 
-	json.NewEncoder(w).Encode(map[string]string{
-		"message": "Access granted",
-		"greet":   "Hello, " + name + "!",
-		"userID":  userClaims.ID,
-	})
+  u.Send(w, "Access Granted!", map[string]string{"greet": "Hello"+name+"!", "userID": userClaims.ID}, http.StatusOK)
 }
