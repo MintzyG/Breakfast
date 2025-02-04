@@ -22,12 +22,12 @@ func NewPancakeHandler(service *services.PancakeService) *PancakeHandler {
 func (h *PancakeHandler) Create(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
-    u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
+		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
 		return
 	}
 
-  user_id, err := u.ParseUUID(w, userClaims.ID)
-  if err != nil {
+	user_id, err := u.ParseUUID(w, userClaims.ID)
+	if err != nil {
 		return
 	}
 
@@ -37,135 +37,135 @@ func (h *PancakeHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-  msg, err := models.ValidateModel(data)
-  if err != nil {
-    u.Send(w, "Invalid request", msg, http.StatusBadRequest)
-    return
-  }
+	msg, err := models.ValidateModel(data)
+	if err != nil {
+		u.Send(w, "Invalid request", msg, http.StatusBadRequest)
+		return
+	}
 
-  err = h.Pancake.Create(user_id, data)
-  if err != nil {
-    u.Send(w, "Could not create note: " + err.Error(), data, http.StatusInternalServerError)
-    return
-  }
+	err = h.Pancake.Create(user_id, data)
+	if err != nil {
+		u.Send(w, "Could not create note: "+err.Error(), data, http.StatusInternalServerError)
+		return
+	}
 
-  u.Send(w, "Note created successfully", data, http.StatusOK)
+	u.Send(w, "Note created successfully", data, http.StatusOK)
 }
 
 func (h *PancakeHandler) GetByID(w http.ResponseWriter, r *http.Request) {
-  log.Println("On handler")
+	log.Println("On handler")
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
-    u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
+		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
 		return
 	}
 
-  user_id, err := u.ParseUUID(w, userClaims.ID)
-  if err != nil {
+	user_id, err := u.ParseUUID(w, userClaims.ID)
+	if err != nil {
 		return
 	}
 
-  idStr := r.PathValue("id")
-  id, err := strconv.Atoi(idStr)
-  if err != nil {
-    u.Send(w, "Error reading the ID requested", nil, http.StatusBadRequest)
-    return
-  }
+	idStr := r.PathValue("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		u.Send(w, "Error reading the ID requested", nil, http.StatusBadRequest)
+		return
+	}
 
-  note, err := h.Pancake.GetNoteByID(user_id, id)
-  if err != nil {
-    u.Send(w, "Error retrieving note:"+err.Error(), note, http.StatusInternalServerError)
-    return
-  }
+	note, err := h.Pancake.GetNoteByID(user_id, id)
+	if err != nil {
+		u.Send(w, "Error retrieving note:"+err.Error(), note, http.StatusInternalServerError)
+		return
+	}
 
-  u.Send(w, "", note, http.StatusOK)
+	u.Send(w, "", note, http.StatusOK)
 }
 
 func (h *PancakeHandler) GetNotes(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
-    u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
+		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
 		return
 	}
 
-  user_id, err := u.ParseUUID(w, userClaims.ID)
-  if err != nil {
+	user_id, err := u.ParseUUID(w, userClaims.ID)
+	if err != nil {
 		return
 	}
 
-  notes, err := h.Pancake.GetUserNotes(user_id)
-  if err != nil {
-    u.Send(w, "Error retrieving note:"+err.Error(), notes, http.StatusInternalServerError)
-    return
-  }
+	notes, err := h.Pancake.GetUserNotes(user_id)
+	if err != nil {
+		u.Send(w, "Error retrieving note:"+err.Error(), notes, http.StatusInternalServerError)
+		return
+	}
 
-  u.Send(w, "", notes, http.StatusOK)
+	u.Send(w, "", notes, http.StatusOK)
 }
 
 func (h *PancakeHandler) Update(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
-    u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
+		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
 		return
 	}
 
-  user_id, err := u.ParseUUID(w, userClaims.ID)
-  if err != nil {
+	user_id, err := u.ParseUUID(w, userClaims.ID)
+	if err != nil {
 		return
 	}
 
-  var data models.Pancake
+	var data models.Pancake
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		u.Send(w, err.Error(), nil, http.StatusConflict)
 		return
 	}
 
-  msg, err := models.ValidateModel(data)
-  if err != nil {
-    u.Send(w, "Invalid request", msg, http.StatusBadRequest)
-    return
-  }
+	msg, err := models.ValidateModel(data)
+	if err != nil {
+		u.Send(w, "Invalid request", msg, http.StatusBadRequest)
+		return
+	}
 
-  idStr := r.PathValue("id")
-  id, err := strconv.Atoi(idStr)
-  if err != nil {
-    u.Send(w, "Error reading the ID requested", nil, http.StatusBadRequest)
-    return
-  }
- 
-  data.NoteID = id
-  err = h.Pancake.UpdateNote(user_id, data)
-  if err != nil {
-    u.Send(w, "Error updating note:"+err.Error(), nil, http.StatusInternalServerError)
-    return
-  }
+	idStr := r.PathValue("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		u.Send(w, "Error reading the ID requested", nil, http.StatusBadRequest)
+		return
+	}
 
-  u.Send(w, "Note Updated successfully", nil, http.StatusOK)
+	data.NoteID = id
+	err = h.Pancake.UpdateNote(user_id, data)
+	if err != nil {
+		u.Send(w, "Error updating note:"+err.Error(), nil, http.StatusInternalServerError)
+		return
+	}
+
+	u.Send(w, "Note Updated successfully", nil, http.StatusOK)
 }
-func (h * PancakeHandler) Delete(w http.ResponseWriter, r *http.Request) {
+func (h *PancakeHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
-    u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
+		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
 		return
 	}
 
-  user_id, err := u.ParseUUID(w, userClaims.ID)
-  if err != nil {
+	user_id, err := u.ParseUUID(w, userClaims.ID)
+	if err != nil {
 		return
 	}
 
-  idStr := r.PathValue("id")
-  id, err := strconv.Atoi(idStr)
-  if err != nil {
-    u.Send(w, "Error reading the ID requested", nil, http.StatusBadRequest)
-    return
-  }
+	idStr := r.PathValue("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		u.Send(w, "Error reading the ID requested", nil, http.StatusBadRequest)
+		return
+	}
 
-  err = h.Pancake.DeleteNote(user_id, id)
-  if err != nil {
-    u.Send(w, "Error retrieving note:"+err.Error(), nil, http.StatusInternalServerError)
-    return
-  }
+	err = h.Pancake.DeleteNote(user_id, id)
+	if err != nil {
+		u.Send(w, "Error retrieving note:"+err.Error(), nil, http.StatusInternalServerError)
+		return
+	}
 
-  u.Send(w, "Note Deleted successfully", nil, http.StatusOK)
+	u.Send(w, "Note Deleted successfully", nil, http.StatusOK)
 }
