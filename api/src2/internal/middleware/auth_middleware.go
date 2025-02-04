@@ -3,13 +3,13 @@ package middleware
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"net/http"
 	"strings"
 	"time"
 
 	"breakfast/config"
 	"breakfast/internal/models"
+	u "breakfast/internal/utilities"
 
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -19,12 +19,12 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		var secretKey string = config.GetJWTSecret()
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
-			http.Error(w, `{"error": "Authorization header is required"}`, http.StatusUnauthorized)
+      u.Send(w, `{"mw-error": "Authorization header is required`, nil, http.StatusUnauthorized)
 			return
 		}
 
 		if !strings.HasPrefix(authHeader, "Bearer ") {
-			http.Error(w, `{"error": "Authorization header format must be Bearer {token}"}`, http.StatusUnauthorized)
+      u.Send(w, `{"mw-error": "Authorization header format must be Bearer {token}"}`, nil, http.StatusUnauthorized)
 			return
 		}
 
@@ -32,42 +32,41 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		token, err := jwt.ParseWithClaims(tokenString, &models.UserClaims{}, func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				log.Println("Invalid signing method")
+        u.Send(w, `{"mw-error": "Invalid signing method"}`, nil, http.StatusUnauthorized)
 				return nil, jwt.ErrSignatureInvalid
 			}
 			return []byte(secretKey), nil
 		})
 
 		if err != nil {
-			log.Println("Error parsing token:", err)
-			http.Error(w, `{"error": "Invalid token: `+err.Error()+`"}`, http.StatusUnauthorized)
+      u.Send(w, `{"mw-error": "Invalid token: `+err.Error()+`"}`, nil, http.StatusUnauthorized)
 			return
 		}
 
 		if !token.Valid {
-			http.Error(w, `{"error": "Token is not valid or has expired"}`, http.StatusUnauthorized)
+      u.Send(w, `{"mw-error": "Token is not valid or has expired"}`, nil, http.StatusUnauthorized)
 			return
 		}
 
 		if claims, ok := token.Claims.(*models.UserClaims); ok {
 			// Enhanced logging for claims
-			claimsJSON, err := json.Marshal(claims)
+			_, err := json.Marshal(claims)
 			if err != nil {
-				log.Println("Error marshaling claims:", err)
-			} else {
-				log.Println("Token Claims (JSON):", string(claimsJSON))
-			}
+        u.Send(w, `{"mw-error": "Error marshaling claims: `+err.Error()+`"}`, nil, http.StatusUnauthorized)
+			} // else {
+      //   log.Println(claimsJSON)
+      // }
 
 			// Expiry check
 			if claims.ExpiresAt != nil && claims.ExpiresAt.Before(time.Now()) {
-				http.Error(w, `{"error": "Token has expired"}`, http.StatusUnauthorized)
+        u.Send(w, `{"mw-error": "Token has expired"}`, nil, http.StatusUnauthorized)
 				return
 			}
 
 			ctx := context.WithValue(r.Context(), "user", claims)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		} else {
-			http.Error(w, `{"error": "Invalid token claims"}`, http.StatusUnauthorized)
+      u.Send(w, `{"mw-error": "Invalid token claims"}`, nil, http.StatusUnauthorized)
 		}
 	})
 }
