@@ -132,7 +132,7 @@ func (h *PancakeHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data.NoteID = id
-  err, note := h.Pancake.UpdateNote(user_id, &data)
+	err, note := h.Pancake.UpdateNote(user_id, &data)
 	if err != nil {
 		u.Send(w, "Error updating note:"+err.Error(), note, http.StatusInternalServerError)
 		return

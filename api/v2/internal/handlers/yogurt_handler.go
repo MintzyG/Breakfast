@@ -132,7 +132,7 @@ func (h *YogurtHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data.TaskID = id
-  err, note := h.Yogurt.UpdateTask(user_id, &data)
+	err, note := h.Yogurt.UpdateTask(user_id, &data)
 	if err != nil {
 		u.Send(w, "Error updating task:"+err.Error(), note, http.StatusInternalServerError)
 		return
@@ -167,7 +167,7 @@ func (h *YogurtHandler) UpdateCompleted(w http.ResponseWriter, r *http.Request) 
 	}
 
 	data.TaskID = id
-  err, note := h.Yogurt.UpdateCompleted(user_id, &data)
+	err, note := h.Yogurt.UpdateCompleted(user_id, &data)
 	if err != nil {
 		u.Send(w, "Error updating task:"+err.Error(), note, http.StatusInternalServerError)
 		return

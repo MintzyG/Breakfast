@@ -51,7 +51,7 @@ func main() {
 	mux.Handle("PATCH /pancake/{id}", mw.AuthMiddleware(http.HandlerFunc(pancakeHandler.Update)))
 	mux.Handle("DELETE /pancake/{id}", mw.AuthMiddleware(http.HandlerFunc(pancakeHandler.Delete)))
 
-  // Yogurt Endpoints
+	// Yogurt Endpoints
 	mux.Handle("POST /yogurt", mw.AuthMiddleware(http.HandlerFunc(yogurtHandler.Create)))
 	mux.Handle("GET /yogurt/{id}", mw.AuthMiddleware(http.HandlerFunc(yogurtHandler.GetByID)))
 	mux.Handle("GET /yogurt", mw.AuthMiddleware(http.HandlerFunc(yogurtHandler.GetTasks)))
@@ -59,7 +59,7 @@ func main() {
 	mux.Handle("PATCH /yogurt/{id}/completed", mw.AuthMiddleware(http.HandlerFunc(yogurtHandler.UpdateCompleted)))
 	mux.Handle("DELETE /yogurt/{id}", mw.AuthMiddleware(http.HandlerFunc(yogurtHandler.Delete)))
 
-  // Maple Endpoints
+	// Maple Endpoints
 	mux.Handle("POST /maple", mw.AuthMiddleware(http.HandlerFunc(mapleHandler.Create)))
 	mux.Handle("POST /maple/{id}/day", mw.AuthMiddleware(http.HandlerFunc(mapleHandler.CreateDay)))
 	mux.Handle("GET /maple/{id}", mw.AuthMiddleware(http.HandlerFunc(mapleHandler.GetByID)))

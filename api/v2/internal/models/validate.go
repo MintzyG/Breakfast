@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+
 	"github.com/go-playground/validator/v10"
 )
 
@@ -30,4 +31,3 @@ func ValidateModel(model interface{}) (map[string]string, error) {
 	}
 	return nil, nil
 }
-

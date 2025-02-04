@@ -42,12 +42,12 @@ func (s *YogurtService) UpdateTask(userID uuid.UUID, new *models.Yogurt) (error,
 	task.Title = new.Title
 	task.Description = new.Description
 	task.Emoji = new.Emoji
-  task.Priority = new.Priority
-  task.TaskSize = new.TaskSize
-  task.Completed = new.Completed
-  task.Difficulty = new.Difficulty
+	task.Priority = new.Priority
+	task.TaskSize = new.TaskSize
+	task.Completed = new.Completed
+	task.Difficulty = new.Difficulty
 
-  err = s.Repo.Update(task)
+	err = s.Repo.Update(task)
 	return err, task
 }
 
@@ -57,9 +57,9 @@ func (s *YogurtService) UpdateCompleted(userID uuid.UUID, new *models.Yogurt) (e
 		return err, nil
 	}
 
-  task.Completed = new.Completed
+	task.Completed = new.Completed
 
-  err = s.Repo.Update(task)
+	err = s.Repo.Update(task)
 	return err, task
 }
 
@@ -68,8 +68,8 @@ func (s *YogurtService) DeleteTask(userID uuid.UUID, taskID int) error {
 	if err != nil {
 		return err
 	}
-  if !exists {
-    return fmt.Errorf("Model doesn't belong to user or exists")
-  }
-  return s.Repo.Delete(taskID)
+	if !exists {
+		return fmt.Errorf("Model doesn't belong to user or exists")
+	}
+	return s.Repo.Delete(taskID)
 }

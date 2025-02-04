@@ -8,7 +8,7 @@ import (
 func Migrate() {
 	log.Println("Running database migrations...")
 
-  err := DB.AutoMigrate(
+	err := DB.AutoMigrate(
 		&models.User{},
 		&models.UserLink{},
 		&models.Maple{},

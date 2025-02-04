@@ -82,8 +82,8 @@ func (h *MapleHandler) CreateDay(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-  data.HabitID = id
-  habit, err := h.Maple.CreateDay(user_id, id, &data)
+	data.HabitID = id
+	habit, err := h.Maple.CreateDay(user_id, id, &data)
 	if err != nil {
 		u.Send(w, "Could not create habit: "+err.Error(), habit, http.StatusInternalServerError)
 		return
@@ -173,7 +173,7 @@ func (h *MapleHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data.HabitID = id
-  err, note := h.Maple.UpdateHabit(user_id, &data)
+	err, note := h.Maple.UpdateHabit(user_id, &data)
 	if err != nil {
 		u.Send(w, "Error updating habit:"+err.Error(), note, http.StatusInternalServerError)
 		return

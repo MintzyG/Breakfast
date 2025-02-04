@@ -43,7 +43,7 @@ func (s *PancakeService) UpdateNote(userID uuid.UUID, new *models.Pancake) (erro
 	note.Content = new.Content
 	note.Emoji = new.Emoji
 
-  err = s.Repo.Update(note)
+	err = s.Repo.Update(note)
 	return err, note
 }
 
@@ -52,8 +52,8 @@ func (s *PancakeService) DeleteNote(userID uuid.UUID, noteID int) error {
 	if err != nil {
 		return err
 	}
-  if !exists {
-    return fmt.Errorf("Model doesn't belong to user or exists")
-  }
+	if !exists {
+		return fmt.Errorf("Model doesn't belong to user or exists")
+	}
 	return s.Repo.Delete(noteID)
 }
