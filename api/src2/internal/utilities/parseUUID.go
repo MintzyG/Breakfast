@@ -9,8 +9,8 @@ import (
 func ParseUUID(w http.ResponseWriter, uid string) (uuid.UUID, error) {
 	id, err := uuid.Parse(uid)
 	if err != nil {
-    Send(w, "UUID coudln't be parsed", nil, http.StatusUnauthorized)
+		Send(w, "UUID coudln't be parsed", nil, http.StatusUnauthorized)
 		return uuid.UUID{}, err
-  }
-  return id, nil
+	}
+	return id, nil
 }

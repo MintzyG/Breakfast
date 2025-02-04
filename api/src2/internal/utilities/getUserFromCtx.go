@@ -1,9 +1,9 @@
 package utilities
 
 import (
-  "context"
+	"context"
 
-  "breakfast/internal/models"
+	"breakfast/internal/models"
 )
 
 func GetUserFromContext(ctx context.Context) *models.UserClaims {

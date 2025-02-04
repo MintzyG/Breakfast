@@ -63,4 +63,3 @@ func (s *PancakeService) DeleteNote(userID uuid.UUID, noteID int) error {
 	}
 	return s.Repo.Delete(noteID)
 }
-
