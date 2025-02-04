@@ -22,20 +22,30 @@ func main() {
 
 	// Repos
 	userRepo := repositories.NewUserRepository(database)
+  pancakeRepo := repositories.NewPancakeRepository(database)
 
 	// Services
 	authService := services.NewAuthService(userRepo, cfg.JWTSecret)
 	dataService := services.NewDataService(userRepo)
+  pancakeService := services.NewPancakeService(pancakeRepo)
 
 	// Handlers
 	authHandler := handlers.NewAuthHandler(authService)
 	dataHandler := handlers.NewDataHandler(dataService)
+  pancakeHandler := handlers.NewPancakeHandler(pancakeService)
 
 	mux := http.NewServeMux()
 
 	// Authentication
 	mux.HandleFunc("POST /register", authHandler.Register)
 	mux.HandleFunc("POST /login", authHandler.Login)
+
+  // Pancake Endpoints
+  mux.Handle("POST /pancake/create", mw.AuthMiddleware(http.HandlerFunc(pancakeHandler.Create)))
+  mux.Handle("GET /pancake/{id}", mw.AuthMiddleware(http.HandlerFunc(pancakeHandler.GetByID)))
+  mux.Handle("GET /pancake", mw.AuthMiddleware(http.HandlerFunc(pancakeHandler.GetNotes)))
+  mux.Handle("PATCH /pancake/{id}", mw.AuthMiddleware(http.HandlerFunc(pancakeHandler.Update)))
+  mux.Handle("DELETE /pancake/{id}", mw.AuthMiddleware(http.HandlerFunc(pancakeHandler.Delete)))
 
 	// Data Endpoints
 	mux.Handle("GET /me", mw.AuthMiddleware(http.HandlerFunc(dataHandler.HelloMe)))

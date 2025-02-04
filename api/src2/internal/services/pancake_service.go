@@ -3,7 +3,6 @@ package services
 import (
 	"breakfast/internal/models"
 	"breakfast/internal/repositories"
-	"errors"
 
 	"github.com/google/uuid"
 )
@@ -16,19 +15,9 @@ func NewPancakeService(repo *repositories.PancakeRepository) *PancakeService {
 	return &PancakeService{Repo: repo}
 }
 
-func (s *PancakeService) CreateNote(userID uuid.UUID, title, content, emoji string) error {
-	if title == "" || content == "" {
-		return errors.New("title and content cannot be empty")
-	}
-
-	note := &models.Pancake{
-		UserID:  userID,
-		Title:   title,
-		Content: content,
-		Emoji:   emoji,
-	}
-
-	return s.Repo.Create(note)
+func (s *PancakeService) Create(user_id uuid.UUID, note models.Pancake) error {
+  note.UserID = user_id
+	return s.Repo.Create(&note)
 }
 
 func (s *PancakeService) GetNoteByID(userID uuid.UUID, noteID int) (*models.Pancake, error) {
@@ -43,15 +32,15 @@ func (s *PancakeService) GetUserNotes(userID uuid.UUID) ([]models.Pancake, error
 	return s.Repo.FindByUserID(userID)
 }
 
-func (s *PancakeService) UpdateNote(userID uuid.UUID, noteID int, title, content, emoji string) error {
-	note, err := s.Repo.FindByID(noteID, userID)
+func (s *PancakeService) UpdateNote(userID uuid.UUID, new models.Pancake) error {
+	note, err := s.Repo.FindByID(new.NoteID, userID)
 	if err != nil {
 		return err
 	}
 
-	note.Title = title
-	note.Content = content
-	note.Emoji = emoji
+	note.Title = new.Title
+	note.Content = new.Content
+	note.Emoji = new.Emoji
 
 	return s.Repo.Update(note)
 }
