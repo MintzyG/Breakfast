@@ -11,12 +11,12 @@ type Yogurt struct {
 	TaskID      int       `gorm:"primaryKey;autoIncrement" json:"task_id"`
 	UserID      uuid.UUID `gorm:"type:char(36);not null" json:"user_id"`
 	Emoji       string    `gorm:"type:varchar(31)" json:"emoji"`
-	Title       string    `gorm:"type:varchar(255);not null" json:"title"`
+  Title       string    `gorm:"type:varchar(255);not null" json:"title" validate:"required"`
 	Description string    `gorm:"type:text" json:"description"`
 	Completed   bool      `gorm:"default:false" json:"completed"`
-	TaskSize    int       `gorm:"default:1" json:"task_size" validate:"min=1,max=3"`
-	Difficulty  int       `gorm:"default:1" json:"difficulty" validate:"min=1,max=3"`
-	Priority    int       `gorm:"default:1" json:"priority" validate:"min=1,max=3"`
+	TaskSize    int       `gorm:"default:1" json:"task_size" validate:"min=1,max=3,required"`
+	Difficulty  int       `gorm:"default:1" json:"difficulty" validate:"min=1,max=3,required"`
+	Priority    int       `gorm:"default:1" json:"priority" validate:"min=1,max=3,required"`
 	CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt   time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }

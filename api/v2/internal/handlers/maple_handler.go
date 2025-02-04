@@ -10,15 +10,15 @@ import (
 	"net/http"
 )
 
-type PancakeHandler struct {
-	Pancake *services.PancakeService
+type MapleHandler struct {
+	Maple *services.MapleService
 }
 
-func NewPancakeHandler(service *services.PancakeService) *PancakeHandler {
-	return &PancakeHandler{Pancake: service}
+func NewMapleHandler(service *services.MapleService) *MapleHandler {
+	return &MapleHandler{Maple: service}
 }
 
-func (h *PancakeHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (h *MapleHandler) Create(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
 		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
@@ -30,7 +30,7 @@ func (h *PancakeHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var data models.Pancake
+	var data models.Maple
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		u.Send(w, err.Error(), nil, http.StatusConflict)
 		return
@@ -42,16 +42,16 @@ func (h *PancakeHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.Pancake.Create(user_id, &data)
+	err = h.Maple.Create(user_id, &data)
 	if err != nil {
-		u.Send(w, "Could not create note: "+err.Error(), data, http.StatusInternalServerError)
+		u.Send(w, "Could not create habit: "+err.Error(), data, http.StatusInternalServerError)
 		return
 	}
 
 	u.Send(w, "", data, http.StatusCreated)
 }
 
-func (h *PancakeHandler) GetByID(w http.ResponseWriter, r *http.Request) {
+func (h *MapleHandler) CreateDay(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
 		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
@@ -70,16 +70,57 @@ func (h *PancakeHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	note, err := h.Pancake.GetNoteByID(user_id, id)
+	var data models.MapleDay
+	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
+		u.Send(w, err.Error(), nil, http.StatusConflict)
+		return
+	}
+
+	msg, err := models.ValidateModel(data)
 	if err != nil {
-		u.Send(w, "Error retrieving note:"+err.Error(), note, http.StatusInternalServerError)
+		u.Send(w, "Invalid request", msg, http.StatusBadRequest)
+		return
+	}
+
+  data.HabitID = id
+  habit, err := h.Maple.CreateDay(user_id, id, &data)
+	if err != nil {
+		u.Send(w, "Could not create habit: "+err.Error(), habit, http.StatusInternalServerError)
+		return
+	}
+
+	u.Send(w, "", data, http.StatusCreated)
+}
+
+func (h *MapleHandler) GetByID(w http.ResponseWriter, r *http.Request) {
+	userClaims := u.GetUserFromContext(r.Context())
+	if userClaims == nil {
+		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
+		return
+	}
+
+	user_id, err := u.ParseUUID(w, userClaims.ID)
+	if err != nil {
+		return
+	}
+
+	idStr := r.PathValue("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		u.Send(w, "Error reading the ID requested", nil, http.StatusBadRequest)
+		return
+	}
+
+	note, err := h.Maple.GetHabitByID(user_id, id)
+	if err != nil {
+		u.Send(w, "Error retrieving habit:"+err.Error(), note, http.StatusInternalServerError)
 		return
 	}
 
 	u.Send(w, "", note, http.StatusOK)
 }
 
-func (h *PancakeHandler) GetNotes(w http.ResponseWriter, r *http.Request) {
+func (h *MapleHandler) GetHabits(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
 		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
@@ -91,16 +132,16 @@ func (h *PancakeHandler) GetNotes(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	notes, err := h.Pancake.GetUserNotes(user_id)
+	notes, err := h.Maple.GetUserHabits(user_id)
 	if err != nil {
-		u.Send(w, "Error retrieving note:"+err.Error(), notes, http.StatusInternalServerError)
+		u.Send(w, "Error retrieving habit:"+err.Error(), notes, http.StatusInternalServerError)
 		return
 	}
 
 	u.Send(w, "", notes, http.StatusOK)
 }
 
-func (h *PancakeHandler) Update(w http.ResponseWriter, r *http.Request) {
+func (h *MapleHandler) Update(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
 		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
@@ -112,7 +153,7 @@ func (h *PancakeHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var data models.Pancake
+	var data models.Maple
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		u.Send(w, err.Error(), nil, http.StatusConflict)
 		return
@@ -131,16 +172,17 @@ func (h *PancakeHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data.NoteID = id
-  err, note := h.Pancake.UpdateNote(user_id, &data)
+	data.HabitID = id
+  err, note := h.Maple.UpdateHabit(user_id, &data)
 	if err != nil {
-		u.Send(w, "Error updating note:"+err.Error(), note, http.StatusInternalServerError)
+		u.Send(w, "Error updating habit:"+err.Error(), note, http.StatusInternalServerError)
 		return
 	}
 
 	u.Send(w, "", note, http.StatusOK)
 }
-func (h *PancakeHandler) Delete(w http.ResponseWriter, r *http.Request) {
+
+func (h *MapleHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
 		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
@@ -159,9 +201,9 @@ func (h *PancakeHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.Pancake.DeleteNote(user_id, id)
+	err = h.Maple.DeleteHabit(user_id, id)
 	if err != nil {
-		u.Send(w, "Error retrieving note:"+err.Error(), nil, http.StatusInternalServerError)
+		u.Send(w, "Error retrieving habit:"+err.Error(), nil, http.StatusInternalServerError)
 		return
 	}
 

@@ -10,15 +10,15 @@ import (
 	"net/http"
 )
 
-type PancakeHandler struct {
-	Pancake *services.PancakeService
+type YogurtHandler struct {
+	Yogurt *services.YogurtService
 }
 
-func NewPancakeHandler(service *services.PancakeService) *PancakeHandler {
-	return &PancakeHandler{Pancake: service}
+func NewYogurtHandler(service *services.YogurtService) *YogurtHandler {
+	return &YogurtHandler{Yogurt: service}
 }
 
-func (h *PancakeHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (h *YogurtHandler) Create(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
 		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
@@ -30,7 +30,7 @@ func (h *PancakeHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var data models.Pancake
+	var data models.Yogurt
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		u.Send(w, err.Error(), nil, http.StatusConflict)
 		return
@@ -42,16 +42,16 @@ func (h *PancakeHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.Pancake.Create(user_id, &data)
+	err = h.Yogurt.Create(user_id, &data)
 	if err != nil {
-		u.Send(w, "Could not create note: "+err.Error(), data, http.StatusInternalServerError)
+		u.Send(w, "Could not create task: "+err.Error(), data, http.StatusInternalServerError)
 		return
 	}
 
 	u.Send(w, "", data, http.StatusCreated)
 }
 
-func (h *PancakeHandler) GetByID(w http.ResponseWriter, r *http.Request) {
+func (h *YogurtHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
 		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
@@ -70,16 +70,16 @@ func (h *PancakeHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	note, err := h.Pancake.GetNoteByID(user_id, id)
+	note, err := h.Yogurt.GetTaskByID(user_id, id)
 	if err != nil {
-		u.Send(w, "Error retrieving note:"+err.Error(), note, http.StatusInternalServerError)
+		u.Send(w, "Error retrieving task:"+err.Error(), note, http.StatusInternalServerError)
 		return
 	}
 
 	u.Send(w, "", note, http.StatusOK)
 }
 
-func (h *PancakeHandler) GetNotes(w http.ResponseWriter, r *http.Request) {
+func (h *YogurtHandler) GetTasks(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
 		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
@@ -91,16 +91,16 @@ func (h *PancakeHandler) GetNotes(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	notes, err := h.Pancake.GetUserNotes(user_id)
+	notes, err := h.Yogurt.GetUserTasks(user_id)
 	if err != nil {
-		u.Send(w, "Error retrieving note:"+err.Error(), notes, http.StatusInternalServerError)
+		u.Send(w, "Error retrieving task:"+err.Error(), notes, http.StatusInternalServerError)
 		return
 	}
 
 	u.Send(w, "", notes, http.StatusOK)
 }
 
-func (h *PancakeHandler) Update(w http.ResponseWriter, r *http.Request) {
+func (h *YogurtHandler) Update(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
 		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
@@ -112,7 +112,7 @@ func (h *PancakeHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var data models.Pancake
+	var data models.Yogurt
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		u.Send(w, err.Error(), nil, http.StatusConflict)
 		return
@@ -131,16 +131,52 @@ func (h *PancakeHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data.NoteID = id
-  err, note := h.Pancake.UpdateNote(user_id, &data)
+	data.TaskID = id
+  err, note := h.Yogurt.UpdateTask(user_id, &data)
 	if err != nil {
-		u.Send(w, "Error updating note:"+err.Error(), note, http.StatusInternalServerError)
+		u.Send(w, "Error updating task:"+err.Error(), note, http.StatusInternalServerError)
 		return
 	}
 
 	u.Send(w, "", note, http.StatusOK)
 }
-func (h *PancakeHandler) Delete(w http.ResponseWriter, r *http.Request) {
+
+func (h *YogurtHandler) UpdateCompleted(w http.ResponseWriter, r *http.Request) {
+	userClaims := u.GetUserFromContext(r.Context())
+	if userClaims == nil {
+		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
+		return
+	}
+
+	user_id, err := u.ParseUUID(w, userClaims.ID)
+	if err != nil {
+		return
+	}
+
+	var data models.Yogurt
+	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
+		u.Send(w, err.Error(), nil, http.StatusConflict)
+		return
+	}
+
+	idStr := r.PathValue("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		u.Send(w, "Error reading the ID requested", nil, http.StatusBadRequest)
+		return
+	}
+
+	data.TaskID = id
+  err, note := h.Yogurt.UpdateCompleted(user_id, &data)
+	if err != nil {
+		u.Send(w, "Error updating task:"+err.Error(), note, http.StatusInternalServerError)
+		return
+	}
+
+	u.Send(w, "", note, http.StatusOK)
+}
+
+func (h *YogurtHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
 		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
@@ -159,9 +195,9 @@ func (h *PancakeHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.Pancake.DeleteNote(user_id, id)
+	err = h.Yogurt.DeleteTask(user_id, id)
 	if err != nil {
-		u.Send(w, "Error retrieving note:"+err.Error(), nil, http.StatusInternalServerError)
+		u.Send(w, "Error retrieving task:"+err.Error(), nil, http.StatusInternalServerError)
 		return
 	}
 

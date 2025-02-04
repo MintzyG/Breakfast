@@ -28,6 +28,15 @@ func (r *PancakeRepository) FindByID(id int, userID uuid.UUID) (*models.Pancake,
 	return &pancake, nil
 }
 
+func (r *PancakeRepository) Exists(id int, userID uuid.UUID) (bool, error) {
+	var count int64
+	err := r.DB.Model(&models.Pancake{}).Where("note_id = ? AND user_id = ?", id, userID).Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
 func (r *PancakeRepository) FindByUserID(userID uuid.UUID) ([]models.Pancake, error) {
 	var pancakes []models.Pancake
 	err := r.DB.Where("user_id = ?", userID).Find(&pancakes).Error

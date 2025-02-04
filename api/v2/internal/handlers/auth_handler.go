@@ -34,7 +34,7 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u.Send(w, "Created user successfully", nil, http.StatusCreated)
+	u.Send(w, "CREATED", nil, http.StatusCreated)
 }
 
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {

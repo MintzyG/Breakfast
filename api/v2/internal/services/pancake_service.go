@@ -3,6 +3,7 @@ package services
 import (
 	"breakfast/internal/models"
 	"breakfast/internal/repositories"
+	"fmt"
 
 	"github.com/google/uuid"
 )
@@ -15,9 +16,9 @@ func NewPancakeService(repo *repositories.PancakeRepository) *PancakeService {
 	return &PancakeService{Repo: repo}
 }
 
-func (s *PancakeService) Create(user_id uuid.UUID, note models.Pancake) error {
+func (s *PancakeService) Create(user_id uuid.UUID, note *models.Pancake) error {
 	note.UserID = user_id
-	return s.Repo.Create(&note)
+	return s.Repo.Create(note)
 }
 
 func (s *PancakeService) GetNoteByID(userID uuid.UUID, noteID int) (*models.Pancake, error) {
@@ -32,23 +33,27 @@ func (s *PancakeService) GetUserNotes(userID uuid.UUID) ([]models.Pancake, error
 	return s.Repo.FindByUserID(userID)
 }
 
-func (s *PancakeService) UpdateNote(userID uuid.UUID, new models.Pancake) error {
+func (s *PancakeService) UpdateNote(userID uuid.UUID, new *models.Pancake) (error, *models.Pancake) {
 	note, err := s.Repo.FindByID(new.NoteID, userID)
 	if err != nil {
-		return err
+		return err, nil
 	}
 
 	note.Title = new.Title
 	note.Content = new.Content
 	note.Emoji = new.Emoji
 
-	return s.Repo.Update(note)
+  err = s.Repo.Update(note)
+	return err, note
 }
 
 func (s *PancakeService) DeleteNote(userID uuid.UUID, noteID int) error {
-	_, err := s.Repo.FindByID(noteID, userID)
+	exists, err := s.Repo.Exists(noteID, userID)
 	if err != nil {
 		return err
 	}
+  if !exists {
+    return fmt.Errorf("Model doesn't belong to user or exists")
+  }
 	return s.Repo.Delete(noteID)
 }
