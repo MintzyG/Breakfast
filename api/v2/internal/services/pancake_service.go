@@ -16,7 +16,7 @@ func NewPancakeService(repo *repositories.PancakeRepository) *PancakeService {
 }
 
 func (s *PancakeService) Create(user_id uuid.UUID, note models.Pancake) error {
-  note.UserID = user_id
+	note.UserID = user_id
 	return s.Repo.Create(&note)
 }
 
