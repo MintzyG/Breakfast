@@ -5,7 +5,6 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type UserRegister struct {

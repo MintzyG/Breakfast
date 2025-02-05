@@ -70,12 +70,12 @@ func main() {
 	mux.Handle("PATCH /maple/{id}", mw.AuthMiddleware(http.HandlerFunc(mapleHandler.Update)))
 	mux.Handle("DELETE /maple/{id}", mw.AuthMiddleware(http.HandlerFunc(mapleHandler.Delete)))
 
-  // Espresso Endpoints
-  mux.Handle("POST /espresso", mw.AuthMiddleware(http.HandlerFunc(espressoHandler.Create)))
-  mux.Handle("GET /espresso/{id}", mw.AuthMiddleware(http.HandlerFunc(espressoHandler.GetByID)))
-  mux.Handle("GET /espresso", mw.AuthMiddleware(http.HandlerFunc(espressoHandler.GetAll)))
-  mux.Handle("PATCH /espresso/{id}", mw.AuthMiddleware(http.HandlerFunc(espressoHandler.Update)))
-  mux.Handle("DELETE /espresso/{id}", mw.AuthMiddleware(http.HandlerFunc(espressoHandler.Delete)))
+	// Espresso Endpoints
+	mux.Handle("POST /espresso", mw.AuthMiddleware(http.HandlerFunc(espressoHandler.Create)))
+	mux.Handle("GET /espresso/{id}", mw.AuthMiddleware(http.HandlerFunc(espressoHandler.GetByID)))
+	mux.Handle("GET /espresso", mw.AuthMiddleware(http.HandlerFunc(espressoHandler.GetAll)))
+	mux.Handle("PATCH /espresso/{id}", mw.AuthMiddleware(http.HandlerFunc(espressoHandler.Update)))
+	mux.Handle("DELETE /espresso/{id}", mw.AuthMiddleware(http.HandlerFunc(espressoHandler.Delete)))
 
 	corsHandler := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},

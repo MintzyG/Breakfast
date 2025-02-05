@@ -18,11 +18,11 @@ func NewEspressoService(repo *repositories.EspressoRepository) *EspressoService 
 
 func (s *EspressoService) Create(user_id uuid.UUID, session *models.EspressoSession) error {
 	session.UserID = user_id
-  if session.FocusEnd.Before(session.FocusStart) {
-    return fmt.Errorf("End-time cannot be before Start-time")
-  }
+	if session.FocusEnd.Before(session.FocusStart) {
+		return fmt.Errorf("End-time cannot be before Start-time")
+	}
 
-  session.Duration = int64(session.FocusEnd.Sub(session.FocusStart).Seconds())
+	session.Duration = int64(session.FocusEnd.Sub(session.FocusStart).Seconds())
 	return s.Repo.Create(session)
 }
 
@@ -54,18 +54,18 @@ func (s *EspressoService) Update(userID uuid.UUID, new *models.EspressoSession) 
 
 	session.SessionName = new.SessionName
 	session.Emoji = new.Emoji
-  session.FocusStart = new.FocusStart
-  session.FocusEnd = new.FocusEnd
-  session.BreakTime = new.BreakTime
-  session.BigBreak = new.BigBreak
-  session.Rounds = new.Rounds
-  session.Laps = new.Laps
+	session.FocusStart = new.FocusStart
+	session.FocusEnd = new.FocusEnd
+	session.BreakTime = new.BreakTime
+	session.BigBreak = new.BigBreak
+	session.Rounds = new.Rounds
+	session.Laps = new.Laps
 
-  if session.FocusEnd.Before(session.FocusStart) {
-    return fmt.Errorf("End-time cannot be before Start-time"), session
-  }
+	if session.FocusEnd.Before(session.FocusStart) {
+		return fmt.Errorf("End-time cannot be before Start-time"), session
+	}
 
-  session.Duration = int64(session.FocusEnd.Sub(session.FocusStart).Seconds())
+	session.Duration = int64(session.FocusEnd.Sub(session.FocusStart).Seconds())
 
 	err = s.Repo.Update(session)
 	return err, session
