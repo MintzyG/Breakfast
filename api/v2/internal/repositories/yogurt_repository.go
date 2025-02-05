@@ -37,7 +37,7 @@ func (r *YogurtRepository) Exists(id int, userID uuid.UUID) (bool, error) {
 	return count > 0, nil
 }
 
-func (r *YogurtRepository) FindByUserID(userID uuid.UUID) ([]models.Yogurt, error) {
+func (r *YogurtRepository) GetAll(userID uuid.UUID) ([]models.Yogurt, error) {
 	var yogurts []models.Yogurt
 	err := r.DB.Where("user_id = ?", userID).Find(&yogurts).Error
 	if err != nil {

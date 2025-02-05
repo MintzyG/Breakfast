@@ -129,7 +129,7 @@ func (s *MapleService) CreateDay(user_id uuid.UUID, habit_id int, day *models.Ma
 	return habit, err
 }
 
-func (s *MapleService) GetHabitByID(userID uuid.UUID, habitID int) (*models.Maple, error) {
+func (s *MapleService) GetByID(userID uuid.UUID, habitID int) (*models.Maple, error) {
 	habit, err := s.Repo.FindByID(habitID, userID)
 	if err != nil {
 		return nil, err
@@ -137,11 +137,11 @@ func (s *MapleService) GetHabitByID(userID uuid.UUID, habitID int) (*models.Mapl
 	return habit, nil
 }
 
-func (s *MapleService) GetUserHabits(userID uuid.UUID) ([]models.Maple, error) {
-	return s.Repo.FindByUserID(userID)
+func (s *MapleService) GetAll(userID uuid.UUID) ([]models.Maple, error) {
+	return s.Repo.GetAll(userID)
 }
 
-func (s *MapleService) UpdateHabit(userID uuid.UUID, new *models.Maple) (error, *models.Maple) {
+func (s *MapleService) Update(userID uuid.UUID, new *models.Maple) (error, *models.Maple) {
 	habit, err := s.Repo.FindByID(new.HabitID, userID)
 	if err != nil {
 		return err, nil
@@ -155,7 +155,7 @@ func (s *MapleService) UpdateHabit(userID uuid.UUID, new *models.Maple) (error, 
 	return err, habit
 }
 
-func (s *MapleService) DeleteHabit(userID uuid.UUID, habitID int) error {
+func (s *MapleService) Delete(userID uuid.UUID, habitID int) error {
 	exists, err := s.Repo.Exists(habitID, userID)
 	if err != nil {
 		return err

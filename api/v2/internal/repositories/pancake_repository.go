@@ -37,7 +37,7 @@ func (r *PancakeRepository) Exists(id int, userID uuid.UUID) (bool, error) {
 	return count > 0, nil
 }
 
-func (r *PancakeRepository) FindByUserID(userID uuid.UUID) ([]models.Pancake, error) {
+func (r *PancakeRepository) GetAll(userID uuid.UUID) ([]models.Pancake, error) {
 	var pancakes []models.Pancake
 	err := r.DB.Where("user_id = ?", userID).Find(&pancakes).Error
 	if err != nil {

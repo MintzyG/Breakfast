@@ -21,7 +21,7 @@ func (s *PancakeService) Create(user_id uuid.UUID, note *models.Pancake) error {
 	return s.Repo.Create(note)
 }
 
-func (s *PancakeService) GetNoteByID(userID uuid.UUID, noteID int) (*models.Pancake, error) {
+func (s *PancakeService) GetByID(userID uuid.UUID, noteID int) (*models.Pancake, error) {
 	note, err := s.Repo.FindByID(noteID, userID)
 	if err != nil {
 		return nil, err
@@ -29,11 +29,11 @@ func (s *PancakeService) GetNoteByID(userID uuid.UUID, noteID int) (*models.Panc
 	return note, nil
 }
 
-func (s *PancakeService) GetUserNotes(userID uuid.UUID) ([]models.Pancake, error) {
-	return s.Repo.FindByUserID(userID)
+func (s *PancakeService) GetAll(userID uuid.UUID) ([]models.Pancake, error) {
+	return s.Repo.GetAll(userID)
 }
 
-func (s *PancakeService) UpdateNote(userID uuid.UUID, new *models.Pancake) (error, *models.Pancake) {
+func (s *PancakeService) Update(userID uuid.UUID, new *models.Pancake) (error, *models.Pancake) {
 	note, err := s.Repo.FindByID(new.NoteID, userID)
 	if err != nil {
 		return err, nil
@@ -47,7 +47,7 @@ func (s *PancakeService) UpdateNote(userID uuid.UUID, new *models.Pancake) (erro
 	return err, note
 }
 
-func (s *PancakeService) DeleteNote(userID uuid.UUID, noteID int) error {
+func (s *PancakeService) Delete(userID uuid.UUID, noteID int) error {
 	exists, err := s.Repo.Exists(noteID, userID)
 	if err != nil {
 		return err

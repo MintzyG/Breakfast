@@ -21,7 +21,7 @@ func (s *YogurtService) Create(user_id uuid.UUID, task *models.Yogurt) error {
 	return s.Repo.Create(task)
 }
 
-func (s *YogurtService) GetTaskByID(userID uuid.UUID, taskID int) (*models.Yogurt, error) {
+func (s *YogurtService) GetByID(userID uuid.UUID, taskID int) (*models.Yogurt, error) {
 	task, err := s.Repo.FindByID(taskID, userID)
 	if err != nil {
 		return nil, err
@@ -29,11 +29,11 @@ func (s *YogurtService) GetTaskByID(userID uuid.UUID, taskID int) (*models.Yogur
 	return task, nil
 }
 
-func (s *YogurtService) GetUserTasks(userID uuid.UUID) ([]models.Yogurt, error) {
-	return s.Repo.FindByUserID(userID)
+func (s *YogurtService) GetAll(userID uuid.UUID) ([]models.Yogurt, error) {
+	return s.Repo.GetAll(userID)
 }
 
-func (s *YogurtService) UpdateTask(userID uuid.UUID, new *models.Yogurt) (error, *models.Yogurt) {
+func (s *YogurtService) Update(userID uuid.UUID, new *models.Yogurt) (error, *models.Yogurt) {
 	task, err := s.Repo.FindByID(new.TaskID, userID)
 	if err != nil {
 		return err, nil
@@ -63,7 +63,7 @@ func (s *YogurtService) UpdateCompleted(userID uuid.UUID, new *models.Yogurt) (e
 	return err, task
 }
 
-func (s *YogurtService) DeleteTask(userID uuid.UUID, taskID int) error {
+func (s *YogurtService) Delete(userID uuid.UUID, taskID int) error {
 	exists, err := s.Repo.Exists(taskID, userID)
 	if err != nil {
 		return err

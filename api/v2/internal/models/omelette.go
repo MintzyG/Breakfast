@@ -14,7 +14,7 @@ type OmeletteTable struct {
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 
-	Lists []OmeletteList `gorm:"foreignKey:TableID" json:"lists"`
+  Lists []OmeletteList `gorm:"foreignKey:TableID;constraint:OnDelete:CASCADE" json:"lists"`
 }
 
 type OmeletteList struct {
@@ -25,7 +25,7 @@ type OmeletteList struct {
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 
-	Cards []OmeletteCard `gorm:"foreignKey:ListID" json:"cards"`
+	Cards []OmeletteCard `gorm:"foreignKey:ListID;constraint:OnDelete:CASCADE" json:"cards"`
 }
 
 type OmeletteCard struct {

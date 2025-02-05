@@ -111,7 +111,7 @@ func (h *MapleHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	note, err := h.Maple.GetHabitByID(user_id, id)
+	note, err := h.Maple.GetByID(user_id, id)
 	if err != nil {
 		u.Send(w, "Error retrieving habit:"+err.Error(), note, http.StatusInternalServerError)
 		return
@@ -120,7 +120,7 @@ func (h *MapleHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	u.Send(w, "", note, http.StatusOK)
 }
 
-func (h *MapleHandler) GetHabits(w http.ResponseWriter, r *http.Request) {
+func (h *MapleHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
 		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
@@ -132,7 +132,7 @@ func (h *MapleHandler) GetHabits(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	notes, err := h.Maple.GetUserHabits(user_id)
+	notes, err := h.Maple.GetAll(user_id)
 	if err != nil {
 		u.Send(w, "Error retrieving habit:"+err.Error(), notes, http.StatusInternalServerError)
 		return
@@ -173,7 +173,7 @@ func (h *MapleHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data.HabitID = id
-	err, note := h.Maple.UpdateHabit(user_id, &data)
+	err, note := h.Maple.Update(user_id, &data)
 	if err != nil {
 		u.Send(w, "Error updating habit:"+err.Error(), note, http.StatusInternalServerError)
 		return
@@ -201,7 +201,7 @@ func (h *MapleHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.Maple.DeleteHabit(user_id, id)
+	err = h.Maple.Delete(user_id, id)
 	if err != nil {
 		u.Send(w, "Error retrieving habit:"+err.Error(), nil, http.StatusInternalServerError)
 		return

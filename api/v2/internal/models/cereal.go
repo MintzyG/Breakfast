@@ -13,7 +13,7 @@ type CerealDay struct {
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 
-	Activities []CerealActivity `gorm:"foreignKey:DayID" json:"activities"`
+  Activities []CerealActivity `gorm:"foreignKey:DayID;constraint:OnDelete:CASCADE" json:"activities"`
 }
 
 type CerealActivity struct {

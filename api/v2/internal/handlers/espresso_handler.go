@@ -10,15 +10,15 @@ import (
 	"net/http"
 )
 
-type YogurtHandler struct {
-	Yogurt *services.YogurtService
+type EspressoHandler struct {
+	Espresso *services.EspressoService
 }
 
-func NewYogurtHandler(service *services.YogurtService) *YogurtHandler {
-	return &YogurtHandler{Yogurt: service}
+func NewEspressoHandler(service *services.EspressoService) *EspressoHandler {
+	return &EspressoHandler{Espresso: service}
 }
 
-func (h *YogurtHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (h *EspressoHandler) Create(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
 		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
@@ -30,7 +30,7 @@ func (h *YogurtHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var data models.Yogurt
+	var data models.EspressoSession
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		u.Send(w, err.Error(), nil, http.StatusConflict)
 		return
@@ -42,16 +42,16 @@ func (h *YogurtHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.Yogurt.Create(user_id, &data)
+	err = h.Espresso.Create(user_id, &data)
 	if err != nil {
-		u.Send(w, "Could not create task: "+err.Error(), data, http.StatusInternalServerError)
+		u.Send(w, "Could not create session: "+err.Error(), data, http.StatusInternalServerError)
 		return
 	}
 
 	u.Send(w, "", data, http.StatusCreated)
 }
 
-func (h *YogurtHandler) GetByID(w http.ResponseWriter, r *http.Request) {
+func (h *EspressoHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
 		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
@@ -70,16 +70,16 @@ func (h *YogurtHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	note, err := h.Yogurt.GetByID(user_id, id)
+	session, err := h.Espresso.GetByID(user_id, id)
 	if err != nil {
-		u.Send(w, "Error retrieving task:"+err.Error(), note, http.StatusInternalServerError)
+		u.Send(w, "Error retrieving session:"+err.Error(), session, http.StatusInternalServerError)
 		return
 	}
 
-	u.Send(w, "", note, http.StatusOK)
+	u.Send(w, "", session, http.StatusOK)
 }
 
-func (h *YogurtHandler) GetAll(w http.ResponseWriter, r *http.Request) {
+func (h *EspressoHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
 		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
@@ -91,16 +91,16 @@ func (h *YogurtHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	notes, err := h.Yogurt.GetAll(user_id)
+	sessions, err := h.Espresso.GetAll(user_id)
 	if err != nil {
-		u.Send(w, "Error retrieving task:"+err.Error(), notes, http.StatusInternalServerError)
+		u.Send(w, "Error retrieving session:"+err.Error(), sessions, http.StatusInternalServerError)
 		return
 	}
 
-	u.Send(w, "", notes, http.StatusOK)
+	u.Send(w, "", sessions, http.StatusOK)
 }
 
-func (h *YogurtHandler) Update(w http.ResponseWriter, r *http.Request) {
+func (h *EspressoHandler) Update(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
 		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
@@ -112,7 +112,7 @@ func (h *YogurtHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var data models.Yogurt
+	var data models.EspressoSession
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		u.Send(w, err.Error(), nil, http.StatusConflict)
 		return
@@ -131,52 +131,17 @@ func (h *YogurtHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data.TaskID = id
-	err, note := h.Yogurt.Update(user_id, &data)
+	data.SessionID = id
+	err, session := h.Espresso.Update(user_id, &data)
 	if err != nil {
-		u.Send(w, "Error updating task:"+err.Error(), note, http.StatusInternalServerError)
+		u.Send(w, "Error updating session:"+err.Error(), session, http.StatusInternalServerError)
 		return
 	}
 
-	u.Send(w, "", note, http.StatusOK)
+	u.Send(w, "", session, http.StatusOK)
 }
 
-func (h *YogurtHandler) UpdateCompleted(w http.ResponseWriter, r *http.Request) {
-	userClaims := u.GetUserFromContext(r.Context())
-	if userClaims == nil {
-		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
-		return
-	}
-
-	user_id, err := u.ParseUUID(w, userClaims.ID)
-	if err != nil {
-		return
-	}
-
-	var data models.Yogurt
-	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
-		u.Send(w, err.Error(), nil, http.StatusConflict)
-		return
-	}
-
-	idStr := r.PathValue("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		u.Send(w, "Error reading the ID requested", nil, http.StatusBadRequest)
-		return
-	}
-
-	data.TaskID = id
-	err, note := h.Yogurt.UpdateCompleted(user_id, &data)
-	if err != nil {
-		u.Send(w, "Error updating task:"+err.Error(), note, http.StatusInternalServerError)
-		return
-	}
-
-	u.Send(w, "", note, http.StatusOK)
-}
-
-func (h *YogurtHandler) Delete(w http.ResponseWriter, r *http.Request) {
+func (h *EspressoHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
 		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
@@ -195,9 +160,9 @@ func (h *YogurtHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.Yogurt.Delete(user_id, id)
+	err = h.Espresso.Delete(user_id, id)
 	if err != nil {
-		u.Send(w, "Error retrieving task:"+err.Error(), nil, http.StatusInternalServerError)
+		u.Send(w, "Error retrieving session:"+err.Error(), nil, http.StatusInternalServerError)
 		return
 	}
 

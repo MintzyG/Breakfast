@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type UserRegister struct {
@@ -30,17 +31,17 @@ type User struct {
 	CreatedAt      time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt      time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 
-	UserLinks        []UserLink             `gorm:"foreignKey:UserID" json:"user_links,omitempty"`
-	Toasts           []Toast                `gorm:"foreignKey:UserID" json:"toasts"`
-	Omelettes        []OmeletteTable        `gorm:"foreignKey:UserID" json:"omelettes"`
-	Pancakes         []Pancake              `gorm:"foreignKey:UserID" json:"pancakes"`
-	CerealDays       []CerealDay            `gorm:"foreignKey:UserID" json:"cereal_days"`
-	YogurtTasks      []Yogurt               `gorm:"foreignKey:UserID" json:"yogurt_tasks"`
-	EspressoSessions []EspressoSession      `gorm:"foreignKey:UserID" json:"espresso_sessions"`
-	Maples           []Maple                `gorm:"foreignKey:UserID" json:"maples"`
-	Parfaits         []ParfaitEvent         `gorm:"foreignKey:UserID" json:"parfaits"`
-	EspressoConfigs  []EspressoUserSettings `gorm:"foreignKey:UserID" json:"espresso_configs"`
-	ParfaitReminders []ParfaitReminder      `gorm:"foreignKey:UserID" json:"parfait_reminders"`
+	UserLinks        []UserLink             `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"user_links,omitempty"`
+	Toasts           []Toast                `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"toasts"`
+	Omelettes        []OmeletteTable        `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"omelettes"`
+	Pancakes         []Pancake              `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"pancakes"`
+	CerealDays       []CerealDay            `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"cereal_days"`
+	YogurtTasks      []Yogurt               `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"yogurt_tasks"`
+	EspressoSessions []EspressoSession      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"espresso_sessions"`
+	Maples           []Maple                `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"maples"`
+	Parfaits         []ParfaitEvent         `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"parfaits"`
+	EspressoConfigs  []EspressoUserSettings `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"espresso_configs"`
+	ParfaitReminders []ParfaitReminder      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"parfait_reminders"`
 }
 
 type UserLink struct {

@@ -70,7 +70,7 @@ func (h *PancakeHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	note, err := h.Pancake.GetNoteByID(user_id, id)
+	note, err := h.Pancake.GetByID(user_id, id)
 	if err != nil {
 		u.Send(w, "Error retrieving note:"+err.Error(), note, http.StatusInternalServerError)
 		return
@@ -79,7 +79,7 @@ func (h *PancakeHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	u.Send(w, "", note, http.StatusOK)
 }
 
-func (h *PancakeHandler) GetNotes(w http.ResponseWriter, r *http.Request) {
+func (h *PancakeHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
 		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
@@ -91,7 +91,7 @@ func (h *PancakeHandler) GetNotes(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	notes, err := h.Pancake.GetUserNotes(user_id)
+	notes, err := h.Pancake.GetAll(user_id)
 	if err != nil {
 		u.Send(w, "Error retrieving note:"+err.Error(), notes, http.StatusInternalServerError)
 		return
@@ -132,7 +132,7 @@ func (h *PancakeHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data.NoteID = id
-	err, note := h.Pancake.UpdateNote(user_id, &data)
+	err, note := h.Pancake.Update(user_id, &data)
 	if err != nil {
 		u.Send(w, "Error updating note:"+err.Error(), note, http.StatusInternalServerError)
 		return
@@ -140,6 +140,7 @@ func (h *PancakeHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 	u.Send(w, "", note, http.StatusOK)
 }
+
 func (h *PancakeHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {
@@ -159,7 +160,7 @@ func (h *PancakeHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.Pancake.DeleteNote(user_id, id)
+	err = h.Pancake.Delete(user_id, id)
 	if err != nil {
 		u.Send(w, "Error retrieving note:"+err.Error(), nil, http.StatusInternalServerError)
 		return

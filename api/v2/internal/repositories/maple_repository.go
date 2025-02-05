@@ -41,7 +41,7 @@ func (r *MapleRepository) Exists(id int, userID uuid.UUID) (bool, error) {
 	return count > 0, nil
 }
 
-func (r *MapleRepository) FindByUserID(userID uuid.UUID) ([]models.Maple, error) {
+func (r *MapleRepository) GetAll(userID uuid.UUID) ([]models.Maple, error) {
 	var maples []models.Maple
 	err := r.DB.Preload("MapleDays").Where("user_id = ?", userID).Find(&maples).Error
 	if err != nil {
