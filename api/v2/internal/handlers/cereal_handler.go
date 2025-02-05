@@ -5,9 +5,9 @@ import (
 	"breakfast/internal/services"
 	u "breakfast/internal/utilities"
 
-	"strconv"
 	"encoding/json"
 	"net/http"
+	"strconv"
 )
 
 type CerealHandler struct {
@@ -168,7 +168,7 @@ func (h *CerealHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	idStr := r.PathValue("id")
-  id, err := strconv.Atoi(idStr)
+	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		u.Send(w, "Error reading the ID requested", nil, http.StatusBadRequest)
 		return

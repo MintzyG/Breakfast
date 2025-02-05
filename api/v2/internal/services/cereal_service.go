@@ -49,7 +49,7 @@ func (s *CerealService) Update(userID uuid.UUID, new *models.CerealDay) (error, 
 
 	day.Emoji = new.Emoji
 
-  dateStr := new.Date.Format("2006-01-02")
+	dateStr := new.Date.Format("2006-01-02")
 	existingDay, err := s.Repo.FindByDate(userID, dateStr)
 	if err == nil && existingDay.DayID != new.DayID {
 		return fmt.Errorf("cannot update to a date that already exists for another entry"), nil
@@ -65,14 +65,13 @@ func (s *CerealService) Update(userID uuid.UUID, new *models.CerealDay) (error, 
 	return err, day
 }
 
-
 func (s *CerealService) Delete(userID uuid.UUID, dayID int) error {
-  exists, err := s.Repo.Exists(dayID, userID)
-  if err != nil {
-    return err
-  }
-  if !exists {
-    return fmt.Errorf("Model doesn't belong to user or exists")
-  }
-  return s.Repo.Delete(dayID)
+	exists, err := s.Repo.Exists(dayID, userID)
+	if err != nil {
+		return err
+	}
+	if !exists {
+		return fmt.Errorf("Model doesn't belong to user or exists")
+	}
+	return s.Repo.Delete(dayID)
 }

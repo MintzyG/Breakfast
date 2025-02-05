@@ -21,7 +21,7 @@ func main() {
 	database := db.Connect(cfg.DSN)
 	db.Migrate()
 
-  mux := intializeMux(database, cfg)
+	mux := intializeMux(database, cfg)
 
 	corsHandler := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
@@ -102,19 +102,19 @@ func intializeMux(database *gorm.DB, cfg *config.Config) *http.ServeMux {
 	mux.Handle("PATCH /espresso/{id}", mw.AuthMiddleware(http.HandlerFunc(espressoHandler.Update)))
 	mux.Handle("DELETE /espresso/{id}", mw.AuthMiddleware(http.HandlerFunc(espressoHandler.Delete)))
 
-  // Toast Endpoints
-  mux.Handle("POST /toast", mw.AuthMiddleware(http.HandlerFunc(toastHandler.Create)))
-  mux.Handle("GET /toast/{id}", mw.AuthMiddleware(http.HandlerFunc(toastHandler.GetByID)))
-  mux.Handle("GET /toast", mw.AuthMiddleware(http.HandlerFunc(toastHandler.GetAll)))
-  mux.Handle("PATCH /toast/{id}", mw.AuthMiddleware(http.HandlerFunc(toastHandler.Update)))
-  mux.Handle("DELETE /toast/{id}", mw.AuthMiddleware(http.HandlerFunc(toastHandler.Delete)))
+	// Toast Endpoints
+	mux.Handle("POST /toast", mw.AuthMiddleware(http.HandlerFunc(toastHandler.Create)))
+	mux.Handle("GET /toast/{id}", mw.AuthMiddleware(http.HandlerFunc(toastHandler.GetByID)))
+	mux.Handle("GET /toast", mw.AuthMiddleware(http.HandlerFunc(toastHandler.GetAll)))
+	mux.Handle("PATCH /toast/{id}", mw.AuthMiddleware(http.HandlerFunc(toastHandler.Update)))
+	mux.Handle("DELETE /toast/{id}", mw.AuthMiddleware(http.HandlerFunc(toastHandler.Delete)))
 
-  // Cereal Endpoints
-  mux.Handle("POST /cereal", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.Create)))
-  mux.Handle("GET /cereal/{id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.GetByID)))
-  mux.Handle("GET /cereal", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.GetAll)))
-  mux.Handle("PATCH /cereal/{id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.Update)))
-  mux.Handle("DELETE /cereal/{id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.Delete)))
+	// Cereal Endpoints
+	mux.Handle("POST /cereal", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.Create)))
+	mux.Handle("GET /cereal/{id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.GetByID)))
+	mux.Handle("GET /cereal", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.GetAll)))
+	mux.Handle("PATCH /cereal/{id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.Update)))
+	mux.Handle("DELETE /cereal/{id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.Delete)))
 
-  return mux
+	return mux
 }
