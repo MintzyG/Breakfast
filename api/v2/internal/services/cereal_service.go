@@ -21,6 +21,17 @@ func (s *CerealService) Create(user_id uuid.UUID, day *models.CerealDay) error {
 	return s.Repo.Create(day)
 }
 
+func (s *CerealService) CreateActivity(user_id uuid.UUID, day_id int, activity *models.CerealActivity) (*models.CerealActivity, error) {
+  day, err := s.Repo.FindByID(day_id, user_id)
+  if err != nil {
+    return nil, err
+  }
+	activity.DayID = day.DayID
+  activity.Date = day.Date
+  err = s.Repo.CreateActivity(activity)
+  return activity, err
+}
+
 func (s *CerealService) GetByID(userID uuid.UUID, dayID int) (*models.CerealDay, error) {
 	day, err := s.Repo.FindByID(dayID, userID)
 	if err != nil {

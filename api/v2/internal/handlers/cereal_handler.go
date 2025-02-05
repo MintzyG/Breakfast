@@ -51,6 +51,46 @@ func (h *CerealHandler) Create(w http.ResponseWriter, r *http.Request) {
 	u.Send(w, "", data, http.StatusCreated)
 }
 
+func (h *CerealHandler) CreateActivity(w http.ResponseWriter, r *http.Request) {
+	userClaims := u.GetUserFromContext(r.Context())
+	if userClaims == nil {
+		u.Send(w, "Error: user context is empty", nil, http.StatusInternalServerError)
+		return
+	}
+
+	user_id, err := u.ParseUUID(w, userClaims.ID)
+	if err != nil {
+		return
+	}
+
+  idStr := r.PathValue("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		u.Send(w, "Error reading the ID requested", nil, http.StatusBadRequest)
+		return
+	}
+
+	var data models.CerealActivity
+	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
+		u.Send(w, err.Error(), nil, http.StatusConflict)
+		return
+	}
+
+	msg, err := models.ValidateModel(data)
+	if err != nil {
+		u.Send(w, "Invalid request", msg, http.StatusBadRequest)
+		return
+	}
+
+  activity, err := h.Cereal.CreateActivity(user_id, id, &data)
+	if err != nil {
+		u.Send(w, "Could not create day: "+err.Error(), activity, http.StatusInternalServerError)
+		return
+	}
+
+	u.Send(w, "", data, http.StatusCreated)
+}
+
 func (h *CerealHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	userClaims := u.GetUserFromContext(r.Context())
 	if userClaims == nil {

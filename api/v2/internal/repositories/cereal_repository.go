@@ -22,9 +22,13 @@ func (r *CerealRepository) Create(day *models.CerealDay) error {
 	return r.DB.Create(day).Error
 }
 
+func (r *CerealRepository) CreateActivity(day *models.CerealActivity) error {
+	return r.DB.Create(day).Error
+}
+
 func (r *CerealRepository) FindByID(id int, userID uuid.UUID) (*models.CerealDay, error) {
 	var day models.CerealDay
-	err := r.DB.Where("day_id = ? AND user_id = ?", id, userID).First(&day).Error
+	err := r.DB.Preload("Activities").Where("day_id = ? AND user_id = ?", id, userID).First(&day).Error
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +43,7 @@ func (r *CerealRepository) FindByDate(userID uuid.UUID, dateStr string) (*models
 		return nil, fmt.Errorf("invalid date format: %w", err)
 	}
 
-	err = r.DB.Where("DATE(date) = ? AND user_id = ?", date.Format("2006-01-02"), userID).First(&day).Error
+	err = r.DB.Preload("Activities").Where("DATE(date) = ? AND user_id = ?", date.Format("2006-01-02"), userID).First(&day).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, fmt.Errorf("No routine created on this day")
@@ -61,7 +65,7 @@ func (r *CerealRepository) Exists(id int, userID uuid.UUID) (bool, error) {
 
 func (r *CerealRepository) GetAll(userID uuid.UUID) ([]models.CerealDay, error) {
 	var days []models.CerealDay
-	err := r.DB.Where("user_id = ?", userID).Find(&days).Error
+	err := r.DB.Preload("Activities").Where("user_id = ?", userID).Find(&days).Error
 	if err != nil {
 		return nil, err
 	}

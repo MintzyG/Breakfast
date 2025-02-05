@@ -111,6 +111,7 @@ func intializeMux(database *gorm.DB, cfg *config.Config) *http.ServeMux {
 
 	// Cereal Endpoints
 	mux.Handle("POST /cereal", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.Create)))
+	mux.Handle("POST /cereal/{id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.CreateActivity)))
 	mux.Handle("GET /cereal/{id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.GetByID)))
 	mux.Handle("GET /cereal", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.GetAll)))
 	mux.Handle("PATCH /cereal/{id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.Update)))
