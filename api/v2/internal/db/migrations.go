@@ -13,7 +13,7 @@ func Migrate() {
 		&models.UserLink{},
 		&models.Maple{},
 		&models.MapleDay{},
-		&models.Toast{},
+		&models.ToastSession{},
 		&models.Yogurt{},
 		&models.Pancake{},
 		&models.CerealActivity{},

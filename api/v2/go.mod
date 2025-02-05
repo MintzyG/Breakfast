@@ -3,6 +3,7 @@ module breakfast
 go 1.23.2
 
 require (
+	cloud.google.com/go v0.118.1 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
