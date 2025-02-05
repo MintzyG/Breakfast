@@ -31,7 +31,7 @@ type User struct {
 	UpdatedAt      time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 
 	UserLinks        []UserLink             `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"user_links,omitempty"`
-	Toasts           []Toast                `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"toasts"`
+	Toasts           []ToastSession         `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"toasts"`
 	Omelettes        []OmeletteTable        `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"omelettes"`
 	Pancakes         []Pancake              `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"pancakes"`
 	CerealDays       []CerealDay            `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"cereal_days"`

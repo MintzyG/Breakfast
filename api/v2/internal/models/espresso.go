@@ -13,8 +13,8 @@ type EspressoSession struct {
 	SessionName string    `gorm:"type:varchar(255);not null" json:"session_name" validate:"required"`
 	Duration    int64     `gorm:"not null" json:"duration"`
 	BreakTime   int       `gorm:"not null;default:5" json:"break_time"`
-	FocusStart  time.Time `gorm:"not null" json:"focus_start" validate:"required"`
-	FocusEnd    time.Time `gorm:"not null" json:"focus_end" validate:"required"`
+  FocusStart  time.Time `gorm:"type:timestamp;not null" json:"focus_start" validate:"required"`
+  FocusEnd    time.Time `gorm:"type:timestamp;not null" json:"focus_end" validate:"required"`
 	CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt   time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 	Rounds      int       `gorm:"not null;default:1" json:"rounds"`
