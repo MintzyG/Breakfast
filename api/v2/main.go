@@ -13,6 +13,7 @@ import (
 	"breakfast/internal/services"
 
 	"github.com/rs/cors"
+	"gorm.io/gorm"
 )
 
 func main() {
@@ -20,12 +21,32 @@ func main() {
 	database := db.Connect(cfg.DSN)
 	db.Migrate()
 
+  mux := intializeMux(database, cfg)
+
+	corsHandler := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{"Content-Type", "Authorization"},
+	}).Handler(mux)
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Printf("Server running on http://localhost:%s", port)
+	log.Fatal(http.ListenAndServe(":"+port, corsHandler))
+}
+
+func intializeMux(database *gorm.DB, cfg *config.Config) *http.ServeMux {
 	// Repos
 	userRepo := repositories.NewUserRepository(database)
 	pancakeRepo := repositories.NewPancakeRepository(database)
 	yogurtRepo := repositories.NewYogurtRepository(database)
 	mapleRepo := repositories.NewMapleRepository(database)
 	espressoRepo := repositories.NewEspressoRepository(database)
+	toastRepo := repositories.NewToastRepository(database)
+	cerealRepo := repositories.NewCerealRepository(database)
 
 	// Services
 	authService := services.NewAuthService(userRepo, cfg.JWTSecret)
@@ -33,6 +54,8 @@ func main() {
 	yogurtService := services.NewYogurtService(yogurtRepo)
 	mapleService := services.NewMapleService(mapleRepo)
 	espressoService := services.NewEspressoService(espressoRepo)
+	toastService := services.NewToastService(toastRepo)
+	cerealService := services.NewCerealService(cerealRepo)
 
 	// Handlers
 	authHandler := handlers.NewAuthHandler(authService)
@@ -40,6 +63,8 @@ func main() {
 	yogurtHandler := handlers.NewYogurtHandler(yogurtService)
 	mapleHandler := handlers.NewMapleHandler(mapleService)
 	espressoHandler := handlers.NewEspressoHandler(espressoService)
+	toastHandler := handlers.NewToastHandler(toastService)
+	cerealHandler := handlers.NewCerealHandler(cerealService)
 
 	mux := http.NewServeMux()
 
@@ -77,17 +102,19 @@ func main() {
 	mux.Handle("PATCH /espresso/{id}", mw.AuthMiddleware(http.HandlerFunc(espressoHandler.Update)))
 	mux.Handle("DELETE /espresso/{id}", mw.AuthMiddleware(http.HandlerFunc(espressoHandler.Delete)))
 
-	corsHandler := cors.New(cors.Options{
-		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowedHeaders: []string{"Content-Type", "Authorization"},
-	}).Handler(mux)
+  // Toast Endpoints
+  mux.Handle("POST /toast", mw.AuthMiddleware(http.HandlerFunc(toastHandler.Create)))
+  mux.Handle("GET /toast/{id}", mw.AuthMiddleware(http.HandlerFunc(toastHandler.GetByID)))
+  mux.Handle("GET /toast", mw.AuthMiddleware(http.HandlerFunc(toastHandler.GetAll)))
+  mux.Handle("PATCH /toast/{id}", mw.AuthMiddleware(http.HandlerFunc(toastHandler.Update)))
+  mux.Handle("DELETE /toast/{id}", mw.AuthMiddleware(http.HandlerFunc(toastHandler.Delete)))
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
+  // Cereal Endpoints
+  mux.Handle("POST /cereal", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.Create)))
+  mux.Handle("GET /cereal/{id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.GetByID)))
+  mux.Handle("GET /cereal", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.GetAll)))
+  mux.Handle("PATCH /cereal/{id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.Update)))
+  mux.Handle("DELETE /cereal/{id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.Delete)))
 
-	log.Printf("Server running on http://localhost:%s", port)
-	log.Fatal(http.ListenAndServe(":"+port, corsHandler))
+  return mux
 }
