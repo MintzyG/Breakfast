@@ -32,7 +32,7 @@ type OmeletteList struct {
 type OmeletteCard struct {
 	CardID    int       `gorm:"primaryKey;autoIncrement" json:"card_id"`
 	ListID    int       `gorm:"not null" json:"list_id"`
-  TableID   int       `gorm:"not null" json:"table_id"`
+	TableID   int       `gorm:"not null" json:"table_id"`
 	UserID    uuid.UUID `gorm:"type:char(36);not null" json:"user_id"`
 	CardName  string    `gorm:"type:varchar(255);not null" json:"card_name"`
 	Content   string    `gorm:"type:text;not null" json:"content"`
