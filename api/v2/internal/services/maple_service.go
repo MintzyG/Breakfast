@@ -24,6 +24,43 @@ func (s *MapleService) Create(user_id uuid.UUID, habit *models.Maple) error {
 	return s.Repo.Create(habit)
 }
 
+func (s *MapleService) GetByID(userID uuid.UUID, habitID int) (*models.Maple, error) {
+	habit, err := s.Repo.FindByID(habitID, userID)
+	if err != nil {
+		return nil, err
+	}
+	return habit, nil
+}
+
+func (s *MapleService) GetAll(userID uuid.UUID) ([]models.Maple, error) {
+	return s.Repo.GetAll(userID)
+}
+
+func (s *MapleService) Update(userID uuid.UUID, new *models.Maple) (error, *models.Maple) {
+	habit, err := s.Repo.FindByID(new.HabitID, userID)
+	if err != nil {
+		return err, nil
+	}
+
+	habit.Title = new.Title
+	habit.Emoji = new.Emoji
+	habit.SmallestUnit = new.SmallestUnit
+
+	err = s.Repo.Update(habit)
+	return err, habit
+}
+
+func (s *MapleService) Delete(userID uuid.UUID, habitID int) error {
+	exists, err := s.Repo.Exists(habitID, userID)
+	if err != nil {
+		return err
+	}
+	if !exists {
+		return fmt.Errorf("Model doesn't belong to user or exists")
+	}
+	return s.Repo.Delete(habitID)
+}
+
 func (s *MapleService) CreateDay(user_id uuid.UUID, habit_id int, day *models.MapleDay) (*models.Maple, error) {
 	habit, err := s.Repo.FindByID(habit_id, user_id)
 	if err != nil {
@@ -129,39 +166,54 @@ func (s *MapleService) CreateDay(user_id uuid.UUID, habit_id int, day *models.Ma
 	return habit, err
 }
 
-func (s *MapleService) GetByID(userID uuid.UUID, habitID int) (*models.Maple, error) {
+func (s *MapleService) GetDay(userID uuid.UUID, habitID int, dayID int) (*models.MapleDay, error) {
 	habit, err := s.Repo.FindByID(habitID, userID)
 	if err != nil {
 		return nil, err
 	}
-	return habit, nil
-}
 
-func (s *MapleService) GetAll(userID uuid.UUID) ([]models.Maple, error) {
-	return s.Repo.GetAll(userID)
-}
-
-func (s *MapleService) Update(userID uuid.UUID, new *models.Maple) (error, *models.Maple) {
-	habit, err := s.Repo.FindByID(new.HabitID, userID)
-	if err != nil {
-		return err, nil
+	for _, day := range habit.MapleDays {
+		if day.DayID == dayID {
+			return &day, nil
+		}
 	}
 
-	habit.Title = new.Title
-	habit.Emoji = new.Emoji
-	habit.SmallestUnit = new.SmallestUnit
-
-	err = s.Repo.Update(habit)
-	return err, habit
+	return nil, fmt.Errorf("Maple entry not found")
 }
 
-func (s *MapleService) Delete(userID uuid.UUID, habitID int) error {
-	exists, err := s.Repo.Exists(habitID, userID)
+func (s *MapleService) UpdateDay(userID uuid.UUID, habitID int, dayID int, updatedData *models.MapleDay) (*models.MapleDay, error) {
+	habit, err := s.Repo.FindByID(habitID, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	for i, day := range habit.MapleDays {
+		if day.DayID == dayID {
+			habit.MapleDays[i].UnitsDone = updatedData.UnitsDone
+			habit.MapleDays[i].Achieved = updatedData.Achieved
+			habit.MapleDays[i].Date = updatedData.Date
+
+			if err := s.Repo.UpdateDay(&habit.MapleDays[i]); err != nil {
+				return nil, err
+			}
+			return &habit.MapleDays[i], nil
+		}
+	}
+
+	return nil, fmt.Errorf("MapleDay not found")
+}
+
+func (s *MapleService) DeleteDay(userID uuid.UUID, habitID int, dayID int) error {
+	habit, err := s.Repo.FindByID(habitID, userID)
 	if err != nil {
 		return err
 	}
-	if !exists {
-		return fmt.Errorf("Model doesn't belong to user or exists")
+
+	for _, day := range habit.MapleDays {
+		if day.DayID == dayID {
+			return s.Repo.DeleteDay(dayID)
+		}
 	}
-	return s.Repo.Delete(habitID)
+
+	return fmt.Errorf("MapleDay not found")
 }

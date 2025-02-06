@@ -89,11 +89,15 @@ func intializeMux(database *gorm.DB, cfg *config.Config) *http.ServeMux {
 
 	// Maple Endpoints
 	mux.Handle("POST /maple", mw.AuthMiddleware(http.HandlerFunc(mapleHandler.Create)))
-	mux.Handle("POST /maple/{id}/day", mw.AuthMiddleware(http.HandlerFunc(mapleHandler.CreateDay)))
 	mux.Handle("GET /maple/{id}", mw.AuthMiddleware(http.HandlerFunc(mapleHandler.GetByID)))
 	mux.Handle("GET /maple", mw.AuthMiddleware(http.HandlerFunc(mapleHandler.GetAll)))
 	mux.Handle("PATCH /maple/{id}", mw.AuthMiddleware(http.HandlerFunc(mapleHandler.Update)))
 	mux.Handle("DELETE /maple/{id}", mw.AuthMiddleware(http.HandlerFunc(mapleHandler.Delete)))
+  // MapleDays Endpoints
+	mux.Handle("POST /maple/{id}/day", mw.AuthMiddleware(http.HandlerFunc(mapleHandler.CreateDay)))
+	mux.Handle("GET /maple/{id}/day/{day_id}", mw.AuthMiddleware(http.HandlerFunc(mapleHandler.GetDay)))
+	mux.Handle("PATCH /maple/{id}/day/{day_id}", mw.AuthMiddleware(http.HandlerFunc(mapleHandler.UpdateDay)))
+	mux.Handle("DELETE /maple/{id}/day/{day_id}", mw.AuthMiddleware(http.HandlerFunc(mapleHandler.DeleteDay)))
 
 	// Espresso Endpoints
 	mux.Handle("POST /espresso", mw.AuthMiddleware(http.HandlerFunc(espressoHandler.Create)))
@@ -111,11 +115,15 @@ func intializeMux(database *gorm.DB, cfg *config.Config) *http.ServeMux {
 
 	// Cereal Endpoints
 	mux.Handle("POST /cereal", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.Create)))
-	mux.Handle("POST /cereal/{id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.CreateActivity)))
 	mux.Handle("GET /cereal/{id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.GetByID)))
 	mux.Handle("GET /cereal", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.GetAll)))
 	mux.Handle("PATCH /cereal/{id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.Update)))
 	mux.Handle("DELETE /cereal/{id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.Delete)))
+  // Cereal Activities Endpoints
+	mux.Handle("POST /cereal/{id}/activity", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.CreateActivity)))
+	mux.Handle("GET /cereal/{id}/activity/{activity_id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.GetActivity)))
+	mux.Handle("PATCH /cereal/{id}/activity/{activity_id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.UpdateActivity)))
+	mux.Handle("DELETE /cereal/{id}/activity/{activity_id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.DeleteActivity)))
 
 	return mux
 }

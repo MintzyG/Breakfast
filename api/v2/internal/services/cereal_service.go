@@ -21,17 +21,6 @@ func (s *CerealService) Create(user_id uuid.UUID, day *models.CerealDay) error {
 	return s.Repo.Create(day)
 }
 
-func (s *CerealService) CreateActivity(user_id uuid.UUID, day_id int, activity *models.CerealActivity) (*models.CerealActivity, error) {
-  day, err := s.Repo.FindByID(day_id, user_id)
-  if err != nil {
-    return nil, err
-  }
-	activity.DayID = day.DayID
-  activity.Date = day.Date
-  err = s.Repo.CreateActivity(activity)
-  return activity, err
-}
-
 func (s *CerealService) GetByID(userID uuid.UUID, dayID int) (*models.CerealDay, error) {
 	day, err := s.Repo.FindByID(dayID, userID)
 	if err != nil {
@@ -85,4 +74,71 @@ func (s *CerealService) Delete(userID uuid.UUID, dayID int) error {
 		return fmt.Errorf("Model doesn't belong to user or exists")
 	}
 	return s.Repo.Delete(dayID)
+}
+
+func (s *CerealService) CreateActivity(user_id uuid.UUID, day_id int, activity *models.CerealActivity) (*models.CerealActivity, error) {
+  day, err := s.Repo.FindByID(day_id, user_id)
+  if err != nil {
+    return nil, err
+  }
+	activity.DayID = day.DayID
+  activity.Date = day.Date
+  err = s.Repo.CreateActivity(activity)
+  return activity, err
+}
+
+func (s *CerealService) GetActivity(userID uuid.UUID, dayID int, activityID int) (*models.CerealActivity, error) {
+	day, err := s.Repo.FindByID(dayID, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, activity := range day.Activities {
+		if activity.ActivityID == activityID {
+			return &activity, nil
+		}
+	}
+
+	return nil, fmt.Errorf("activity not found")
+}
+
+func (s *CerealService) UpdateActivity(userID uuid.UUID, dayID int, activityID int, newData *models.CerealActivity) (*models.CerealActivity, error) {
+	day, err := s.Repo.FindByID(dayID, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	var activity *models.CerealActivity
+	for i := range day.Activities {
+		if day.Activities[i].ActivityID == activityID {
+			activity = &day.Activities[i]
+			break
+		}
+	}
+
+	if activity == nil {
+		return nil, fmt.Errorf("activity not found")
+	}
+
+	activity.Title = newData.Title
+	activity.Date = newData.Date
+	activity.StartTime = newData.StartTime
+	activity.EndTime = newData.EndTime
+	activity.Notify = newData.Notify
+
+	err = s.Repo.UpdateActivity(activity)
+	if err != nil {
+		return nil, err
+	}
+
+	return activity, nil
+}
+
+func (s *CerealService) DeleteActivity(userID uuid.UUID, dayID int, activityID int) error {
+	day, err := s.Repo.FindByID(dayID, userID)
+	if err != nil {
+		return err
+	}
+
+	return s.Repo.DeleteActivity(day.DayID, activityID)
 }

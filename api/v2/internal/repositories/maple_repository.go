@@ -19,10 +19,6 @@ func (r *MapleRepository) Create(habit *models.Maple) error {
 	return r.DB.Create(habit).Error
 }
 
-func (r *MapleRepository) CreateDay(day *models.MapleDay) error {
-	return r.DB.Create(day).Error
-}
-
 func (r *MapleRepository) FindByID(id int, userID uuid.UUID) (*models.Maple, error) {
 	var maple models.Maple
 	err := r.DB.Preload("MapleDays").Where("habit_id = ? AND user_id = ?", id, userID).First(&maple).Error
@@ -56,4 +52,16 @@ func (r *MapleRepository) Update(habit *models.Maple) error {
 
 func (r *MapleRepository) Delete(id int) error {
 	return r.DB.Delete(&models.Maple{}, id).Error
+}
+
+func (r *MapleRepository) CreateDay(day *models.MapleDay) error {
+	return r.DB.Create(day).Error
+}
+
+func (r *MapleRepository) UpdateDay(day *models.MapleDay) error {
+	return r.DB.Save(day).Error
+}
+
+func (r *MapleRepository) DeleteDay(day_id int) error {
+	return r.DB.Where("day_id = ?", day_id).Delete(&models.MapleDay{}).Error
 }

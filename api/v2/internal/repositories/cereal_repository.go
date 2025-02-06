@@ -22,10 +22,6 @@ func (r *CerealRepository) Create(day *models.CerealDay) error {
 	return r.DB.Create(day).Error
 }
 
-func (r *CerealRepository) CreateActivity(day *models.CerealActivity) error {
-	return r.DB.Create(day).Error
-}
-
 func (r *CerealRepository) FindByID(id int, userID uuid.UUID) (*models.CerealDay, error) {
 	var day models.CerealDay
 	err := r.DB.Preload("Activities").Where("day_id = ? AND user_id = ?", id, userID).First(&day).Error
@@ -78,4 +74,16 @@ func (r *CerealRepository) Update(day *models.CerealDay) error {
 
 func (r *CerealRepository) Delete(id int) error {
 	return r.DB.Delete(&models.CerealDay{}, id).Error
+}
+
+func (r *CerealRepository) CreateActivity(day *models.CerealActivity) error {
+	return r.DB.Create(day).Error
+}
+
+func (r *CerealRepository) UpdateActivity(activity *models.CerealActivity) error {
+	return r.DB.Save(activity).Error
+}
+
+func (r *CerealRepository) DeleteActivity(dayID int, activityID int) error {
+	return r.DB.Where("day_id = ? AND activity_id = ?", dayID, activityID).Delete(&models.CerealActivity{}).Error
 }
