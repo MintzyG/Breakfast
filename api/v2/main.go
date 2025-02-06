@@ -47,6 +47,7 @@ func intializeMux(database *gorm.DB, cfg *config.Config) *http.ServeMux {
 	espressoRepo := repositories.NewEspressoRepository(database)
 	toastRepo := repositories.NewToastRepository(database)
 	cerealRepo := repositories.NewCerealRepository(database)
+	parfaitRepo := repositories.NewParfaitRepository(database)
 
 	// Services
 	authService := services.NewAuthService(userRepo, cfg.JWTSecret)
@@ -56,6 +57,7 @@ func intializeMux(database *gorm.DB, cfg *config.Config) *http.ServeMux {
 	espressoService := services.NewEspressoService(espressoRepo)
 	toastService := services.NewToastService(toastRepo)
 	cerealService := services.NewCerealService(cerealRepo)
+	parfaitService := services.NewParfaitService(parfaitRepo)
 
 	// Handlers
 	authHandler := handlers.NewAuthHandler(authService)
@@ -65,6 +67,7 @@ func intializeMux(database *gorm.DB, cfg *config.Config) *http.ServeMux {
 	espressoHandler := handlers.NewEspressoHandler(espressoService)
 	toastHandler := handlers.NewToastHandler(toastService)
 	cerealHandler := handlers.NewCerealHandler(cerealService)
+	parfaitHandler := handlers.NewParfaitHandler(parfaitService)
 
 	mux := http.NewServeMux()
 
@@ -124,6 +127,19 @@ func intializeMux(database *gorm.DB, cfg *config.Config) *http.ServeMux {
 	mux.Handle("GET /cereal/{id}/activity/{activity_id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.GetActivity)))
 	mux.Handle("PATCH /cereal/{id}/activity/{activity_id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.UpdateActivity)))
 	mux.Handle("DELETE /cereal/{id}/activity/{activity_id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.DeleteActivity)))
+
+  // Parfait Endpoints
+  mux.Handle("POST /parfait", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.Create)))
+  mux.Handle("GET /parfait/{id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.GetByID)))
+  mux.Handle("GET /parfait", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.GetAll)))
+  mux.Handle("PATCH /parfait/{id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.Update)))
+  mux.Handle("DELETE /parfait/{id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.Delete)))
+  // Parfait Reminders Endpoint
+  mux.Handle("POST /parfait/{id}/reminder", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.CreateReminder)))
+  mux.Handle("GET /parfait/{id}/reminder/{reminder_id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.GetReminder)))
+  mux.Handle("GET /reminders", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.GetAllReminders)))
+  mux.Handle("PATCH /parfait/{id}/reminder/{reminder_id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.UpdateReminder)))
+  mux.Handle("DELETE /parfait/{id}/reminder/{reminder_id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.DeleteReminder)))
 
 	return mux
 }
