@@ -128,18 +128,18 @@ func intializeMux(database *gorm.DB, cfg *config.Config) *http.ServeMux {
 	mux.Handle("PATCH /cereal/{id}/activity/{activity_id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.UpdateActivity)))
 	mux.Handle("DELETE /cereal/{id}/activity/{activity_id}", mw.AuthMiddleware(http.HandlerFunc(cerealHandler.DeleteActivity)))
 
-  // Parfait Endpoints
-  mux.Handle("POST /parfait", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.Create)))
-  mux.Handle("GET /parfait/{id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.GetByID)))
-  mux.Handle("GET /parfait", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.GetAll)))
-  mux.Handle("PATCH /parfait/{id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.Update)))
-  mux.Handle("DELETE /parfait/{id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.Delete)))
-  // Parfait Reminders Endpoint
-  mux.Handle("POST /parfait/{id}/reminder", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.CreateReminder)))
-  mux.Handle("GET /parfait/{id}/reminder/{reminder_id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.GetReminder)))
-  mux.Handle("GET /reminders", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.GetAllReminders)))
-  mux.Handle("PATCH /parfait/{id}/reminder/{reminder_id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.UpdateReminder)))
-  mux.Handle("DELETE /parfait/{id}/reminder/{reminder_id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.DeleteReminder)))
+	// Parfait Endpoints
+	mux.Handle("POST /parfait", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.Create)))
+	mux.Handle("GET /parfait/{id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.GetByID)))
+	mux.Handle("GET /parfait", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.GetAll)))
+	mux.Handle("PATCH /parfait/{id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.Update)))
+	mux.Handle("DELETE /parfait/{id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.Delete)))
+	// Parfait Reminders Endpoint
+	mux.Handle("POST /parfait/{id}/reminder", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.CreateReminder)))
+	mux.Handle("GET /parfait/{id}/reminder/{reminder_id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.GetReminder)))
+	mux.Handle("GET /reminders", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.GetAllReminders)))
+	mux.Handle("PATCH /parfait/{id}/reminder/{reminder_id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.UpdateReminder)))
+	mux.Handle("DELETE /parfait/{id}/reminder/{reminder_id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.DeleteReminder)))
 
 	return mux
 }

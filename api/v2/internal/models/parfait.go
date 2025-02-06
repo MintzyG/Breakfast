@@ -24,7 +24,7 @@ type ParfaitReminder struct {
 	ReminderID       int       `gorm:"primaryKey;autoIncrement" json:"reminder_id"`
 	EventID          int       `gorm:"not null" json:"event_id"`
 	UserID           uuid.UUID `gorm:"type:char(36);not null" json:"user_id"`
-  RemindAt         time.Time `gorm:"type:timestamp;" json:"remind_at" validate:"required"`
+	RemindAt         time.Time `gorm:"type:timestamp;" json:"remind_at" validate:"required"`
 	Title            string    `gorm:"type:varchar(255);not null" json:"title"`
 	Description      string    `gorm:"type:text" json:"description"`
 	NotificationSent bool      `gorm:"default:false" json:"notification_sent"`

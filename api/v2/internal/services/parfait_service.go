@@ -39,11 +39,11 @@ func (s *ParfaitService) Update(userID uuid.UUID, new *models.ParfaitEvent) (err
 		return err, nil
 	}
 
-  event.Title = new.Title
-  event.Description = new.Description
-  event.StartTime = new.StartTime
-  event.EndTime = new.EndTime
-  event.Location = new.Location
+	event.Title = new.Title
+	event.Description = new.Description
+	event.StartTime = new.StartTime
+	event.EndTime = new.EndTime
+	event.Location = new.Location
 
 	err = s.Repo.Update(event)
 	return err, event
