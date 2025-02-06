@@ -61,23 +61,21 @@ func (s *MapleService) Delete(userID uuid.UUID, habitID int) error {
 	return s.Repo.Delete(habitID)
 }
 
+// I broke time and space, need to rework this
 func (s *MapleService) CreateDay(user_id uuid.UUID, habit_id int, day *models.MapleDay) (*models.Maple, error) {
 	habit, err := s.Repo.FindByID(habit_id, user_id)
 	if err != nil {
 		return habit, err
 	}
 
-	// Check for duplicate days
 	for _, existingDay := range habit.MapleDays {
 		if existingDay.CreatedAt.Format("2006-01-02") == day.CreatedAt.Format("2006-01-02") {
 			return habit, fmt.Errorf("day already exists for this habit")
 		}
 	}
 
-	// Add the new day
 	habit.MapleDays = append(habit.MapleDays, *day)
 
-	// If it's the first day, handle streak normally
 	if len(habit.MapleDays) == 1 {
 		if day.Achieved {
 			habit.CurrStreak = 1
@@ -86,17 +84,14 @@ func (s *MapleService) CreateDay(user_id uuid.UUID, habit_id int, day *models.Ma
 			habit.CurrStreak = 0
 		}
 	} else {
-		// Check if the day being added is not today
 		today := time.Now().Format("2006-01-02")
 		dayBeingAdded := day.CreatedAt.Format("2006-01-02")
 
 		if dayBeingAdded != today {
-			// Sort days for historical analysis
 			sort.SliceStable(habit.MapleDays, func(i, j int) bool {
 				return habit.MapleDays[i].CreatedAt.Before(habit.MapleDays[j].CreatedAt)
 			})
 
-			// Recalculate highest streak by scanning the entire history
 			maxStreak := 0
 			currentStreak := 0
 
@@ -131,7 +126,6 @@ func (s *MapleService) CreateDay(user_id uuid.UUID, habit_id int, day *models.Ma
 			habit.HighestStreak = maxStreak
 		}
 
-		// Calculate current streak normally
 		yesterday := day.CreatedAt.AddDate(0, 0, -1).Format("2006-01-02")
 		var foundYesterday bool
 		var yesterdayAchieved bool

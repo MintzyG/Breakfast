@@ -10,13 +10,6 @@ type Response struct {
 	Data interface{} `json:"data,omitempty"`
 }
 
-type Payload struct {
-	W    http.ResponseWriter
-	Msg  string
-	Data interface{}
-	Code int
-}
-
 func (r *Response) Send(w http.ResponseWriter, code int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
