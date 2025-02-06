@@ -195,7 +195,7 @@ func (h *CerealHandler) CreateActivity(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-  idStr := r.PathValue("id")
+	idStr := r.PathValue("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		u.Send(w, "Error reading the ID requested", nil, http.StatusBadRequest)
@@ -214,7 +214,7 @@ func (h *CerealHandler) CreateActivity(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-  activity, err := h.Cereal.CreateActivity(user_id, id, &data)
+	activity, err := h.Cereal.CreateActivity(user_id, id, &data)
 	if err != nil {
 		u.Send(w, "Could not create day: "+err.Error(), activity, http.StatusInternalServerError)
 		return

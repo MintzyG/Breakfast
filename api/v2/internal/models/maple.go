@@ -23,11 +23,11 @@ type Maple struct {
 }
 
 type MapleDay struct {
-	HabitID   int  `gorm:"not null" json:"habit_id"`
-  DayID     int  `gorm:"primaryKey;autoIncrement" json:"day_id"`
-	UnitsDone int  `gorm:"default:0" json:"units_done" validate:"required,min=1"`
-	Achieved  bool `gorm:"default:false" json:"achieved"`
-  Date time.Time `gorm:"type:date;not null" json:"date"`
+	HabitID   int       `gorm:"not null" json:"habit_id"`
+	DayID     int       `gorm:"primaryKey;autoIncrement" json:"day_id"`
+	UnitsDone int       `gorm:"default:0" json:"units_done" validate:"required,min=1"`
+	Achieved  bool      `gorm:"default:false" json:"achieved"`
+	Date      time.Time `gorm:"type:date;not null" json:"date"`
 
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`

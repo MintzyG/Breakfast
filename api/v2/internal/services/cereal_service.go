@@ -77,14 +77,14 @@ func (s *CerealService) Delete(userID uuid.UUID, dayID int) error {
 }
 
 func (s *CerealService) CreateActivity(user_id uuid.UUID, day_id int, activity *models.CerealActivity) (*models.CerealActivity, error) {
-  day, err := s.Repo.FindByID(day_id, user_id)
-  if err != nil {
-    return nil, err
-  }
+	day, err := s.Repo.FindByID(day_id, user_id)
+	if err != nil {
+		return nil, err
+	}
 	activity.DayID = day.DayID
-  activity.Date = day.Date
-  err = s.Repo.CreateActivity(activity)
-  return activity, err
+	activity.Date = day.Date
+	err = s.Repo.CreateActivity(activity)
+	return activity, err
 }
 
 func (s *CerealService) GetActivity(userID uuid.UUID, dayID int, activityID int) (*models.CerealActivity, error) {
