@@ -65,7 +65,7 @@ func (s *OmeletteService) CreateList(user_id uuid.UUID, table_id int, list *mode
 
 	list.TableID = table.TableID
 	list.UserID = table.UserID
-  list.Position = len(table.Lists)
+	list.Position = len(table.Lists)
 
 	err = s.Repo.CreateList(list)
 	return list, err
@@ -132,7 +132,7 @@ func (s *OmeletteService) CreateCard(user_id uuid.UUID, list_id int, card *model
 	card.TableID = list.TableID
 	card.ListID = list.ListID
 	card.UserID = list.UserID
-  card.Position = len(list.Cards)
+	card.Position = len(list.Cards)
 
 	err = s.Repo.CreateCard(card)
 	return card, err
