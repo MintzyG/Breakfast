@@ -157,6 +157,7 @@ func (s *OmeletteService) UpdateCard(userID uuid.UUID, card_id int, newData *mod
 	card.Position = newData.Position
 	card.CardName = newData.CardName
 	card.Content = newData.Content
+	card.ListID = newData.ListID
 
 	err = s.Repo.UpdateCard(card)
 	if err != nil {

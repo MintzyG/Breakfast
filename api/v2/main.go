@@ -48,6 +48,7 @@ func intializeMux(database *gorm.DB, cfg *config.Config) *http.ServeMux {
 	toastRepo := repositories.NewToastRepository(database)
 	cerealRepo := repositories.NewCerealRepository(database)
 	parfaitRepo := repositories.NewParfaitRepository(database)
+	omeletteRepo := repositories.NewOmeletteRepository(database)
 
 	// Services
 	authService := services.NewAuthService(userRepo, cfg.JWTSecret)
@@ -58,6 +59,7 @@ func intializeMux(database *gorm.DB, cfg *config.Config) *http.ServeMux {
 	toastService := services.NewToastService(toastRepo)
 	cerealService := services.NewCerealService(cerealRepo)
 	parfaitService := services.NewParfaitService(parfaitRepo)
+	omeletteService := services.NewOmeletteService(omeletteRepo)
 
 	// Handlers
 	authHandler := handlers.NewAuthHandler(authService)
@@ -68,6 +70,7 @@ func intializeMux(database *gorm.DB, cfg *config.Config) *http.ServeMux {
 	toastHandler := handlers.NewToastHandler(toastService)
 	cerealHandler := handlers.NewCerealHandler(cerealService)
 	parfaitHandler := handlers.NewParfaitHandler(parfaitService)
+	omeletteHandler := handlers.NewOmeletteHandler(omeletteService)
 
 	mux := http.NewServeMux()
 
@@ -140,6 +143,25 @@ func intializeMux(database *gorm.DB, cfg *config.Config) *http.ServeMux {
 	mux.Handle("GET /reminders", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.GetAllReminders)))
 	mux.Handle("PATCH /parfait/{id}/reminder/{reminder_id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.UpdateReminder)))
 	mux.Handle("DELETE /parfait/{id}/reminder/{reminder_id}", mw.AuthMiddleware(http.HandlerFunc(parfaitHandler.DeleteReminder)))
+
+  // Omelette Endpoints
+  mux.Handle("POST /omelette", mw.AuthMiddleware(http.HandlerFunc(omeletteHandler.Create)))
+  mux.Handle("GET /omelette/{id}", mw.AuthMiddleware(http.HandlerFunc(omeletteHandler.GetByID)))
+  mux.Handle("GET /omelette", mw.AuthMiddleware(http.HandlerFunc(omeletteHandler.GetAll)))
+  mux.Handle("PATCH /omelette/{id}", mw.AuthMiddleware(http.HandlerFunc(omeletteHandler.Update)))
+  mux.Handle("DELETE /omelette/{id}", mw.AuthMiddleware(http.HandlerFunc(omeletteHandler.Delete)))
+  // Omelette Lists Endpoints
+  mux.Handle("POST /omelette/{id}/list", mw.AuthMiddleware(http.HandlerFunc(omeletteHandler.CreateList)))
+  mux.Handle("GET /omelette/{id}/list/{list_id}", mw.AuthMiddleware(http.HandlerFunc(omeletteHandler.GetListByID)))
+  mux.Handle("GET /list", mw.AuthMiddleware(http.HandlerFunc(omeletteHandler.GetAllLists)))
+  mux.Handle("PATCH /omelette/{id}/list/{list_id}", mw.AuthMiddleware(http.HandlerFunc(omeletteHandler.UpdateList)))
+  mux.Handle("DELETE /omelette/{id}/list/{list_id}", mw.AuthMiddleware(http.HandlerFunc(omeletteHandler.DeleteList)))
+  // Omelette Card Endpoints
+  mux.Handle("POST /omelette/{id}/list/{list_id}/card", mw.AuthMiddleware(http.HandlerFunc(omeletteHandler.CreateCard)))
+  mux.Handle("GET /omelette/{id}/list/{list_id}/card/{card_id}", mw.AuthMiddleware(http.HandlerFunc(omeletteHandler.GetCardByID)))
+  mux.Handle("GET /card", mw.AuthMiddleware(http.HandlerFunc(omeletteHandler.GetAllCards)))
+  mux.Handle("PATCH /omelette/{id}/list/{list_id}/card/{card_id}", mw.AuthMiddleware(http.HandlerFunc(omeletteHandler.UpdateCard)))
+  mux.Handle("DELETE /omelette/{id}/list/{list_id}/card/{card_id}", mw.AuthMiddleware(http.HandlerFunc(omeletteHandler.DeleteCard)))
 
 	return mux
 }
