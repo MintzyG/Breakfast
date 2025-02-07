@@ -21,7 +21,7 @@ func (r *OmeletteRepository) Create(event *models.OmeletteTable) error {
 
 func (r *OmeletteRepository) FindByID(id int, userID uuid.UUID) (*models.OmeletteTable, error) {
 	var table models.OmeletteTable
-	err := r.DB.Preload("Lists").Where("table_id = ? AND user_id = ?", id, userID).First(&table).Error
+	err := r.DB.Preload("Lists.Cards").Where("table_id = ? AND user_id = ?", id, userID).First(&table).Error
 	if err != nil {
 		return nil, err
 	}
