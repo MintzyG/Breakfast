@@ -14,13 +14,13 @@ func (r *Response) Send(w http.ResponseWriter, code int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 
-  if r.Msg == "" && r.Payload == nil {
+	if r.Msg == "" && r.Payload == nil {
 		json.NewEncoder(w).Encode("Backend failure, Message and Payload are empty")
-  } else if r.Msg == "" {
+	} else if r.Msg == "" {
 		json.NewEncoder(w).Encode(r.Payload)
 	} else if r.Payload == nil {
 		json.NewEncoder(w).Encode(r.Msg)
-  } else {
+	} else {
 		json.NewEncoder(w).Encode(Response{Msg: r.Msg, Payload: r.Payload})
 	}
 }
