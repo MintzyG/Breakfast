@@ -17,10 +17,17 @@
         buildInputs = with pkgs; [
           mysql
           postman
+          nodejs
           k6
           go
         ];
       };
+      shellHook = ''
+        export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath [ pkgs.libglvnd ]}:$LD_LIBRARY_PATH
+        echo "Welcome to the development environment!"
+        USER_SHELL=$(getent passwd $USER | cut -d: -f7)
+        exec $USER_SHELL
+      '';
     }
   );
 }
