@@ -77,6 +77,7 @@ func intializeMux(database *gorm.DB, cfg *config.Config) *http.ServeMux {
 	// Authentication
 	mux.HandleFunc("POST /register", authHandler.Register)
 	mux.HandleFunc("POST /login", authHandler.Login)
+	mux.Handle("POST /verify-jwt", mw.AuthMiddleware(http.HandlerFunc(authHandler.VerifyJWT)))
 
 	// Pancake Endpoints
 	mux.Handle("POST /pancake", mw.AuthMiddleware(http.HandlerFunc(pancakeHandler.Create)))

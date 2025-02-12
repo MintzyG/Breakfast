@@ -15,7 +15,7 @@ func (r *Response) Send(w http.ResponseWriter, code int) {
 	w.WriteHeader(code)
 
   if r.Msg == "" && r.Payload == nil {
-		json.NewEncoder(w).Encode("Backend failure, Message and Payload are empty")
+    return
   } else if r.Msg == "" {
 		json.NewEncoder(w).Encode(r.Payload)
 	} else if r.Payload == nil {

@@ -34,7 +34,13 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u.Send(w, "CREATED", nil, http.StatusCreated)
+	token, err := h.AuthService.Login(data.Email, data.Password)
+	if err != nil {
+		u.Send(w, "Invalid email or password", err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	u.Send(w, "", token, http.StatusCreated)
 }
 
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
@@ -56,5 +62,9 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u.Send(w, "Login successful", map[string]string{"token": token}, http.StatusOK)
+  u.Send(w, "", map[string]string{"token": token}, http.StatusOK)
+}
+
+func (h *AuthHandler) VerifyJWT(w http.ResponseWriter, r *http.Request) {
+	u.Send(w, "", nil, http.StatusOK)
 }
