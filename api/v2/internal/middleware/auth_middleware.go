@@ -39,7 +39,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		})
 
 		if err != nil {
-			u.Send(w, "mw-error: Invalid token:" + err.Error(), nil, http.StatusUnauthorized)
+			u.Send(w, "mw-error: Invalid token:"+err.Error(), nil, http.StatusUnauthorized)
 			return
 		}
 
@@ -52,7 +52,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			// Enhanced logging for claims
 			_, err := json.Marshal(claims)
 			if err != nil {
-				u.Send(w, "mw-error: Error marshaling claims: " + err.Error(), nil, http.StatusUnauthorized)
+				u.Send(w, "mw-error: Error marshaling claims: "+err.Error(), nil, http.StatusUnauthorized)
 			} // else {
 			//   log.Println(claimsJSON)
 			// }
