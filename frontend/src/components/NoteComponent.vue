@@ -1,6 +1,6 @@
 <template>
   <div class="note" @click="openModal">
-    <div class="title">
+    <div class="title" :style="{ backgroundColor: '#' + note.color }">
       <span class="note-emoji">{{ note.emoji }}</span>
       {{ note.title }}
     </div>

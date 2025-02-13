@@ -34,6 +34,18 @@
             </div>
           </div>
 
+          <div class="color-picker-container">
+            <label>Color</label>
+            <div class="color-input-wrapper">
+              <input 
+                type="color" 
+                :value="'#' + newNote.color"
+                @input="updateNoteColor($event, 'new')"
+              >
+              <span class="color-hex">#{{ newNote.color }}</span>
+            </div>
+          </div>
+
           <label>Title</label>
           <input v-model="newNote.title" required>
 
@@ -63,6 +75,18 @@
               >
                 {{ emoji }}
               </button>
+            </div>
+          </div>
+
+          <div class="color-picker-container">
+            <label>Color</label>
+            <div class="color-input-wrapper">
+              <input 
+                type="color" 
+                :value="'#' + selectedNote.color"
+                @input="updateNoteColor($event, 'edit')"
+              >
+              <span class="color-hex">#{{ selectedNote.color }}</span>
             </div>
           </div>
 
@@ -109,11 +133,13 @@ export default {
       showEditModal: false,
       showDeleteConfirm: false,
       showEmojiPicker: false, // new
+      colorInput: '#4CAF50',
       notes: [],
       newNote: { 
         title: '', 
         content: '',
-        emoji: '📝' // new
+        emoji: '📝',
+        color: '4CAF50'
       },
       selectedNote: null,
       emojiList: ['📝', '📌', '⭐', '❤️', '🎯', '✨', '💡', '📚'] // new
@@ -136,12 +162,22 @@ export default {
 
     handleNoteClick(note) {
       this.selectedNote = { ...note };
+      this.colorInput = '#' + note.color;
       this.showEditModal = true;
     },
 
     closeEditModal() {
       this.showEditModal = false;
       this.selectedNote = null;
+    },
+
+    updateNoteColor(event, type) {
+      const color = event.target.value.substring(1);
+      if (type === 'new') {
+        this.newNote.color = color;
+      } else {
+        this.selectedNote.color = color;
+      }
     },
 
     toggleEmojiPicker() {
@@ -188,12 +224,18 @@ export default {
           headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
         });
         await this.fetchNotes();
-        this.newNote = { title: '', content: '' };
+        this.newNote = { 
+          title: '', 
+          content: '', 
+          emoji: '📝',
+          color: '4CAF50' // Reset to default green
+        };
+        this.colorInput = '#4CAF50'; // Reset color input
         this.showCreateModal = false;
       } catch (error) {
         console.error('Error creating note:', error);
       }
-    }
+    },
   }
 };
 </script>
@@ -294,5 +336,29 @@ form {
 
 .emoji-option:hover {
   background: #f5f5f5;
+}
+
+.color-picker-container {
+  margin-bottom: 15px;
+}
+
+.color-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+input[type="color"] {
+  width: 50px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.color-hex {
+  font-family: monospace;
+  font-size: 0.9em;
 }
 </style>
