@@ -42,6 +42,7 @@ func (s *PancakeService) Update(userID uuid.UUID, new *models.Pancake) (error, *
 	note.Title = new.Title
 	note.Content = new.Content
 	note.Emoji = new.Emoji
+	note.Color = new.Color
 
 	err = s.Repo.Update(note)
 	return err, note
