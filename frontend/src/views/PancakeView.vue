@@ -17,6 +17,23 @@
     <ModalComponent v-if="showCreateModal" @close="showCreateModal = false">
       <template v-slot:default>
         <form @submit.prevent="createNote">
+          <div class="emoji-picker-container">
+            <button type="button" class="emoji-button" @click="toggleEmojiPicker">
+              {{ newNote.emoji }}
+            </button>
+            <div v-if="showEmojiPicker" class="emoji-list">
+              <button 
+                v-for="emoji in emojiList" 
+                :key="emoji"
+                type="button"
+                class="emoji-option"
+                @click="selectEmoji(emoji, 'new')"
+              >
+                {{ emoji }}
+              </button>
+            </div>
+          </div>
+
           <label>Title</label>
           <input v-model="newNote.title" required>
 
@@ -32,6 +49,23 @@
     <ModalComponent v-if="showEditModal" @close="closeEditModal">
       <template v-slot:default>
         <form @submit.prevent="updateNote">
+          <div class="emoji-picker-container">
+            <button type="button" class="emoji-button" @click="toggleEmojiPicker">
+              {{ selectedNote.emoji }}
+            </button>
+            <div v-if="showEmojiPicker" class="emoji-list">
+              <button 
+                v-for="emoji in emojiList" 
+                :key="emoji"
+                type="button"
+                class="emoji-option"
+                @click="selectEmoji(emoji, 'edit')"
+              >
+                {{ emoji }}
+              </button>
+            </div>
+          </div>
+
           <label>Title</label>
           <input v-model="selectedNote.title" required>
 
@@ -74,9 +108,15 @@ export default {
       showCreateModal: false,
       showEditModal: false,
       showDeleteConfirm: false,
+      showEmojiPicker: false, // new
       notes: [],
-      newNote: { title: '', content: '' },
-      selectedNote: null
+      newNote: { 
+        title: '', 
+        content: '',
+        emoji: '📝' // new
+      },
+      selectedNote: null,
+      emojiList: ['📝', '📌', '⭐', '❤️', '🎯', '✨', '💡', '📚'] // new
     };
   },
   mounted() {
@@ -102,6 +142,19 @@ export default {
     closeEditModal() {
       this.showEditModal = false;
       this.selectedNote = null;
+    },
+
+    toggleEmojiPicker() {
+      this.showEmojiPicker = !this.showEmojiPicker;
+    },
+
+    selectEmoji(emoji, type) {
+      if (type === 'new') {
+        this.newNote.emoji = emoji;
+      } else {
+        this.selectedNote.emoji = emoji;
+      }
+      this.showEmojiPicker = false;
     },
 
     async updateNote() {
@@ -199,5 +252,47 @@ form {
 .modal-content {
   min-width: 400px;
   max-width: 600px;
+}
+
+.emoji-picker-container {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.emoji-button {
+  font-size: 1.5em;
+  padding: 5px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+}
+
+.emoji-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.emoji-option {
+  font-size: 1.5em;
+  padding: 5px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.emoji-option:hover {
+  background: #f5f5f5;
 }
 </style>

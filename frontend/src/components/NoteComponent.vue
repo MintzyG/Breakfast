@@ -1,6 +1,9 @@
 <template>
   <div class="note" @click="openModal">
-    <div class="title">{{ note.title }}</div>
+    <div class="title">
+      <span class="note-emoji">{{ note.emoji }}</span>
+      {{ note.title }}
+    </div>
     <div class="content">{{ note.content }}</div>
   </div>
 </template>
@@ -30,14 +33,14 @@ export default {
   flex-direction: column;
   cursor: pointer;
   overflow: hidden;
-  position: relative; /* Added for proper title positioning */
+  position: relative;
 }
 
 .title {
-  position: absolute; /* Position the title absolutely */
+  position: absolute;
   top: 0;
   left: 0;
-  right: 0; /* Stretch across the full width */
+  right: 0;
   background: #4CAF50;
   color: white;
   padding: 10px;
@@ -46,14 +49,25 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.note-emoji {
+  margin-right: 8px;
+  font-size: 1.2em;
 }
 
 .content {
-  margin-top: 40px; /* Add space for the title */
+  margin-top: 40px;
   padding: 10px;
   flex-grow: 1;
-  overflow-y: auto; /* Allow scrolling if content is too long */
-  word-wrap: break-word; /* Enable word wrapping */
-  white-space: pre-wrap; /* Preserve whitespace and wrapping */
+  overflow-y: auto;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.note-emoji {
+  margin-right: 8px;
 }
 </style>
