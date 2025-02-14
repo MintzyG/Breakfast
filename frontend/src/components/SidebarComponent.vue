@@ -6,6 +6,7 @@
         <li><router-link to="/dashboard/profile">Profile</router-link></li>
         <li><router-link to="/dashboard/settings">Settings</router-link></li>
         <li><router-link to="/dashboard/pancake">Pancake</router-link></li>
+        <li><router-link to="/dashboard/yogurt">Yogurt</router-link></li>
       </ul>
     </nav>
   </aside>
