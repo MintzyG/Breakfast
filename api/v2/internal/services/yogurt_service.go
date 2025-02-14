@@ -42,6 +42,7 @@ func (s *YogurtService) Update(userID uuid.UUID, new *models.Yogurt) (error, *mo
 	task.Title = new.Title
 	task.Description = new.Description
 	task.Emoji = new.Emoji
+	task.Color = new.Color
 	task.Priority = new.Priority
 	task.TaskSize = new.TaskSize
 	task.Completed = new.Completed
