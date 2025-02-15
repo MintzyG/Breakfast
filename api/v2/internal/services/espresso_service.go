@@ -26,14 +26,6 @@ func (s *EspressoService) Create(user_id uuid.UUID, session *models.EspressoSess
 	return s.Repo.Create(session)
 }
 
-// func (s *EspressoService) GetUserSettings(userID uuid.UUID) (*models.EspressoUserSettings, error) {
-// 	settings, err := s.Repo.FindSettings(userID)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return settings, nil
-// }
-
 func (s *EspressoService) GetByID(userID uuid.UUID, sessionID int) (*models.EspressoSession, error) {
 	session, err := s.Repo.FindByID(sessionID, userID)
 	if err != nil {
@@ -54,12 +46,11 @@ func (s *EspressoService) Update(userID uuid.UUID, new *models.EspressoSession) 
 
 	session.SessionName = new.SessionName
 	session.Emoji = new.Emoji
+	session.Color = new.Color
 	session.FocusStart = new.FocusStart
 	session.FocusEnd = new.FocusEnd
 	session.BreakTime = new.BreakTime
-	session.BigBreak = new.BigBreak
-	session.Rounds = new.Rounds
-	session.Laps = new.Laps
+	session.Distractions = new.Distractions
 
 	if session.FocusEnd.Before(session.FocusStart) {
 		return fmt.Errorf("End-time cannot be before Start-time"), session

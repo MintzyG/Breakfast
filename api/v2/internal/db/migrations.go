@@ -23,7 +23,6 @@ func Migrate() {
 		&models.OmeletteTable{},
 		&models.ParfaitEvent{},
 		&models.ParfaitReminder{},
-		&models.EspressoUserSettings{},
 		&models.EspressoSession{},
 	)
 	if err != nil {

@@ -39,7 +39,6 @@ type User struct {
 	EspressoSessions []EspressoSession      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"espresso_sessions"`
 	Maples           []Maple                `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"maples"`
 	Parfaits         []ParfaitEvent         `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"parfaits"`
-	EspressoConfigs  []EspressoUserSettings `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"espresso_configs"`
 	ParfaitReminders []ParfaitReminder      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"parfait_reminders"`
 }
 
