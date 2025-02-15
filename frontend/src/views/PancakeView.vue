@@ -1,7 +1,5 @@
 <template>
   <div class="pancake">
-    <h2>Pancake Notes</h2>
-
     <div class="notes-container">
       <NoteComponent 
         v-for="note in notes" 
@@ -18,32 +16,18 @@
       <template v-slot:default>
         <form @submit.prevent="createNote">
           <div class="emoji-picker-container">
-            <button type="button" class="emoji-button" @click="toggleEmojiPicker">
-              {{ newNote.emoji }}
-            </button>
-            <div v-if="showEmojiPicker" class="emoji-list">
-              <button 
-                v-for="emoji in emojiList" 
-                :key="emoji"
-                type="button"
-                class="emoji-option"
-                @click="selectEmoji(emoji, 'new')"
-              >
-                {{ emoji }}
-              </button>
-            </div>
+            <EmojiPicker
+              v-model="newNote.emoji"
+              @updateemoji="updateNoteEmoji($event, 'new')"
+            />
           </div>
 
           <div class="color-picker-container">
             <label>Color</label>
-            <div class="color-input-wrapper">
-              <input 
-                type="color" 
-                :value="'#' + newNote.color"
-                @input="updateNoteColor($event, 'new')"
-              >
-              <span class="color-hex">#{{ newNote.color }}</span>
-            </div>
+            <ColorPicker
+              v-model="newNote.color"
+              @updatecolor="updateNoteColor($event, 'new')"
+            />
           </div>
 
           <label>Title</label>
@@ -62,32 +46,18 @@
       <template v-slot:default>
         <form @submit.prevent="updateNote">
           <div class="emoji-picker-container">
-            <button type="button" class="emoji-button" @click="toggleEmojiPicker">
-              {{ selectedNote.emoji }}
-            </button>
-            <div v-if="showEmojiPicker" class="emoji-list">
-              <button 
-                v-for="emoji in emojiList" 
-                :key="emoji"
-                type="button"
-                class="emoji-option"
-                @click="selectEmoji(emoji, 'edit')"
-              >
-                {{ emoji }}
-              </button>
-            </div>
+            <EmojiPicker
+              v-model="selectedNote.emoji"
+              @updateemoji="updateNoteEmoji($event, 'edit')"
+            />
           </div>
 
           <div class="color-picker-container">
             <label>Color</label>
-            <div class="color-input-wrapper">
-              <input 
-                type="color" 
-                :value="'#' + selectedNote.color"
-                @input="updateNoteColor($event, 'edit')"
-              >
-              <span class="color-hex">#{{ selectedNote.color }}</span>
-            </div>
+            <ColorPicker
+              v-model="selectedNote.color"
+              @updatecolor="updateNoteColor($event, 'edit')"
+            />
           </div>
 
           <label>Title</label>
@@ -123,10 +93,18 @@
 import NoteComponent from '../components/NoteComponent.vue';
 import PlusButton from '../components/PlusButton.vue';
 import ModalComponent from '../components/ModalComponent.vue';
+import ColorPicker from '../components/ColorPicker.vue';
+import EmojiPicker from '../components/EmojiPicker.vue';
 
 export default {
   name: 'PancakeView',
-  components: { NoteComponent, PlusButton, ModalComponent },
+  components: {
+    NoteComponent,
+    PlusButton,
+    ModalComponent,
+    ColorPicker,
+    EmojiPicker
+  },
   data() {
     return {
       showCreateModal: false,
@@ -171,26 +149,20 @@ export default {
       this.selectedNote = null;
     },
 
-    updateNoteColor(event, type) {
-      const color = event.target.value.substring(1);
-      if (type === 'new') {
-        this.newNote.color = color;
-      } else {
-        this.selectedNote.color = color;
-      }
-    },
-
-    toggleEmojiPicker() {
-      this.showEmojiPicker = !this.showEmojiPicker;
-    },
-
-    selectEmoji(emoji, type) {
+    updateNoteEmoji(emoji, type) {
       if (type === 'new') {
         this.newNote.emoji = emoji;
       } else {
         this.selectedNote.emoji = emoji;
       }
-      this.showEmojiPicker = false;
+    },
+
+    updateNoteColor(color, type) {
+      if (type === 'new') {
+        this.newNote.color = color;
+      } else {
+        this.selectedNote.color = color;
+      }
     },
 
     async updateNote() {
@@ -296,69 +268,8 @@ form {
   max-width: 600px;
 }
 
-.emoji-picker-container {
-  position: relative;
-  margin-bottom: 15px;
-}
-
-.emoji-button {
-  font-size: 1.5em;
-  padding: 5px 15px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
-}
-
-.emoji-list {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 10px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 5px;
-  z-index: 1000;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.emoji-option {
-  font-size: 1.5em;
-  padding: 5px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.emoji-option:hover {
-  background: #f5f5f5;
-}
-
 .color-picker-container {
-  margin-bottom: 15px;
-}
-
-.color-input-wrapper {
   display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-input[type="color"] {
-  width: 50px;
-  height: 30px;
-  padding: 0;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.color-hex {
-  font-family: monospace;
-  font-size: 0.9em;
+  flex-direction: column;
 }
 </style>

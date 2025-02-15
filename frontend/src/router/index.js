@@ -5,6 +5,7 @@ import DashboardView from '../views/DashboardView.vue'
 import DashboardHome from '../views/DashboardHome.vue'
 import PancakeView from '../views/PancakeView.vue'
 import YogurtView from '../views/YogurtView.vue'
+import EspressoView from '../views/EspressoView.vue'
 import Profile from '../views/Profile.vue'
 import Settings from '../views/Settings.vue'
 
@@ -46,6 +47,11 @@ const router = createRouter({
           path: 'yogurt',
           name: 'yogurt',
           component: YogurtView,
+        },
+        {
+          path: 'espresso',
+          name: 'espresso',
+          component: EspressoView,
         },
         {
           path: 'profile',

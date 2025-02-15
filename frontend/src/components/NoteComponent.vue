@@ -24,8 +24,8 @@ export default {
 
 <style scoped>
 .note {
-  width: 200px;
-  height: 200px;
+  width: 250px;
+  height: 250px;
   background: #f9f9f9;
   border-radius: 10px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);

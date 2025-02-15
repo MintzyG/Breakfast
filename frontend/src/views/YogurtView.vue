@@ -36,37 +36,23 @@
     </div>
     <PlusButton @click="showCreateModal = true" />
 
-    <!-- Create Modal -->
+<!-- Create Modal -->
     <ModalComponent v-if="showCreateModal" @close="showCreateModal = false">
       <template v-slot:default>
         <form @submit.prevent="createTask">
           <div class="emoji-picker-container">
-            <button type="button" class="emoji-button" @click="toggleEmojiPicker('create')">
-              {{ newTask.emoji }}
-            </button>
-            <div v-if="showEmojiPicker === 'create'" class="emoji-list">
-              <button 
-                v-for="emoji in emojiList" 
-                :key="emoji"
-                type="button"
-                class="emoji-option"
-                @click="selectEmoji(emoji, 'create')"
-              >
-                {{ emoji }}
-              </button>
-            </div>
+            <EmojiPicker
+              v-model="newTask.emoji"
+              @updateemoji="emoji => newTask.emoji = emoji"
+            />
           </div>
 
           <div class="color-picker-container">
             <label>Color</label>
-            <div class="color-input-wrapper">
-              <input 
-                type="color" 
-                :value="'#' + newTask.color"
-                @input="updateTaskColor($event, 'create')"
-              >
-              <span class="color-hex">#{{ newTask.color }}</span>
-            </div>
+            <ColorPicker
+              v-model="newTask.color"
+              @updatecolor="color => newTask.color = color"
+            />
           </div>
 
           <label>Title</label>
@@ -91,32 +77,18 @@
       <template v-slot:default>
         <form @submit.prevent="updateTask">
           <div class="emoji-picker-container">
-            <button type="button" class="emoji-button" @click="toggleEmojiPicker('edit')">
-              {{ selectedTask.emoji }}
-            </button>
-            <div v-if="showEmojiPicker === 'edit'" class="emoji-list">
-              <button 
-                v-for="emoji in emojiList" 
-                :key="emoji"
-                type="button"
-                class="emoji-option"
-                @click="selectEmoji(emoji, 'edit')"
-              >
-                {{ emoji }}
-              </button>
-            </div>
+            <EmojiPicker
+              v-model="selectedTask.emoji"
+              @updateemoji="emoji => selectedTask.emoji = emoji"
+            />
           </div>
 
           <div class="color-picker-container">
             <label>Color</label>
-            <div class="color-input-wrapper">
-              <input 
-                type="color" 
-                :value="'#' + selectedTask.color"
-                @input="updateTaskColor($event, 'edit')"
-              >
-              <span class="color-hex">#{{ selectedTask.color }}</span>
-            </div>
+            <ColorPicker
+              v-model="selectedTask.color"
+              @updatecolor="color => selectedTask.color = color"
+            />
           </div>
 
           <label>Title</label>
@@ -134,23 +106,29 @@
           <button type="submit">Save Changes</button>
         </form>
       </template>
-    </ModalComponent>
-  </div>
+    </ModalComponent>  </div>
 </template>
 
 <script>
 import TaskComponent from '../components/TaskComponent.vue'
+import EmojiPicker from '../components/EmojiPicker.vue'
+import ColorPicker from '../components/ColorPicker.vue'
 import PlusButton from '../components/PlusButton.vue';
 import ModalComponent from '../components/ModalComponent.vue';
 
 export default {
   name: 'YogurtView',
-  components: { TaskComponent, PlusButton, ModalComponent },
+  components: {
+    TaskComponent,
+    PlusButton,
+    ModalComponent,
+    EmojiPicker,
+    ColorPicker
+  },
   data() {
     return {
       showCreateModal: false,
       showEditModal: false,
-      showEmojiPicker: null, // 'create' or 'edit' or null
       tasks: [],
       newTask: { 
         title: '',
@@ -161,8 +139,7 @@ export default {
         emoji: '✅',
         color: '4CAF50'
       },
-      selectedTask: null,
-      emojiList: ['✅', '📌', '⭐', '❤️', '🎯', '✨', '💡', '📚', '🔥', '⚡']
+      selectedTask: null
     };
   },
   computed: {
@@ -197,17 +174,6 @@ export default {
         console.error('Error fetching tasks:', error);
       }
     },
-    toggleEmojiPicker(mode) {
-      this.showEmojiPicker = this.showEmojiPicker === mode ? null : mode;
-    },
-    selectEmoji(emoji, mode) {
-      if (mode === 'create') {
-        this.newTask.emoji = emoji;
-      } else {
-        this.selectedTask.emoji = emoji;
-      }
-      this.showEmojiPicker = null;
-    },
     updateTaskColor(event, mode) {
       const color = event.target.value.substring(1);
       if (mode === 'create') {
@@ -223,7 +189,6 @@ export default {
     closeEditModal() {
       this.showEditModal = false;
       this.selectedTask = null;
-      this.showEmojiPicker = null;
     },
     handleTaskUpdate(updatedTask) {
       const index = this.tasks.findIndex(t => t.task_id === updatedTask.task_id);
@@ -317,7 +282,6 @@ export default {
   height: 100%;
 }
 
-/* Ensure task containers can scroll independently */
 .task-container::-webkit-scrollbar {
   width: 8px;
 }
@@ -336,52 +300,14 @@ export default {
   background: #555;
 }
 
-/* Emoji Picker Styles */
 .emoji-picker-container {
-  position: relative;
   margin-bottom: 15px;
 }
 
-.emoji-button {
-  font-size: 1.5em;
-  padding: 5px 15px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
-}
-
-.emoji-list {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 10px;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 5px;
-  z-index: 1000;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.emoji-option {
-  font-size: 1.5em;
-  padding: 5px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.emoji-option:hover {
-  background: #f5f5f5;
-}
-
-/* Color Picker Styles */
 .color-picker-container {
   margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
 }
 
 .color-input-wrapper {
@@ -404,7 +330,6 @@ input[type="color"] {
   font-size: 0.9em;
 }
 
-/* Form Styles */
 form {
   display: flex;
   flex-direction: column;
