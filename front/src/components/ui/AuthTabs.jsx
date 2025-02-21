@@ -23,22 +23,38 @@ const AuthTabs = () => {
     e.preventDefault()
     setError('')
     try {
+      localStorage.removeItem('jwt')
+
       const endpoint = type === 'login' ? '/login' : '/register'
-      const { data } = await api.post(endpoint, formData)
-      const token = data.token
+      const response = await api.post(endpoint, formData)
 
-      // Verify JWT
-      await api.post('/verify-jwt', {}, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      console.log(`${type} response:`, response.data)
 
-      // Store JWT and redirect
-      localStorage.setItem('jwt', token)
-      navigate('/dashboard')
+      const token = response.data
+
+      if (!token) {
+        console.error('No token received from server')
+        setError('Authentication error: No token received')
+        return
+      }
+
+      console.log(`Token received:`, token.substring(0, 20) + '...')
+
+      try {
+        await api.post('/verify-jwt', {}, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+
+        localStorage.setItem('jwt', token)
+        navigate('/dashboard')
+      } catch (verifyErr) {
+        console.error('Token verification failed:', verifyErr.response?.data)
+        setError(verifyErr.response?.data?.message || 'Token verification failed')
+      }
     } catch (err) {
-      console.error(err)
+      console.error(`${type} request failed:`, err.response?.data)
       setError(err.response?.data?.message || 'Something went wrong')
     }
   }
