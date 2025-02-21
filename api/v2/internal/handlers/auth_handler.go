@@ -62,7 +62,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u.Send(w, "", map[string]string{"token": token}, http.StatusOK)
+	u.Send(w, "", token, http.StatusOK)
 }
 
 func (h *AuthHandler) VerifyJWT(w http.ResponseWriter, r *http.Request) {
