@@ -20,7 +20,7 @@ type UserLogin struct {
 }
 
 type User struct {
-  gorm.Model
+	gorm.Model
 	ID             uuid.UUID `gorm:"type:char(36);primaryKey" json:"id"`
 	Name           string    `gorm:"size:100;not null" json:"name"`
 	Email          string    `gorm:"type:varchar(255);unique;not null" json:"email"`
@@ -31,7 +31,7 @@ type User struct {
 	PhoneNumber    string    `gorm:"size:20" json:"phone_number,omitempty"`
 	CreatedAt      time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt      time.Time `gorm:"autoUpdateTime" json:"updated_at"`
-  DeletedAt      time.Time `gorm:"autoDeleteTIme"`
+	DeletedAt      time.Time `gorm:"autoDeleteTIme"`
 
 	UserLinks        []UserLink        `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"user_links,omitempty"`
 	Toasts           []ToastSession    `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"toasts"`
