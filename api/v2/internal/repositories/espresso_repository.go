@@ -30,7 +30,7 @@ func (r *EspressoRepository) FindByID(id int, userID uuid.UUID) (*models.Espress
 
 func (r *EspressoRepository) Exists(id int, userID uuid.UUID) (bool, error) {
 	var count int64
-	err := r.DB.Model(&models.EspressoSession{}).Where("session_id = ? AND user_id = ?", id, userID).Count(&count).Error
+	err := r.DB.Model(&models.EspressoSession{}).Create
 	if err != nil {
 		return false, err
 	}

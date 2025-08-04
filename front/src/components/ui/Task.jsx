@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { PancakePropTypes } from '../../../propTypes.js'
+import { TaskPropTypes } from '../../../propTypes.js'
 
 const PancakeNote = ({ pancake, onNoteClick }) => {
   const { noteId, emoji, title, content, color } = pancake;

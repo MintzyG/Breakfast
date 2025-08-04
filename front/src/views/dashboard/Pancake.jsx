@@ -51,12 +51,15 @@ const Pancake = () => {
   }
 
   if (error) {
-    return <div className="p-4 text-center text-red-500">{error}</div>;
+    return <div className="p-4 flex h-full text-center justify-center text-red-500">{error}</div>;
   }
 
   return (
-    <>
-      <div className='flex flex-row gap-4 flex-wrap p-[10px]'>
+    <div className="flex-column max-h-screen p-[10px] overflow-scroll">
+      <div className="PageContainer flex-column">
+        <div className="FilterContainer rounded-full h-[50px] w-full bg-gray-200"></div>
+      </div>
+      <div className='flex flex-row gap-y-4 justify-around flex-wrap p-[10px]'>
         {pancakes.length > 0 ? (
           pancakes.map((pancake) => (
             <PancakeNote
@@ -75,7 +78,7 @@ const Pancake = () => {
         pancake={selectedPancake}
         onUpdate={handleUpdatePancake}
       />
-    </>
+    </div>
   );
 };
 
