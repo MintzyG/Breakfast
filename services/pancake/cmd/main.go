@@ -27,7 +27,9 @@ func main() {
 	notesHandler := notes.NewHandler(notesRepo)
 	scimRepo := scim.NewRepository(mongo.Collection("scim_users"))
 	scimHandler := scim.NewHandler(scimRepo)
-	wsHandler := ws.NewHandler()
+	hub := ws.NewHub()
+	go hub.Run()
+	wsHandler := ws.NewHandler(hub)
 
 	r := chi.NewRouter()
 
