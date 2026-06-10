@@ -1,0 +1,39 @@
+meta {
+  name: Replace User (PUT)
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/scim/v2/Users/{{scimUserId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+    "userName": "sophia@example.com",
+    "name": {
+      "givenName": "Sophia",
+      "familyName": "Hoffmann"
+    },
+    "emails": [
+      {
+        "value": "sophia@example.com",
+        "primary": true
+      }
+    ],
+    "active": false
+  }
+}
+
+tests {
+  test("status is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("active is updated", function() {
+    expect(res.body.data.active).to.equal(false);
+  });
+}

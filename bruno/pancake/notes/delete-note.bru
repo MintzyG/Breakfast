@@ -1,0 +1,17 @@
+meta {
+  name: Delete Note
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{baseUrl}}/notes/{{noteId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("status is 204", function() {
+    expect(res.status).to.equal(204);
+  });
+}

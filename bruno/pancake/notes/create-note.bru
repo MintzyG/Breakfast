@@ -1,0 +1,42 @@
+meta {
+  name: Create Note
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/notes
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "My first note",
+    "content": "",
+    "color": "#f9e4b7",
+    "emoji": "📝",
+    "tags": ["test", "bruno"]
+  }
+}
+
+tests {
+  test("status is 201", function() {
+    expect(res.status).to.equal(201);
+  });
+
+  test("has id", function() {
+    expect(res.body.data).to.have.property("id");
+  });
+
+  test("title matches", function() {
+    expect(res.body.data.title).to.equal("My first note");
+  });
+
+  test("tags are set", function() {
+    expect(res.body.data.tags).to.include("test");
+    expect(res.body.data.tags).to.include("bruno");
+  });
+
+  bru.setVar("noteId", res.body.data.id);
+}

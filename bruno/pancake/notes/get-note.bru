@@ -1,0 +1,21 @@
+meta {
+  name: Get Note
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/notes/{{noteId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("status is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("id matches", function() {
+    expect(res.body.data.id).to.equal(bru.getVar("noteId"));
+  });
+}

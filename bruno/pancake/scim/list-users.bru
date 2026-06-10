@@ -1,0 +1,29 @@
+meta {
+  name: List Users
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/scim/v2/Users
+  body: none
+  auth: none
+}
+
+tests {
+  test("status is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("SCIM ListResponse schema", function() {
+    expect(res.body.data.schemas).to.include("urn:ietf:params:scim:api:messages:2.0:ListResponse");
+  });
+
+  test("has totalResults", function() {
+    expect(res.body.data).to.have.property("totalResults");
+  });
+
+  test("has Resources array", function() {
+    expect(res.body.data.Resources).to.be.an("array");
+  });
+}

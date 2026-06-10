@@ -1,0 +1,25 @@
+meta {
+  name: Get User
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/scim/v2/Users/{{scimUserId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("status is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("id matches", function() {
+    expect(res.body.data.id).to.equal(bru.getVar("scimUserId"));
+  });
+
+  test("userName present", function() {
+    expect(res.body.data).to.have.property("userName");
+  });
+}

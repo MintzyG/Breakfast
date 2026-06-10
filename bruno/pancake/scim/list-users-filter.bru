@@ -1,0 +1,22 @@
+meta {
+  name: List Users (filter)
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/scim/v2/Users?filter=userName eq "sophia@example.com"
+  body: none
+  auth: none
+}
+
+tests {
+  test("status is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("returns matching user", function() {
+    expect(res.body.data.totalResults).to.equal(1);
+    expect(res.body.data.Resources[0].userName).to.equal("sophia@example.com");
+  });
+}

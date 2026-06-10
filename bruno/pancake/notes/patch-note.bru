@@ -1,0 +1,24 @@
+meta {
+  name: Patch Note
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/notes/{{noteId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "Updated title",
+    "color": "#d4f7d4"
+  }
+}
+
+tests {
+  test("status is 204", function() {
+    expect(res.status).to.equal(204);
+  });
+}

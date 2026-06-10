@@ -1,0 +1,45 @@
+meta {
+  name: Create User
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/scim/v2/Users
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+    "userName": "sophia@example.com",
+    "name": {
+      "givenName": "Sophia",
+      "familyName": "Hoffmann"
+    },
+    "emails": [
+      {
+        "value": "sophia@example.com",
+        "primary": true
+      }
+    ],
+    "active": true
+  }
+}
+
+tests {
+  test("status is 201", function() {
+    expect(res.status).to.equal(201);
+  });
+
+  test("has id", function() {
+    expect(res.body.data).to.have.property("id");
+  });
+
+  test("schemas present", function() {
+    expect(res.body.data.schemas).to.include("urn:ietf:params:scim:schemas:core:2.0:User");
+  });
+
+  bru.setVar("scimUserId", res.body.data.id);
+}

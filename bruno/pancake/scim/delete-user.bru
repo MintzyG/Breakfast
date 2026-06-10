@@ -1,0 +1,17 @@
+meta {
+  name: Delete User
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{baseUrl}}/scim/v2/Users/{{scimUserId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("status is 204", function() {
+    expect(res.status).to.equal(204);
+  });
+}

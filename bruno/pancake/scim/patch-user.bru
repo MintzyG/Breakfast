@@ -1,0 +1,30 @@
+meta {
+  name: Patch User (SCIM)
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{baseUrl}}/scim/v2/Users/{{scimUserId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+    "Operations": [
+      {
+        "op": "replace",
+        "path": "active",
+        "value": true
+      }
+    ]
+  }
+}
+
+tests {
+  test("status is 204", function() {
+    expect(res.status).to.equal(204);
+  });
+}
