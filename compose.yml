@@ -14,6 +14,15 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  shell:
+    container_name: shell
+    build:
+      context: ./frontend/shell
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    restart: unless-stopped
+
   mongo:
     container_name: mongo
     image: mongo:8

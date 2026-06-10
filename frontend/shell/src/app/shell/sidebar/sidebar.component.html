@@ -1,0 +1,39 @@
+<nav class="flex flex-col h-full bg-[#1e1e2e] text-[#cdd6f4] transition-all duration-200 overflow-hidden"
+     [class.w-56]="!collapsed()"
+     [class.min-w-56]="!collapsed()"
+     [class.w-14]="collapsed()"
+     [class.min-w-14]="collapsed()">
+
+  <div class="flex items-center gap-2.5 px-4 pt-5 pb-3 font-bold text-[15px] whitespace-nowrap">
+    <span class="text-xl shrink-0">🍳</span>
+    @if (!collapsed()) {
+      <span>Breakfast</span>
+    }
+  </div>
+
+  <ul class="list-none flex-1 py-2">
+    @for (item of navItems; track item.path) {
+      <li>
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="!bg-[#45475a] !text-[#cdd6f4]"
+          class="flex items-center gap-3 px-4 py-2.5 text-[#a6adc8] no-underline whitespace-nowrap rounded-md mx-2 transition-colors duration-150 hover:bg-[#313244] hover:text-[#cdd6f4]"
+          [title]="item.label"
+        >
+          <span class="text-lg shrink-0 w-6 text-center">{{ item.icon }}</span>
+          @if (!collapsed()) {
+            <span>{{ item.label }}</span>
+          }
+        </a>
+      </li>
+    }
+  </ul>
+
+  <button
+    class="bg-transparent border-none text-[#6c7086] px-4 py-3 cursor-pointer text-left text-sm transition-colors duration-150 hover:text-[#cdd6f4]"
+    (click)="toggle.emit()"
+    [title]="collapsed() ? 'Expand' : 'Collapse'"
+  >
+    {{ collapsed() ? '→' : '←' }}
+  </button>
+</nav>
