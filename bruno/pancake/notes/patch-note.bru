@@ -11,10 +11,11 @@ patch {
 }
 
 body:json {
-  {
-    "title": "Updated title",
-    "color": "#d4f7d4"
-  }
+  [
+    { "op": "replace", "path": "/title", "value": "Updated via JSON Patch" },
+    { "op": "replace", "path": "/color", "value": "#d4f7d4" },
+    { "op": "add",     "path": "/tags/-", "value": "patched" }
+  ]
 }
 
 tests {

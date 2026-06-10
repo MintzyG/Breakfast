@@ -75,25 +75,18 @@ func (h *Handler) Patch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var patch map[string]any
-	if fun.BailInto(w, req, &patch) {
+	var ops []PatchOp
+	if fun.BailInto(w, req, &ops) {
 		return
 	}
 
-	allowed := map[string]bool{"title": true, "color": true, "emoji": true, "tags": true}
-	update := bson.M{}
-	for k, v := range patch {
-		if allowed[k] {
-			update[k] = v
-		}
-	}
-
-	if len(update) == 0 {
-		fun.BadRequest("no valid fields to update").Send(w)
+	update, err := applyPatch(ops)
+	if err != nil {
+		fun.BadRequest(err.Error()).Send(w)
 		return
 	}
 
-	err = h.repo.Update(r.Context(), oid, update)
+	err = h.repo.UpdateRaw(r.Context(), oid, update)
 	if fun.Bail(w, err) {
 		return
 	}

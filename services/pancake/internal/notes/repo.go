@@ -58,6 +58,16 @@ func (r *Repository) Update(ctx context.Context, id primitive.ObjectID, update b
 	return err
 }
 
+func (r *Repository) UpdateRaw(ctx context.Context, id primitive.ObjectID, update bson.M) error {
+	if set, ok := update["$set"].(bson.M); ok {
+		set["updated_at"] = time.Now()
+	} else {
+		update["$set"] = bson.M{"updated_at": time.Now()}
+	}
+	_, err := r.col.UpdateOne(ctx, bson.M{"_id": id}, update)
+	return err
+}
+
 func (r *Repository) Delete(ctx context.Context, id primitive.ObjectID) error {
 	_, err := r.col.DeleteOne(ctx, bson.M{"_id": id})
 	return err
